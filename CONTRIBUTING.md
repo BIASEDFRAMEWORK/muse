@@ -3,7 +3,6 @@
 ## Teams
 
 - Application Team: owned by @dgaspard
-- Platform Team: owned by @dgaspard
 
 ## Workflow
 
