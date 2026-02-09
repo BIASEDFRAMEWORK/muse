@@ -10,9 +10,11 @@ What problem does this solve?
 
 ## Risk
 
-- [ ] Low (docs / config)
-- [ ] Medium (code change)
-- [ ] High (infra / security)
+Please select one:
+
+- [ ] Low (docs / config) → label: `risk:low`
+- [ ] Medium (code change) → label: `risk:medium`
+- [ ] High (infra / security) → label: `risk:high`
 
 ## Checklist
 
