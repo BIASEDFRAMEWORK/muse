@@ -16,8 +16,8 @@ docs/governance/ai-derivation-guardrails.md @dgaspard @muse-org/ai
 
 # Security & Compliance
 storage/ @dgaspard @muse-org/security
-contracts/ai-constraints-policy.md @dgaspard @muse-org/security
-contracts/ai-prompt-format-spec.md @dgaspard @muse-org/security
+docs/organizational-contracts/ai-constraints-policy.md @dgaspard @muse-org/security
+docs/organizational-contracts/ai-prompt-format-spec.md @dgaspard @muse-org/security
 docs/governance/ @dgaspard @muse-org/security
 docs/ARTIFACT-BOUNDARY-VALIDATION.md @dgaspard @muse-org/security
 .env.example @dgaspard @muse-org/security
@@ -43,11 +43,11 @@ README.md @dgaspard @muse-org/docs
 DEVELOPER_GUIDE.md @dgaspard @muse-org/docs
 CONTRIBUTING.md @dgaspard @muse-org/docs
 VALIDATION_GUIDE.md @dgaspard @muse-org/docs
-contracts/product-vision.md @dgaspard @muse-org/docs
-contracts/primary-users-personas.md @dgaspard @muse-org/docs
-contracts/repo-structure.md @dgaspard @muse-org/docs
-contracts/user-story-format.md @dgaspard @muse-org/docs
+docs/organizational-contracts/product-vision.md @dgaspard @muse-org/docs
+docs/organizational-contracts/primary-users-personas.md @dgaspard @muse-org/docs
+docs/organizational-contracts/repo-structure.md @dgaspard @muse-org/docs
+docs/organizational-contracts/user-story-format.md @dgaspard @muse-org/docs
 
 # Repository governance & contracts
-contracts/ @dgaspard @muse-org/platform @muse-org/security
+docs/organizational-contracts/ @dgaspard @muse-org/platform @muse-org/security
 .github/CODEOWNERS @dgaspard @muse-org/platform @muse-org/security

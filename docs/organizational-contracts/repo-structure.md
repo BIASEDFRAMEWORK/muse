@@ -11,7 +11,7 @@ This document defines the canonical repository structure for Muse and explains h
 
 ## Required Structure
 
-/contracts      # Product + AI contracts (immutable by default)
+/docs/organizational-contracts # Product + AI contracts (immutable by default)
 /docs           # Source-of-truth converted governance documents
 /backlog        # Epics, features, user stories
 /prompts        # AI prompts derived from stories

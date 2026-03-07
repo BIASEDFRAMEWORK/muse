@@ -15,7 +15,13 @@ jobs:
       - name: Validate required contracts exist
         run: |
           set -e
-          for f in             contracts/product-vision.md             contracts/primary-users-personas.md             contracts/user-story-format.md             contracts/ai-prompt-format-spec.md             contracts/ai-constraints-policy.md             contracts/repo-structure.md; do
+          for f in \
+            docs/organizational-contracts/product-vision.md \
+            docs/organizational-contracts/primary-users-personas.md \
+            docs/organizational-contracts/user-story-format.md \
+            docs/organizational-contracts/ai-prompt-format-spec.md \
+            docs/organizational-contracts/ai-constraints-policy.md \
+            docs/organizational-contracts/repo-structure.md; do
               test -f "$f" || (echo "Missing $f" && exit 1)
           done
 

@@ -99,4 +99,4 @@ If no API key is configured, generation remains deterministic via fallback behav
 - Keep CLI parsing separate from business logic.
 - Preserve front matter traceability metadata.
 - Keep deterministic outputs when no API key is configured.
-- Do not modify `/contracts` unless explicitly requested.
+- Do not modify `/docs/organizational-contracts` unless explicitly requested.

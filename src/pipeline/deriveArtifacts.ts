@@ -623,7 +623,7 @@ export async function deriveArtifacts(options: DeriveArtifactsOptions): Promise<
 
     const constraints = [
       'Preserve traceability metadata and naming conventions for generated artifacts.',
-      'Do not modify files under /contracts without explicit instruction.',
+      'Do not modify files under /docs/organizational-contracts without explicit instruction.',
       'Keep changes scoped to the requested objective and avoid unrelated refactors.',
       `Use governance source: ${governanceLineage.sourcePath}`,
     ]

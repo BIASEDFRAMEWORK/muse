@@ -72,4 +72,4 @@ ai:
 ## Notes
 
 - Keep business logic in `src/pipeline/` and keep CLI parsing in `src/cli/`.
-- Do not modify files in `contracts/` unless explicitly requested.
+- Do not modify files in `docs/organizational-contracts/` unless explicitly requested.

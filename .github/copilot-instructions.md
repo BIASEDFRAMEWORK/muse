@@ -30,4 +30,4 @@ Engineering constraints
 - Keep CLI command parsing separate from business logic.
 - Keep outputs deterministic when no API key is configured.
 - Preserve traceability metadata in artifact front matter.
-- Do NOT modify files under `/contracts` without explicit instruction.
+- Do NOT modify files under `/docs/organizational-contracts` without explicit instruction.
