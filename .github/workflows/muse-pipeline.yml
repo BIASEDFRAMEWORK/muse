@@ -56,7 +56,7 @@ jobs:
           file_pattern: docs/**
 
       - name: Create pull request
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           commit-message: 'muse: generated backlog artifacts'
           title: 'muse: generated backlog artifacts'
