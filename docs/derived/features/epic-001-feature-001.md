@@ -6,23 +6,24 @@ derived_from_epic: epic-001
 source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 derived_from_document_id: gov-original-document-system-of-record
-origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Role-Based Document Access Control
+# Immutable Document Retrieval API
 
 ## Capability
-Implement granular permission system that validates user roles and document visibility rules before allowing read access to documents and metadata
+RESTful API endpoints that provide read-only access to stored documents and their metadata without modification capabilities
 
 ## Implementation Notes
-- Create role hierarchy with permissions mapped to document categories or tags
-- Implement JWT-based authentication with role claims validation
-- Add document-level access control lists (ACLs) stored in metadata
-- Cache permission lookups to optimize performance for frequent access patterns
+- Implement GET /documents/{documentId} endpoint that streams original document bytes with proper Content-Type headers
+- Implement GET /documents/{documentId}/metadata endpoint returning JSON metadata including upload timestamp, file size, checksum, and content type
+- Configure API gateway to explicitly block HTTP methods other than GET for document endpoints
+- Implement content streaming with chunked transfer encoding for large documents
 - Primary delivery slice: The API exposes read-only access:.
 
 ## Acceptance Criteria
-- Users can only access documents matching their assigned role permissions
-- API returns 403 Forbidden for unauthorized document access attempts
-- Permission checks complete within 100ms for cached roles
-- Admin users can view all documents while restricted users see only permitted subset
+- GET /documents/{documentId} returns original document bytes with correct Content-Type and Content-Length headers
+- GET /documents/{documentId}/metadata returns complete metadata in JSON format
+- All non-GET HTTP methods (POST, PUT, DELETE, PATCH) return 405 Method Not Allowed
+- API handles concurrent read requests without data corruption
+- Large documents (>100MB) stream efficiently without memory exhaustion
 - Control focus for this feature: The API exposes read-only access:.

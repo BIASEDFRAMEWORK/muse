@@ -6,24 +6,25 @@ derived_from_epic: epic-005
 source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 derived_from_document_id: gov-original-document-system-of-record
-origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Request Rate Limiting and DDoS Protection
+# Role-Based Document Access Control
 
 ## Capability
-Implement adaptive rate limiting with IP-based throttling and automated blocking for suspicious activity
+Enforce granular access permissions based on user roles and document classification levels before serving content via API endpoints
 
 ## Implementation Notes
-- Configure sliding window rate limits per IP address and authenticated user
-- Implement exponential backoff for repeated violations
-- Use Redis or in-memory cache to track request counts and violation history
-- Integrate with cloud provider DDoS protection services for traffic filtering
+- Implement middleware layer that validates user permissions before GET operations
+- Support hierarchical roles (viewer, editor, admin) with inheritance
+- Add document classification tags (public, internal, confidential, restricted)
+- Cache permission decisions with TTL to reduce authorization latency
+- Integrate with existing identity provider via OIDC/SAML
 - Primary delivery slice: The API exposes read-only access:.
 
 ## Acceptance Criteria
-- Unauthenticated requests limited to 10 requests per minute per IP
-- Authenticated requests limited to 100 requests per minute per user
-- Rate limit violations return 429 Too Many Requests with retry-after header
-- Persistent violators automatically blocked for 1 hour after 5 violations
-- Rate limit status visible in response headers for client awareness
+- GET /documents/{documentId} returns 403 Forbidden for unauthorized users
+- Users can only access documents matching their role clearance level
+- Permission changes take effect within 5 minutes across all API instances
+- System logs all access attempts including denied requests
+- API response time for authorized requests remains under 200ms including permission checks
 - Control focus for this feature: The API exposes read-only access:.

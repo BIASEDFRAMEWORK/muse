@@ -1,19 +1,19 @@
 ---
 id: prompt-044
 story: epic-005-feature-003-story-002
-source: docs/derived/governance/original-document-system-of-record.digital.md
+source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
 # Implementation Prompt for epic-005-feature-003-story-002
 
-Implement Retrieve audit logs with integrity verification.
-Context: I want to query audit logs and verify their integrity through cryptographic validation.
+Implement Query audit trail by document.
+Context: I want to retrieve all access events for a specific document.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- GET /audit/logs endpoint returns paginated audit log entries with metadata
-- Each response includes integrity verification status for returned entries
-- Support filtering by date range, API endpoint, user ID, and HTTP status codes
-- Provide hash chain verification endpoint to validate log sequence integrity
-- Return clear indicators if any tampering or corruption is detected
+- New endpoint GET /audit/documents/{documentId} returns all access events for that document
+- Results are paginated with configurable page size (default 50, max 500)
+- Results are sorted by timestamp in descending order (most recent first)
+- Response includes: timestamp, user ID, endpoint accessed, IP address, success/failure status
+- Endpoint requires appropriate authorization to access audit data
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-005-feature-003-story-002 (Retrieve audit logs with integrity verification).
+- Implementation outcome is unique to epic-005-feature-003-story-002 (Query audit trail by document).

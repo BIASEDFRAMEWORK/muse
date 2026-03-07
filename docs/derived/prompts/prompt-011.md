@@ -1,20 +1,19 @@
 ---
 id: prompt-011
 story: epic-002-feature-001-story-002
-source: docs/derived/governance/original-document-system-of-record.digital.md
+source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
 # Implementation Prompt for epic-002-feature-001-story-002
 
-Implement Document Integrity Verification API.
-Context: call an API endpoint to verify a document's current integrity against its stored hash.
+Implement Document metadata retrieval with authentication.
+Context: request document metadata by ID with valid credentials.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- GET /documents/{documentId}/verify endpoint returns integrity status
-- Response indicates VALID, INVALID, or ERROR status
-- Response includes original hash, computed hash, and verification timestamp
-- Verification recalculates hash from current stored document bytes
-- Endpoint returns 404 if document does not exist
-- Response time under 5 seconds for documents up to 100MB
+- GET /documents/{documentId}/metadata returns 200 with JSON metadata when authenticated
+- GET /documents/{documentId}/metadata returns 401 when authentication is missing
+- GET /documents/{documentId}/metadata returns 403 when user lacks metadata access permissions
+- GET /documents/{documentId}/metadata returns 404 when document does not exist
+- Metadata response includes document size, type, upload date, and checksum
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-002-feature-001-story-002 (Document Integrity Verification API).
+- Implementation outcome is unique to epic-002-feature-001-story-002 (Document metadata retrieval with authentication).

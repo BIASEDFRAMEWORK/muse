@@ -1,19 +1,19 @@
 ---
 id: prompt-020
 story: epic-003-feature-001-story-002
-source: docs/derived/governance/original-document-system-of-record.digital.md
+source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
 # Implementation Prompt for epic-003-feature-001-story-002
 
-Implement Query document access logs.
-Context: search and filter document access logs by various criteria.
+Implement Include user context in document access logs.
+Context: want document access logs to include authenticated user information.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- API endpoint GET /logs/document-access accepts query parameters for filtering
-- Support filtering by date range, document ID, user ID, and access status
-- Return paginated results with configurable page size
-- Include total count of matching log entries
-- Support sorting by timestamp in ascending or descending order
+- Log entries include authenticated user ID when available
+- Log entries include user role/permissions when available
+- Anonymous access attempts are logged with 'anonymous' user designation
+- Authentication method is recorded (API key, OAuth token, etc.)
+- User agent string is captured for additional context
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-003-feature-001-story-002 (Query document access logs).
+- Implementation outcome is unique to epic-003-feature-001-story-002 (Include user context in document access logs).

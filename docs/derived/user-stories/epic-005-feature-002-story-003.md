@@ -8,25 +8,23 @@ derived_from_feature: epic-005-feature-002
 source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 derived_from_document_id: gov-original-document-system-of-record
-origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Configure rate limiting policies through admin interface
+# Configure Role-Based Document Permissions
 
 ## User Story
-As a System Administrator, I want to manage rate limiting rules and thresholds via web interface, so that I can adjust protection settings without code deployments.
+As a system administrator, I want to I want to assign read permissions for documents to specific user roles, so that I can so that I can control which users can access sensitive documents based on their organizational role.
 
 ## Acceptance Criteria
-- Admin interface allows setting rate limits per endpoint
-- Rate limit changes take effect within 60 seconds without service restart
-- Interface displays current rate limit utilization and statistics
-- Ability to whitelist specific IP addresses or API keys
-- Configuration changes are logged with user attribution
+- Given I am a system administrator, when I assign read permission for a document to a role, then users with that role can successfully access the document content and metadata
+- Given I am a system administrator, when I revoke read permission for a document from a role, then users with that role receive HTTP 403 when attempting to access the document
+- Given I am a system administrator, when I view document permissions, then I can see all roles that have read access to each document
+- Given permission changes are made, when users attempt access, then the new permissions take effect immediately without requiring user re-authentication
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Build REST API for rate limit configuration management
-- Use database or configuration service for storing rules
-- Implement real-time configuration push to all service instances
-- Add input validation for rate limit values and IP addresses
-- Create audit trail for all configuration changes
+- Implement permission storage using document ID and role mapping table
+- Use database indexes on document_id and role fields for query performance
+- Consider implementing permission caching with TTL to reduce database load
+- Provide API endpoints for administrators to manage document-role permissions
 - Implementation should prioritize The API exposes read-only access:.

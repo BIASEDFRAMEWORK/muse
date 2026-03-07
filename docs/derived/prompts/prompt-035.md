@@ -1,18 +1,19 @@
 ---
 id: prompt-035
 story: epic-004-feature-003-story-002
-source: docs/derived/governance/original-document-system-of-record.digital.md
+source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
 # Implementation Prompt for epic-004-feature-003-story-002
 
-Implement Validate user permissions for document content retrieval.
-Context: request document content through the GET endpoint.
+Implement Query metadata validation audit trail via API.
+Context: I want to retrieve validation audit records through REST endpoints.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- When user has valid read permissions, GET /documents/{documentId} streams original bytes with 200 status
-- When user lacks read permissions, GET /documents/{documentId} returns 403 Forbidden with no content
-- When document does not exist, GET /documents/{documentId} returns 404 Not Found
-- When user is not authenticated, GET /documents/{documentId} returns 401 Unauthorized
+- GET /audit/metadata-validation endpoint returns paginated audit records
+- Support filtering by document ID, date range, validation result, and user ID
+- Response includes all audit fields: timestamp, document ID, validation status, error details
+- Implements standard pagination with page size limits
+- Returns 404 for non-existent document IDs, 400 for invalid query parameters
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-004-feature-003-story-002 (Validate user permissions for document content retrieval).
+- Implementation outcome is unique to epic-004-feature-003-story-002 (Query metadata validation audit trail via API).

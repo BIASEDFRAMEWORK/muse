@@ -8,25 +8,25 @@ derived_from_feature: epic-005-feature-003
 source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 derived_from_document_id: gov-original-document-system-of-record
-origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Monitor and alert on audit log tampering attempts
+# Query audit trail by user
 
 ## User Story
-As a Security Operations Team, I want to I want to be immediately notified when audit log integrity checks fail or tampering is detected, so that I can so that I can respond quickly to potential security incidents or system compromises.
+As a Security Analyst, I want to I want to retrieve all document access events for a specific user, so that I can so that I can investigate user activity patterns and detect potential security issues.
 
 ## Acceptance Criteria
-- Automated integrity checks run periodically on stored audit logs
-- Real-time alerts trigger when hash chain validation fails
-- Alerts include specific details about affected log entries and timeframes
-- System prevents further logging if integrity storage is compromised
-- Health check endpoint reports audit logging system status
+- New endpoint GET /audit/users/{userId} returns all document access events for that user
+- Results are paginated with configurable page size (default 50, max 500)
+- Results are sorted by timestamp in descending order (most recent first)
+- Response includes: timestamp, document ID, endpoint accessed, IP address, success/failure status
+- Endpoint requires appropriate authorization to access audit data
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement background job for periodic hash chain validation
-- Integrate with alerting system (email, Slack, PagerDuty) for immediate notifications
-- Use circuit breaker pattern to halt operations if audit integrity is compromised
-- Store integrity check results and timestamps for forensic analysis
-- Consider implementing backup audit storage for redundancy
+- Index audit logs by user_id for efficient queries
+- Implement same pagination pattern as document audit queries
+- Add query filters for date ranges and document types
+- Consider rate limiting on audit endpoints to prevent abuse
+- Return empty array if user has no access events
 - Implementation should prioritize The API exposes read-only access:.

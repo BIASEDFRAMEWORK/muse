@@ -1,19 +1,19 @@
 ---
 id: prompt-019
 story: epic-003-feature-001-story-001
-source: docs/derived/governance/original-document-system-of-record.digital.md
+source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
 # Implementation Prompt for epic-003-feature-001-story-001
 
-Implement Log document retrieval attempts.
-Context: automatically log all document access attempts including successful and failed requests.
+Implement Log document retrieval events via API.
+Context: want all document access events to be automatically logged when documents are retrieved through the API.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- All GET requests to /documents/{documentId} are logged with timestamp, user ID, document ID, and response status
-- All GET requests to /documents/{documentId}/metadata are logged with timestamp, user ID, document ID, and response status
-- Failed access attempts (4xx, 5xx responses) are logged with error details
-- Log entries are persisted to a queryable data store
-- Logs include request IP address and user agent
+- Log entry is created when GET /documents/{documentId} endpoint is called
+- Log entry is created when GET /documents/{documentId}/metadata endpoint is called
+- Log includes timestamp, document ID, requesting IP address, and HTTP response status
+- Log entries are persisted to a durable storage system
+- Failed access attempts (4xx, 5xx responses) are also logged
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-003-feature-001-story-001 (Log document retrieval attempts).
+- Implementation outcome is unique to epic-003-feature-001-story-001 (Log document retrieval events via API).

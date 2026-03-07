@@ -8,25 +8,25 @@ derived_from_feature: epic-003-feature-003
 source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 derived_from_document_id: gov-original-document-system-of-record
-origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Export audit trail data in standardized format
+# Dashboard displays real-time document access events
 
 ## User Story
-As a system administrator, I want to export complete audit trail records for a specified time period, so that I can I can provide compliance reports and analyze system activity patterns.
+As a Security Administrator, I want to view real-time document access events as they occur, so that I can I can monitor unauthorized access attempts and detect suspicious activity immediately.
 
 ## Acceptance Criteria
-- System provides GET /audit/export endpoint with date range parameters
-- Export includes all audit events (create, read, update, delete operations)
-- Export format is JSON with timestamp, user ID, action type, resource ID, and IP address
-- Export can be filtered by date range, user, or resource type
-- Export includes pagination for large datasets
-- Response includes metadata about total records and export completion status
+- Dashboard displays access events within 5 seconds of occurrence
+- Each event shows document ID, timestamp, user ID, and access type (GET /documents/{documentId} or GET /documents/{documentId}/metadata)
+- Events are displayed in reverse chronological order
+- Dashboard auto-refreshes without user intervention
+- Failed access attempts are clearly distinguished from successful ones
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement streaming response for large exports to avoid memory issues
-- Add rate limiting to prevent system overload during exports
-- Include audit trail schema version in export metadata
-- Ensure export endpoint requires appropriate authentication and authorization
+- Implement WebSocket connection for real-time event streaming
+- Capture API access logs from GET endpoints specified in requirements
+- Use event-driven architecture to push access events to dashboard
+- Store recent events in memory cache for quick display
+- Implement connection heartbeat and auto-reconnection logic
 - Implementation should prioritize The API exposes read-only access:.

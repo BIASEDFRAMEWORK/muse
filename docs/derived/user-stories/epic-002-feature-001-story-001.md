@@ -8,25 +8,24 @@ derived_from_feature: epic-002-feature-001
 source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 derived_from_document_id: gov-original-document-system-of-record
-origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Document Hash Generation and Storage
+# Document retrieval with authentication
 
 ## User Story
-As a System Administrator, I want to upload a document and have its cryptographic hash automatically generated and stored with metadata, so that I can ensuring document integrity can be verified at any point in the future.
+As a API consumer, I want to request a specific document by ID with valid credentials, so that I can I can securely access authorized documents.
 
 ## Acceptance Criteria
-- System generates SHA-256 hash upon document upload
-- Hash is stored alongside document metadata in persistent storage
-- Hash generation occurs before document storage is confirmed
-- Upload fails if hash generation fails
-- Hash is included in document metadata response
+- GET /documents/{documentId} returns 200 with document bytes when authenticated
+- GET /documents/{documentId} returns 401 when authentication is missing
+- GET /documents/{documentId} returns 403 when user lacks document access permissions
+- GET /documents/{documentId} returns 404 when document does not exist
+- Response includes appropriate Content-Type header for document format
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Use SHA-256 algorithm for hash generation
-- Hash should be computed on original document bytes before any processing
-- Store hash as hexadecimal string in metadata table
-- Implement hash generation as part of document ingestion pipeline
-- Consider streaming hash calculation for large files to optimize memory usage
+- Implement JWT or API key authentication middleware
+- Add document access control checks before streaming bytes
+- Stream response for large documents to optimize memory usage
+- Log all document access attempts for audit trail
 - Implementation should prioritize The API exposes read-only access:.

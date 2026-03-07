@@ -8,25 +8,25 @@ derived_from_feature: epic-003-feature-003
 source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 derived_from_document_id: gov-original-document-system-of-record
-origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Schedule recurring audit trail exports
+# View detailed access attempt information
 
 ## User Story
-As a security analyst, I want to create automated export schedules for regular audit data extraction, so that I can I can ensure consistent audit data backup and reduce manual export workload.
+As a Security Administrator, I want to click on any access event to see detailed information including IP address, user agent, and response status, so that I can I can investigate potential security incidents with complete context.
 
 ## Acceptance Criteria
-- System provides POST /audit/export-schedule endpoint to create scheduled exports
-- Schedules support daily, weekly, monthly, and custom cron expressions
-- Scheduled exports can specify file format, date range, and delivery method
-- System generates unique export files with timestamp in filename
-- Failed exports trigger notifications and retry mechanisms
-- GET /audit/export-schedule/{id}/status returns schedule execution history
+- Detail view shows complete HTTP request information for the access attempt
+- Displays response status code and response time
+- Shows client IP address and user agent string
+- Includes any error messages or failure reasons for failed attempts
+- Detail modal can be closed to return to main dashboard view
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Use job queue system (e.g., Redis/Sidekiq) for reliable schedule execution
-- Implement exponential backoff for failed export retries
-- Store export files in secure cloud storage with appropriate access controls
-- Add monitoring and alerting for export job failures
+- Capture and store HTTP headers from API requests to read-only endpoints
+- Log response status codes and timing metrics
+- Implement modal component for detailed event information
+- Ensure sensitive information is not exposed in logs
+- Store detailed logs with appropriate retention policy
 - Implementation should prioritize The API exposes read-only access:.

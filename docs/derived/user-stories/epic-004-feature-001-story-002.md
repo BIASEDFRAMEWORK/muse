@@ -8,23 +8,23 @@ derived_from_feature: epic-004-feature-001
 source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 derived_from_document_id: gov-original-document-system-of-record
-origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Configure document metadata schema definitions
+# Validate document metadata against defined schemas
 
 ## User Story
-As a system administrator, I want to define and update metadata schema rules for document validation, so that I can maintain control over data quality requirements without code changes.
+As a document ingestion service, I want to I want to validate incoming document metadata against predefined schemas, so that I can so that only compliant documents are accepted into the system.
 
 ## Acceptance Criteria
-- Given a valid JSON schema definition, when uploaded via configuration endpoint, then the schema is stored and applied to subsequent validations
-- Given an invalid schema definition, when uploaded, then the system returns validation errors
-- Given multiple schema versions, when retrieving current schema, then the most recent active version is returned
-- Given a schema update, when applied, then existing documents remain unaffected but new uploads use the updated schema
+- Metadata validation occurs before document persistence
+- Validation errors return detailed field-level error messages
+- Valid documents proceed to storage successfully
+- Validation performance does not exceed 100ms per document
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Store schema definitions in database with versioning support
-- Implement schema validation for the schema definitions themselves
-- Cache active schema in memory for performance
-- Provide endpoint to retrieve current active schema
+- Integrate validation engine with document ingestion pipeline
+- Implement comprehensive error reporting with field paths
+- Cache compiled schemas for performance optimization
+- Add validation metrics and monitoring hooks
 - Implementation should prioritize The API exposes read-only access:.

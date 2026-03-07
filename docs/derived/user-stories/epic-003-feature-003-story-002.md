@@ -8,25 +8,26 @@ derived_from_feature: epic-003-feature-003
 source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 derived_from_document_id: gov-original-document-system-of-record
-origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Configure automated audit trail retention policies
+# Filter and search document access history
 
 ## User Story
-As a compliance officer, I want to set retention periods for different types of audit records, so that I can I can ensure audit data is retained according to regulatory requirements while managing storage costs.
+As a Compliance Officer, I want to filter access events by document ID, user, time range, or access type, so that I can I can quickly investigate specific access patterns and generate compliance reports.
 
 ## Acceptance Criteria
-- System provides POST /audit/retention-policy endpoint to configure retention rules
-- Retention policies can be set by audit event type (document access, user management, system changes)
-- Retention periods can be specified in days, months, or years
-- System automatically marks records for deletion based on retention policies
-- GET /audit/retention-policy returns current active retention policies
-- Retention policy changes are logged in the audit trail
+- Filter by document ID returns only events for specified document
+- Filter by user ID shows all documents accessed by that user
+- Time range filter accepts start and end datetime parameters
+- Access type filter distinguishes between document content retrieval and metadata access
+- Multiple filters can be applied simultaneously
+- Results maintain real-time updates when filters are active
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement background job to process retention policy enforcement
-- Use soft delete with retention metadata rather than immediate hard delete
-- Add validation to ensure retention periods meet minimum regulatory requirements
-- Store retention policy history for compliance auditing
+- Implement server-side filtering to reduce client-side data processing
+- Index access logs by document_id, user_id, and timestamp for efficient queries
+- Use database query optimization for time-range filtering
+- Maintain filtered WebSocket subscriptions for real-time updates
+- Implement debounced search input to prevent excessive API calls
 - Implementation should prioritize The API exposes read-only access:.

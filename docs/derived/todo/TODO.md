@@ -1,153 +1,52 @@
 # Prioritized TODO Backlog
 
 ## P0
-- [ ] epic-001-feature-001-story-001: Stream document content via API endpoint
-- [ ] epic-001-feature-001-story-002: Retrieve document metadata through dedicated endpoint
-- [ ] epic-001-feature-001-story-003: Handle invalid document requests gracefully
-- [ ] epic-001-feature-001-story-004: Support range requests for partial document streaming
+- [ ] epic-001-feature-001-story-001: Retrieve original document by ID
+- [ ] epic-001-feature-001-story-002: Retrieve document metadata by ID
+- [ ] epic-001-feature-001-story-003: Handle invalid document ID requests
+- [ ] epic-001-feature-002-story-001: Retrieve Document by ID with Authorization
 
 ## P1
-- [ ] epic-001-feature-002-story-001: Retrieve document metadata by document ID
-- [ ] epic-001-feature-002-story-002: Stream original document bytes by document ID
-- [ ] epic-001-feature-002-story-003: Handle concurrent metadata requests efficiently
-- [ ] epic-001-feature-002-story-004: Validate and sanitize document ID parameters
-- [ ] epic-001-feature-002-story-005: Return standardized error responses for retrieval failures
-- [ ] epic-001-feature-003-story-001: Generate API Keys for Client Authentication
+- [ ] epic-001-feature-002-story-002: Retrieve Document Metadata with Authorization
+- [ ] epic-001-feature-002-story-003: Role-based Document Access Control
+- [ ] epic-001-feature-003-story-001: Retrieve original document with integrity verification
+- [ ] epic-001-feature-003-story-002: Retrieve document metadata with integrity status
+- [ ] epic-001-feature-003-story-003: Handle integrity verification failures gracefully
+- [ ] epic-002-feature-001-story-001: Document retrieval with authentication
 
 ## P2
-- [ ] epic-001-feature-003-story-002: Authenticate Requests Using API Keys
-- [ ] epic-001-feature-003-story-003: Authorize Document Access Based on Client Permissions
-- [ ] epic-001-feature-003-story-004: Manage API Key Lifecycle
-- [ ] epic-001-feature-003-story-005: Handle Authentication Errors and Security Events
-- [ ] epic-001-feature-004-story-001: Log API Authentication Attempts
-- [ ] epic-001-feature-004-story-002: Track Document Retrieval Access
-- [ ] epic-001-feature-004-story-003: Monitor API Rate Limiting Events
-- [ ] epic-001-feature-004-story-004: Capture API Error and Exception Events
-- [ ] epic-001-feature-004-story-005: Generate Audit Log Reports
-- [ ] epic-001-feature-005-story-001: Document Hash Verification API
-- [ ] epic-001-feature-005-story-002: Automatic Integrity Check on Document Retrieval
-- [ ] epic-001-feature-005-story-003: Bulk Document Integrity Verification
-- [ ] epic-001-feature-005-story-004: Document Integrity Monitoring Dashboard
-- [ ] epic-001-feature-005-story-005: Document Creation with Integrity Baseline
-- [ ] epic-001-feature-006-story-001: Real-time API Request Metrics Collection
-- [ ] epic-001-feature-006-story-002: API Rate Limiting Threshold Alerts
-- [ ] epic-001-feature-006-story-003: API Error Rate Monitoring Dashboard
-- [ ] epic-001-feature-006-story-004: Automated API Health Status Alerts
-- [ ] epic-001-feature-006-story-005: API Usage Analytics and Reporting
-- [ ] epic-002-feature-001-story-001: User authentication with JWT token generation
-- [ ] epic-002-feature-001-story-002: Protected endpoint access with JWT validation
-- [ ] epic-002-feature-001-story-003: Role-based access control for document retrieval
-- [ ] epic-002-feature-001-story-004: JWT token refresh mechanism
-- [ ] epic-002-feature-001-story-005: User logout and token invalidation
-- [ ] epic-002-feature-002-story-001: Configure rate limiting per API endpoint
-- [ ] epic-002-feature-002-story-002: Enforce rate limits on document retrieval endpoints
-- [ ] epic-002-feature-002-story-003: Implement client-specific rate limiting
-- [ ] epic-002-feature-002-story-004: Monitor and alert on rate limit violations
-- [ ] epic-002-feature-002-story-005: Implement graceful rate limit responses
-- [ ] epic-002-feature-003-story-001: API Access Event Capture
-- [ ] epic-002-feature-003-story-002: Audit Trail Query Interface
-- [ ] epic-002-feature-003-story-003: Real-time Security Alert System
-- [ ] epic-002-feature-003-story-004: Log Data Integrity Verification
-- [ ] epic-002-feature-003-story-005: Performance Impact Monitoring
-- [ ] epic-002-feature-004-story-001: Generate New API Keys with Expiration Metadata
-- [ ] epic-002-feature-004-story-002: Automated API Key Rotation Process
-- [ ] epic-002-feature-004-story-003: API Key Authentication and Validation
-- [ ] epic-002-feature-004-story-004: API Key Lifecycle Management Dashboard
-- [ ] epic-002-feature-004-story-005: API Key Expiration Monitoring and Alerting
-- [ ] epic-002-feature-005-story-001: Real-time Threat Detection Engine
-- [ ] epic-002-feature-005-story-002: Security Alert Dashboard
-- [ ] epic-002-feature-005-story-003: Automated Threat Response System
-- [ ] epic-002-feature-005-story-004: Security Metrics API
-- [ ] epic-003-feature-001-story-001: Log API Request Details for Document Retrieval Operations
-- [ ] epic-003-feature-001-story-002: Log API Response Details for Document Retrieval Operations
-- [ ] epic-003-feature-001-story-003: Configure Structured Log Format and Output Destination
-- [ ] epic-003-feature-001-story-004: Implement Request Correlation and Tracing
-- [ ] epic-003-feature-001-story-005: Add Performance Metrics to API Request Logs
-- [ ] epic-003-feature-002-story-001: Dashboard displays real-time active user sessions
-- [ ] epic-003-feature-002-story-002: Dashboard shows failed authentication attempts in real-time
-- [ ] epic-003-feature-002-story-003: Dashboard provides document access activity monitoring
-- [ ] epic-003-feature-002-story-004: Dashboard displays system resource utilization metrics
-- [ ] epic-003-feature-002-story-005: Dashboard enables real-time alert configuration and management
-- [ ] epic-003-feature-003-story-001: Create cryptographically signed audit log entries for document operations
-- [ ] epic-003-feature-003-story-002: Provide audit log verification API endpoint
-- [ ] epic-003-feature-003-story-003: Store audit logs in immutable append-only storage
-- [ ] epic-003-feature-003-story-004: Generate tamper-evident audit entries for document retrieval operations
-- [ ] epic-003-feature-003-story-005: Implement audit log export with integrity verification
-- [ ] epic-003-feature-004-story-001: Generate automated compliance report for document retrieval activities
-- [ ] epic-003-feature-004-story-002: Configure compliance report formatting and delivery
-- [ ] epic-003-feature-004-story-003: Monitor API endpoint usage for compliance violations
-- [ ] epic-003-feature-004-story-004: Export compliance data for external audit systems
-- [ ] epic-003-feature-005-story-001: Track User Document Access Events
-- [ ] epic-003-feature-005-story-002: Associate User Sessions with Document Access
-- [ ] epic-003-feature-005-story-003: Generate User Access Attribution Reports
-- [ ] epic-003-feature-005-story-004: Monitor Real-time Document Access Activity
-- [ ] epic-004-feature-001-story-001: Calculate SHA-256 hash for uploaded documents
-- [ ] epic-004-feature-001-story-002: Verify document integrity via hash comparison API
-- [ ] epic-004-feature-001-story-003: Retrieve stored document hash via metadata API
-- [ ] epic-004-feature-001-story-004: Batch verify multiple document hashes
-- [ ] epic-004-feature-002-story-001: Schema Definition and Registration API
-- [ ] epic-004-feature-002-story-002: Document Metadata Validation on Upload
-- [ ] epic-004-feature-002-story-003: Metadata Validation Status in Read API
-- [ ] epic-004-feature-002-story-004: Bulk Metadata Validation and Reporting
-- [ ] epic-004-feature-003-story-001: Retrieve document content via read-only API endpoint
-- [ ] epic-004-feature-003-story-002: Access document metadata through read-only API
-- [ ] epic-004-feature-003-story-003: Prevent unauthorized modification through API design
-- [ ] epic-004-feature-003-story-004: Validate document access permissions for read operations
-- [ ] epic-004-feature-004-story-001: Implement API Response Time Monitoring
-- [ ] epic-004-feature-004-story-002: Create Performance Dashboard for Document Retrieval
-- [ ] epic-004-feature-004-story-003: Implement Performance Threshold Alerting
-- [ ] epic-004-feature-004-story-004: Add Performance Logging for Document Retrieval Analysis
-- [ ] epic-004-feature-005-story-001: Track metadata changes for document creation
-- [ ] epic-004-feature-005-story-002: Track metadata changes for document updates
-- [ ] epic-004-feature-005-story-003: Query audit trail via API endpoint
-- [ ] epic-004-feature-005-story-004: Generate audit reports for compliance
-- [ ] epic-004-feature-005-story-005: Secure audit trail data integrity
-- [ ] epic-005-feature-001-story-001: Implement basic rate limiting per client API key
-- [ ] epic-005-feature-001-story-002: Configure different rate limits for different client tiers
-- [ ] epic-005-feature-001-story-003: Apply rate limiting to document retrieval endpoints
-- [ ] epic-005-feature-001-story-004: Implement rate limit bypass for internal system calls
-- [ ] epic-005-feature-001-story-005: Monitor and alert on rate limiting events
-- [ ] epic-005-feature-002-story-001: Configure maximum concurrent connections per client
-- [ ] epic-005-feature-002-story-002: Track active connections in real-time
-- [ ] epic-005-feature-002-story-003: Handle document streaming with connection limits
-- [ ] epic-005-feature-002-story-004: Provide connection limit feedback to clients
-- [ ] epic-005-feature-002-story-005: Monitor and alert on connection throttling metrics
-- [ ] epic-005-feature-003-story-001: Real-time Resource Usage Metrics Collection
-- [ ] epic-005-feature-003-story-002: Configurable Resource Usage Thresholds
-- [ ] epic-005-feature-003-story-003: Automated Alert Generation and Delivery
-- [ ] epic-005-feature-003-story-004: Resource Usage Historical Reporting
-- [ ] epic-005-feature-003-story-005: Resource Usage Dashboard Integration
-- [ ] epic-005-feature-004-story-001: Secure Document Retrieval with API Authentication
-- [ ] epic-005-feature-004-story-002: Read-only Document Access Enforcement
-- [ ] epic-005-feature-004-story-003: Document Metadata Retrieval with Access Control
-- [ ] epic-005-feature-004-story-004: Document Content Streaming with Authentication
-- [ ] epic-005-feature-004-story-005: API Rate Limiting and Access Control
-- [ ] epic-005-feature-005-story-001: API Access Logging Infrastructure
-- [ ] epic-005-feature-005-story-002: Access Pattern Analytics Dashboard
-- [ ] epic-005-feature-005-story-003: Suspicious Activity Detection
-- [ ] epic-005-feature-005-story-004: Audit Log Export and Retention
-- [ ] epic-006-feature-001-story-001: Ingest security events from multiple data sources
-- [ ] epic-006-feature-001-story-002: Correlate events using configurable rules engine
-- [ ] epic-006-feature-001-story-003: Generate correlated security incidents with context
-- [ ] epic-006-feature-001-story-004: Provide real-time dashboard for correlation metrics
-- [ ] epic-006-feature-001-story-005: Export correlation results for external systems
-- [ ] epic-006-feature-002-story-001: Automated incident detection and alerting
-- [ ] epic-006-feature-002-story-002: Automated incident response workflow execution
-- [ ] epic-006-feature-002-story-003: Integration with external systems for response actions
-- [ ] epic-006-feature-002-story-004: Real-time incident status dashboard and reporting
-- [ ] epic-006-feature-002-story-005: Configurable escalation and notification rules
-- [ ] epic-006-feature-003-story-001: Configure Threat Intelligence Feed Sources
-- [ ] epic-006-feature-003-story-002: Ingest and Parse Threat Intelligence Data
-- [ ] epic-006-feature-003-story-003: Query Threat Intelligence via API
-- [ ] epic-006-feature-003-story-004: Display Threat Intelligence Dashboard
-- [ ] epic-006-feature-003-story-005: Export Threat Intelligence Data
-- [ ] epic-006-feature-004-story-001: Security Metrics Dashboard Overview
-- [ ] epic-006-feature-004-story-002: Security Report Generation
-- [ ] epic-006-feature-004-story-003: Security Metrics API Integration
-- [ ] epic-006-feature-004-story-004: Security Alert Threshold Configuration
-- [ ] epic-006-feature-004-story-005: Historical Security Data Analytics
-- [ ] epic-006-feature-005-story-001: Track user document access patterns for risk scoring
-- [ ] epic-006-feature-005-story-002: Configure behavioral risk scoring parameters
-- [ ] epic-006-feature-005-story-003: Query behavioral analytics data through API
-- [ ] epic-006-feature-005-story-004: Generate automated risk alerts based on behavioral thresholds
-- [ ] epic-006-feature-005-story-005: Export behavioral analytics reports for compliance auditing
+- [ ] epic-002-feature-001-story-002: Document metadata retrieval with authentication
+- [ ] epic-002-feature-001-story-003: Authentication token validation
+- [ ] epic-002-feature-002-story-001: Authenticated user can retrieve document content with role validation
+- [ ] epic-002-feature-002-story-002: Authorized user can retrieve document metadata with role filtering
+- [ ] epic-002-feature-002-story-003: System administrator can configure role-based document permissions
+- [ ] epic-002-feature-003-story-001: Log document retrieval events
+- [ ] epic-002-feature-003-story-002: Query document access audit logs
+- [ ] epic-002-feature-003-story-003: Track failed document access attempts
+- [ ] epic-003-feature-001-story-001: Log document retrieval events via API
+- [ ] epic-003-feature-001-story-002: Include user context in document access logs
+- [ ] epic-003-feature-001-story-003: Configure log retention and storage policies
+- [ ] epic-003-feature-002-story-001: As a system administrator, I want audit log entries to be cryptographically signed so that any tampering can be detected
+- [ ] epic-003-feature-002-story-002: As a compliance officer, I want to verify the integrity of audit logs through a verification API so that I can confirm no tampering has occurred
+- [ ] epic-003-feature-002-story-003: As a security analyst, I want tampered audit log entries to be automatically flagged and isolated so that compromised data is identified immediately
+- [ ] epic-003-feature-003-story-001: Dashboard displays real-time document access events
+- [ ] epic-003-feature-003-story-002: Filter and search document access history
+- [ ] epic-003-feature-003-story-003: View detailed access attempt information
+- [ ] epic-004-feature-001-story-001: Define and validate document schema structure
+- [ ] epic-004-feature-001-story-002: Validate document metadata against defined schemas
+- [ ] epic-004-feature-001-story-003: Retrieve schema definitions via API
+- [ ] epic-004-feature-002-story-001: Extract basic metadata from uploaded documents
+- [ ] epic-004-feature-002-story-002: Retrieve document metadata via API endpoint
+- [ ] epic-004-feature-002-story-003: Enrich documents with content-based metadata
+- [ ] epic-004-feature-003-story-001: Capture metadata validation events in audit trail
+- [ ] epic-004-feature-003-story-002: Query metadata validation audit trail via API
+- [ ] epic-004-feature-003-story-003: Track metadata changes with before/after snapshots
+- [ ] epic-005-feature-001-story-001: Encrypt document content during storage persistence
+- [ ] epic-005-feature-001-story-002: Decrypt document content for API retrieval
+- [ ] epic-005-feature-001-story-003: Secure encryption key management and rotation
+- [ ] epic-005-feature-002-story-001: Retrieve Document Content with Role-Based Access
+- [ ] epic-005-feature-002-story-002: Retrieve Document Metadata with Role-Based Access
+- [ ] epic-005-feature-002-story-003: Configure Role-Based Document Permissions
+- [ ] epic-005-feature-003-story-001: Track document access events
+- [ ] epic-005-feature-003-story-002: Query audit trail by document
+- [ ] epic-005-feature-003-story-003: Query audit trail by user

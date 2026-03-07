@@ -1,19 +1,19 @@
 ---
 id: prompt-023
 story: epic-003-feature-002-story-002
-source: docs/derived/governance/original-document-system-of-record.digital.md
+source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
 # Implementation Prompt for epic-003-feature-002-story-002
 
-Implement Filter access monitoring data by time range.
-Context: I want to filter the access monitoring dashboard by specific time ranges.
+Implement As a compliance officer, I want to verify the integrity of audit logs through a verification API so that I can confirm no tampering has occurred.
+Context: verify audit log integrity through API endpoints.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- Dashboard provides date/time range picker controls
-- Filter applies to all displayed access data immediately
-- Time range can be set to last hour, day, week, or custom range
-- Filtered results maintain real-time updates within selected range
-- Clear indication when no data exists for selected time range
+- GET /audit/verify/{logId} endpoint returns signature verification status
+- GET /audit/verify/batch endpoint accepts array of log IDs for bulk verification
+- Response includes verification status, timestamp, and any detected tampering details
+- Failed verifications must include specific error codes and descriptions
+- Verification results must be returned within 5 seconds for individual entries
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-003-feature-002-story-002 (Filter access monitoring data by time range).
+- Implementation outcome is unique to epic-003-feature-002-story-002 (As a compliance officer, I want to verify the integrity of audit logs through a verification API so that I can confirm no tampering has occurred).

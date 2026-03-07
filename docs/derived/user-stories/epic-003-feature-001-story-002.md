@@ -8,24 +8,24 @@ derived_from_feature: epic-003-feature-001
 source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 derived_from_document_id: gov-original-document-system-of-record
-origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Query document access logs
+# Include user context in document access logs
 
 ## User Story
-As a compliance officer, I want to search and filter document access logs by various criteria, so that I can I can generate audit reports and investigate specific document access patterns.
+As a security officer, I want to want document access logs to include authenticated user information, so that I can I can track which users are accessing specific documents for audit trails.
 
 ## Acceptance Criteria
-- API endpoint GET /logs/document-access accepts query parameters for filtering
-- Support filtering by date range, document ID, user ID, and access status
-- Return paginated results with configurable page size
-- Include total count of matching log entries
-- Support sorting by timestamp in ascending or descending order
+- Log entries include authenticated user ID when available
+- Log entries include user role/permissions when available
+- Anonymous access attempts are logged with 'anonymous' user designation
+- Authentication method is recorded (API key, OAuth token, etc.)
+- User agent string is captured for additional context
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement efficient database indexes on commonly queried fields (timestamp, document_id, user_id)
-- Use cursor-based pagination for consistent results across large datasets
-- Validate and sanitize all query parameters to prevent injection attacks
-- Consider implementing caching for frequently accessed log queries
+- Extract user context from authentication middleware or JWT tokens
+- Handle cases where authentication fails or is not required
+- Sanitize user agent strings to prevent log injection attacks
+- Consider GDPR implications for logging user identifiable information
 - Implementation should prioritize The API exposes read-only access:.

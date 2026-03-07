@@ -8,24 +8,24 @@ derived_from_feature: epic-003-feature-001
 source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 derived_from_document_id: gov-original-document-system-of-record
-origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Log document retrieval attempts
+# Log document retrieval events via API
 
 ## User Story
-As a system administrator, I want to automatically log all document access attempts including successful and failed requests, so that I can I can monitor document usage patterns and detect unauthorized access attempts.
+As a system administrator, I want to want all document access events to be automatically logged when documents are retrieved through the API, so that I can I can monitor and audit document access for compliance and security purposes.
 
 ## Acceptance Criteria
-- All GET requests to /documents/{documentId} are logged with timestamp, user ID, document ID, and response status
-- All GET requests to /documents/{documentId}/metadata are logged with timestamp, user ID, document ID, and response status
-- Failed access attempts (4xx, 5xx responses) are logged with error details
-- Log entries are persisted to a queryable data store
-- Logs include request IP address and user agent
+- Log entry is created when GET /documents/{documentId} endpoint is called
+- Log entry is created when GET /documents/{documentId}/metadata endpoint is called
+- Log includes timestamp, document ID, requesting IP address, and HTTP response status
+- Log entries are persisted to a durable storage system
+- Failed access attempts (4xx, 5xx responses) are also logged
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement logging middleware that intercepts all document API requests
-- Use structured logging format (JSON) for easy parsing and analysis
-- Ensure logging does not impact API response times significantly
-- Consider async logging to avoid blocking API responses
+- Implement logging middleware that intercepts all requests to document endpoints
+- Use structured logging format (JSON) for consistent parsing
+- Consider async logging to avoid impacting API response times
+- Include correlation ID for request tracing
 - Implementation should prioritize The API exposes read-only access:.

@@ -8,24 +8,24 @@ derived_from_feature: epic-002-feature-002
 source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 derived_from_document_id: gov-original-document-system-of-record
-origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Audit logging for role-based document access
+# System administrator can configure role-based document permissions
 
 ## User Story
-As a compliance officer, I want to track all document access attempts with user role information, so that I can I can monitor compliance and investigate unauthorized access attempts.
+As a System Administrator, I want to I want to assign document access permissions to user roles, so that I can so that I can control which users can access specific documents.
 
 ## Acceptance Criteria
-- All GET /documents/{documentId} requests are logged with user ID, role, timestamp, and access result
-- All GET /documents/{documentId}/metadata requests are logged with same detail level
-- Failed access attempts (401, 403) are logged with denial reason
-- Audit logs include document ID, user role, and permission check results
-- Logs are stored in structured format suitable for compliance reporting
+- Admin can assign read permissions to roles for specific documents
+- Admin can assign metadata access permissions separately from content access
+- Permission changes take effect immediately for new requests
+- System validates role existence before assigning permissions
+- Audit log captures all permission changes with timestamp and admin user
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement audit logging middleware that captures document access events
-- Create audit log data structure including user_id, role, document_id, timestamp, access_result, denial_reason
-- Log both successful and failed access attempts to document endpoints
-- Ensure audit logs are written to persistent storage with appropriate retention policy
+- Implement permission management API endpoints
+- Store role-document mappings in authorization database
+- Use role-based access control (RBAC) pattern
+- Implement permission caching with cache invalidation on updates
 - Implementation should prioritize The API exposes read-only access:.

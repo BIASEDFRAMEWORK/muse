@@ -6,23 +6,25 @@ derived_from_epic: epic-003
 source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 derived_from_document_id: gov-original-document-system-of-record
-origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Document Access Logging Service
+# Document Access Event Logger
 
 ## Capability
-Log all document retrieval operations with user identity, timestamp, document ID, and access method
+Capture detailed audit events for all document retrieval operations including user identity, timestamp, document ID, IP address, and access method
 
 ## Implementation Notes
-- Intercept all GET requests to /documents/{documentId} and /documents/{documentId}/metadata endpoints
-- Capture user authentication details from JWT tokens or session data
-- Store access logs in dedicated audit table with indexed timestamp and document_id fields
-- Include IP address, user agent, and request duration in log entries
+- Implement middleware to intercept GET /documents/{documentId} and GET /documents/{documentId}/metadata requests
+- Extract user context from authentication headers or session tokens
+- Log events to structured format (JSON) with consistent schema
+- Include request correlation IDs for tracing multi-step operations
+- Capture both successful access and failed authorization attempts
 - Primary delivery slice: The API exposes read-only access:.
 
 ## Acceptance Criteria
-- Every document access generates exactly one audit log entry
-- Log entries contain user ID, document ID, timestamp (ISO 8601), and access type
-- Audit logs are persisted within 100ms of document access completion
-- Failed access attempts are logged with error codes and reasons
+- All document access requests generate audit log entries within 100ms of request completion
+- Log entries include user ID, document ID, timestamp (ISO 8601), IP address, user agent, and response status
+- Failed access attempts due to authentication or authorization are logged with failure reason
+- Log format validates against predefined JSON schema
+- Correlation IDs allow linking related requests across system boundaries
 - Control focus for this feature: The API exposes read-only access:.

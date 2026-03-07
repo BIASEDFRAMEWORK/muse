@@ -1,19 +1,19 @@
 ---
 id: prompt-015
 story: epic-002-feature-002-story-003
-source: docs/derived/governance/original-document-system-of-record.digital.md
+source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
 # Implementation Prompt for epic-002-feature-002-story-003
 
-Implement Audit logging for role-based document access.
-Context: track all document access attempts with user role information.
+Implement System administrator can configure role-based document permissions.
+Context: I want to assign document access permissions to user roles.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- All GET /documents/{documentId} requests are logged with user ID, role, timestamp, and access result
-- All GET /documents/{documentId}/metadata requests are logged with same detail level
-- Failed access attempts (401, 403) are logged with denial reason
-- Audit logs include document ID, user role, and permission check results
-- Logs are stored in structured format suitable for compliance reporting
+- Admin can assign read permissions to roles for specific documents
+- Admin can assign metadata access permissions separately from content access
+- Permission changes take effect immediately for new requests
+- System validates role existence before assigning permissions
+- Audit log captures all permission changes with timestamp and admin user
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-002-feature-002-story-003 (Audit logging for role-based document access).
+- Implementation outcome is unique to epic-002-feature-002-story-003 (System administrator can configure role-based document permissions).

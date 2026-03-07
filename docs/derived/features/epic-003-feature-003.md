@@ -6,23 +6,25 @@ derived_from_epic: epic-003
 source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 derived_from_document_id: gov-original-document-system-of-record
-origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Audit Trail Export and Retention
+# Real-time Access Monitoring Dashboard
 
 ## Capability
-Export audit logs in standard formats with configurable retention policies
+Provide live visibility into document access patterns, anomalous behavior detection, and access volume metrics through web-based monitoring interface
 
 ## Implementation Notes
-- Support CSV, JSON, and SIEM-compatible formats for audit log exports
-- Implement automated log archival to cold storage after configurable periods
-- Create scheduled jobs to purge logs older than retention policy limits
-- Generate signed audit reports with cryptographic integrity verification
+- Stream audit log events to real-time analytics engine (e.g., Elasticsearch, Kafka)
+- Build web dashboard with live charts showing access frequency, top accessed documents, and user activity
+- Implement anomaly detection algorithms for unusual access patterns (volume spikes, off-hours access, rapid sequential requests)
+- Configure alerting thresholds for suspicious activities with email/SMS notifications
+- Support filtering and drill-down capabilities by user, document, time range, and access type
 - Primary delivery slice: The API exposes read-only access:.
 
 ## Acceptance Criteria
-- Export jobs complete within 30 seconds for up to 100,000 log entries
-- Archived logs remain accessible for compliance queries within 5 minutes
-- Log purging removes entries older than configured retention period
-- Exported audit files include SHA-256 checksums for integrity verification
+- Dashboard displays live access metrics with maximum 30-second data latency
+- Anomaly detection triggers alerts within 2 minutes of detecting suspicious patterns
+- Charts show access trends over configurable time periods (1 hour, 24 hours, 7 days, 30 days)
+- Users can filter dashboard data by document ID, user ID, date range, and IP address ranges
+- Dashboard supports at least 10 concurrent users without performance degradation
 - Control focus for this feature: The API exposes read-only access:.

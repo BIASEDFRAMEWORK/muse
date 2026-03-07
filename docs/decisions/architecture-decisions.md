@@ -18,4 +18,4 @@
 
 ## Source Context
 - /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
-- Input size: 501 characters
+- Input size: 678 characters

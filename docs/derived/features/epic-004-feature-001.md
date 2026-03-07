@@ -6,23 +6,23 @@ derived_from_epic: epic-004
 source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 derived_from_document_id: gov-original-document-system-of-record
-origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Document Metadata Schema Validation
+# Schema Definition and Validation Engine
 
 ## Capability
-Validate document metadata against predefined schemas with type checking and required field enforcement
+Define document schemas with field types, constraints, and validation rules, then validate metadata against these schemas before persistence
 
 ## Implementation Notes
-- Implement JSON Schema validation for metadata structure
-- Support multiple schema versions with backward compatibility
-- Validate field types, formats, and constraints before persistence
-- Return detailed validation error messages with field-level feedback
+- Implement JSON Schema or similar specification for metadata structure definition
+- Create schema registry with versioning support for backward compatibility
+- Build validation engine that processes metadata against appropriate schema version
+- Support multiple schema types for different document categories
 - Primary delivery slice: The API exposes read-only access:.
 
 ## Acceptance Criteria
-- Metadata validation rejects documents with missing required fields
-- Type validation ensures numeric fields contain valid numbers and dates follow ISO 8601
-- Schema version compatibility allows older metadata formats to be processed
-- Validation errors specify exact field names and constraint violations
+- Schema definitions can be created with required/optional fields, data types, and format constraints
+- Metadata validation fails with specific error messages when schema requirements are not met
+- Multiple schema versions can coexist and documents validate against their assigned schema version
+- Invalid metadata is rejected before document persistence with detailed validation errors
 - Control focus for this feature: The API exposes read-only access:.

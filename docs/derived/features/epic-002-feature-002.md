@@ -6,23 +6,23 @@ derived_from_epic: epic-002
 source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 derived_from_document_id: gov-original-document-system-of-record
-origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Role-Based Document Access Control (epic-002-5)
+# Role-Based Document Authorization
 
 ## Capability
-Enforce granular access permissions based on user roles and document classification levels with real-time authorization validation
+Authorize document access based on user roles and document permissions
 
 ## Implementation Notes
-- Implement JWT-based authentication with role claims
-- Create document classification metadata fields (public, internal, confidential, restricted)
-- Build authorization middleware that validates role permissions before document access
-- Maintain access control lists (ACLs) in separate security database
+- Implement role-based access control (RBAC) with document-level permissions
+- Check user roles against document access requirements before streaming bytes
+- Support hierarchical permissions (admin, editor, viewer roles)
+- Cache authorization decisions to improve performance
 - Primary delivery slice: The API exposes read-only access:.
 
 ## Acceptance Criteria
-- Users can only access documents matching their authorized classification level
-- Authorization validation completes within 50ms per request
-- Unauthorized access attempts return HTTP 403 with detailed audit log entry
-- Role changes propagate to access controls within 5 minutes
+- Users can only access documents their role permits
+- 403 Forbidden returned when user lacks document access rights
+- Admin users can access all documents regardless of restrictions
+- Authorization checks occur before document streaming begins
 - Control focus for this feature: The API exposes read-only access:.

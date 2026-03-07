@@ -6,23 +6,23 @@ derived_from_epic: epic-004
 source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 derived_from_document_id: gov-original-document-system-of-record
-origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Metadata Integrity Hash Generation
+# Automated Metadata Extraction and Enrichment
 
 ## Capability
-Generate and verify cryptographic hashes for document metadata to detect tampering
+Automatically extract metadata from document content and headers, then validate extracted data against defined schemas
 
 ## Implementation Notes
-- Calculate SHA-256 hash of normalized metadata JSON
-- Store hash alongside metadata in database with timestamp
-- Implement hash verification on metadata retrieval
-- Normalize metadata field ordering and whitespace before hashing
+- Integrate document parsing libraries for common formats (PDF, Office, images)
+- Extract EXIF data, creation dates, author information, and content properties
+- Apply schema validation to both user-provided and auto-extracted metadata
+- Implement fallback mechanisms when automatic extraction fails
 - Primary delivery slice: The API exposes read-only access:.
 
 ## Acceptance Criteria
-- Hash generation produces consistent results for identical metadata content
-- Hash verification fails when metadata has been modified without regenerating hash
-- Metadata normalization handles field ordering variations correctly
-- Hash timestamps track when integrity verification was last performed
+- System automatically extracts available metadata from uploaded documents
+- Auto-extracted metadata is validated against schema before being merged with user input
+- Manual metadata overrides auto-extracted values when provided
+- Extraction failures are logged but do not prevent document storage with manual metadata
 - Control focus for this feature: The API exposes read-only access:.

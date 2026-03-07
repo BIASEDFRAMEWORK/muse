@@ -1,20 +1,20 @@
 ---
 id: prompt-026
 story: epic-003-feature-003-story-002
-source: docs/derived/governance/original-document-system-of-record.digital.md
+source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
 # Implementation Prompt for epic-003-feature-003-story-002
 
-Implement Configure automated audit trail retention policies.
-Context: set retention periods for different types of audit records.
+Implement Filter and search document access history.
+Context: filter access events by document ID, user, time range, or access type.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- System provides POST /audit/retention-policy endpoint to configure retention rules
-- Retention policies can be set by audit event type (document access, user management, system changes)
-- Retention periods can be specified in days, months, or years
-- System automatically marks records for deletion based on retention policies
-- GET /audit/retention-policy returns current active retention policies
-- Retention policy changes are logged in the audit trail
+- Filter by document ID returns only events for specified document
+- Filter by user ID shows all documents accessed by that user
+- Time range filter accepts start and end datetime parameters
+- Access type filter distinguishes between document content retrieval and metadata access
+- Multiple filters can be applied simultaneously
+- Results maintain real-time updates when filters are active
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-003-feature-003-story-002 (Configure automated audit trail retention policies).
+- Implementation outcome is unique to epic-003-feature-003-story-002 (Filter and search document access history).

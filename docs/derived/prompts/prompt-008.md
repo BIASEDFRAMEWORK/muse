@@ -1,19 +1,19 @@
 ---
 id: prompt-008
 story: epic-001-feature-003-story-002
-source: docs/derived/governance/original-document-system-of-record.digital.md
+source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
 # Implementation Prompt for epic-001-feature-003-story-002
 
-Implement Access document metadata with integrity information.
-Context: retrieve document metadata including integrity verification details.
+Implement Retrieve document metadata with integrity status.
+Context: I want to retrieve document metadata including integrity verification status.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- GET /documents/{documentId}/metadata includes content hash in response
-- Metadata response includes hash algorithm type (e.g., SHA-256)
-- Response includes timestamp of last integrity verification
-- Metadata endpoint performs integrity check and reports status
-- API returns metadata even if integrity check fails, but flags the issue
+- GET /documents/{documentId}/metadata returns metadata with HTTP 200
+- Response includes stored hash value and algorithm
+- Response includes integrity_verified boolean field
+- Response includes last_verified_timestamp
+- Returns HTTP 404 when document ID does not exist
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-001-feature-003-story-002 (Access document metadata with integrity information).
+- Implementation outcome is unique to epic-001-feature-003-story-002 (Retrieve document metadata with integrity status).

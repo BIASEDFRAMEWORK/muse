@@ -8,25 +8,25 @@ derived_from_feature: epic-005-feature-003
 source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 derived_from_document_id: gov-original-document-system-of-record
-origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Log all API requests and responses with tamper-proof integrity
+# Track document access events
 
 ## User Story
-As a System Administrator, I want to I want all API requests and responses to be automatically logged with cryptographic integrity protection, so that I can so that I can maintain a complete, verifiable audit trail of all system interactions.
+As a System Administrator, I want to I want all document access events to be automatically logged with timestamp, user identity, and document details, so that I can so that I can maintain a complete audit trail of who accessed which documents and when.
 
 ## Acceptance Criteria
-- Every API request (method, path, headers, body, timestamp, source IP) is logged before processing
-- Every API response (status code, headers, body, processing time) is logged after processing
-- Each log entry includes a cryptographic hash for tamper detection
-- Log entries are stored in append-only format with sequential numbering
-- Hash chain verification can detect any modification or deletion of log entries
+- Every GET request to /documents/{documentId} creates an audit log entry
+- Every GET request to /documents/{documentId}/metadata creates an audit log entry
+- Audit log entries include: timestamp (ISO 8601), user ID, document ID, endpoint accessed, IP address, user agent
+- Audit logs are persisted to a durable storage system
+- Failed access attempts are also logged with error details
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement middleware interceptor for request/response capture
-- Use SHA-256 for log entry hashing with previous hash as input for chaining
-- Store logs in dedicated tamper-evident storage (separate from application data)
-- Include request correlation ID for tracing multi-step operations
-- Consider performance impact and implement async logging for high-volume endpoints
+- Implement middleware/interceptor for all document endpoints
+- Use structured logging format (JSON) for audit entries
+- Consider async logging to avoid impacting response times
+- Ensure audit logging cannot be disabled or bypassed
+- Store audit logs separate from application logs
 - Implementation should prioritize The API exposes read-only access:.

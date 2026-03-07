@@ -8,25 +8,25 @@ derived_from_feature: epic-001-feature-002
 source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 derived_from_document_id: gov-original-document-system-of-record
-origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Query Document Access Audit Logs
+# Retrieve Document Metadata with Authorization
 
 ## User Story
-As a Compliance Officer, I want to search and filter document access logs by user, document, time range, and access outcome, so that I can quickly investigate security incidents and generate compliance reports.
+As a authenticated user, I want to I want to retrieve document metadata by document ID through the GET /documents/{documentId}/metadata endpoint, so that I can so that I can access document information without downloading the full document if I have proper authorization.
 
 ## Acceptance Criteria
-- API endpoint /audit/document-access returns filtered audit logs
-- Support filtering by user ID, document ID, date range, and success/failure status
-- Results paginated with configurable page size
-- Response includes total count of matching records
-- Only authorized users can access audit logs
+- Given a valid document ID and proper authorization, when I call GET /documents/{documentId}/metadata, then I receive the persisted metadata in JSON format
+- Given an invalid document ID, when I call GET /documents/{documentId}/metadata, then I receive a 404 Not Found response
+- Given a valid document ID but insufficient authorization, when I call GET /documents/{documentId}/metadata, then I receive a 403 Forbidden response
+- Given an unauthenticated request, when I call GET /documents/{documentId}/metadata, then I receive a 401 Unauthorized response
+- Given a valid authorized request, when I call GET /documents/{documentId}/metadata, then the response includes metadata fields like file size, upload date, content type, and checksum
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Create dedicated audit API with appropriate authorization
-- Implement efficient database indexing on commonly filtered fields
-- Use query builders to handle dynamic filter combinations
-- Return logs in standardized format with consistent field names
-- Consider rate limiting for audit API endpoints
+- Return metadata as JSON with consistent schema
+- Include standard metadata fields: documentId, fileName, fileSize, contentType, uploadDate, checksum
+- Implement same authorization checks as document retrieval endpoint
+- Cache metadata responses to improve performance
+- Validate document ID format before database lookup
 - Implementation should prioritize The API exposes read-only access:.

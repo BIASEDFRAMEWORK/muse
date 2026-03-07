@@ -1,19 +1,19 @@
 ---
 id: prompt-038
 story: epic-005-feature-001-story-002
-source: docs/derived/governance/original-document-system-of-record.digital.md
+source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
 # Implementation Prompt for epic-005-feature-001-story-002
 
-Implement Validate JWT tokens on protected API endpoints.
-Context: I want to validate JWT tokens on incoming requests to protected endpoints.
+Implement Decrypt document content for API retrieval.
+Context: I want to retrieve original document bytes through GET /documents/{documentId}.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- All protected endpoints require valid Authorization header with Bearer token
-- Invalid or expired tokens return 401 Unauthorized
-- Missing Authorization header returns 401 Unauthorized
-- Valid token extracts user context for request processing
-- Token validation middleware runs before endpoint handlers
+- GET /documents/{documentId} returns decrypted original document bytes
+- Decryption occurs transparently during API response generation
+- Response format and content type match the original uploaded document
+- API response time impact from decryption is minimal (< 100ms overhead)
+- Decryption failures return appropriate HTTP error codes (500 for system errors)
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-005-feature-001-story-002 (Validate JWT tokens on protected API endpoints).
+- Implementation outcome is unique to epic-005-feature-001-story-002 (Decrypt document content for API retrieval).

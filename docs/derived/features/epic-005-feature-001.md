@@ -6,24 +6,24 @@ derived_from_epic: epic-005
 source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 derived_from_document_id: gov-original-document-system-of-record
-origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# JWT-Based API Authentication with Role-Based Access Control
+# Document Content Encryption at Rest
 
 ## Capability
-Implement JWT token authentication with granular role-based permissions for document retrieval endpoints
+Automatically encrypt all stored document content using AES-256 encryption with rotating keys managed by cloud key management service
 
 ## Implementation Notes
-- Generate JWT tokens with expiration times and refresh token rotation
-- Define role hierarchy (viewer, auditor, admin) with specific endpoint permissions
-- Implement middleware to validate JWT signatures and check role permissions
-- Store user roles and permissions in secure database with encrypted sensitive fields
+- Implement transparent encryption layer before document bytes reach storage backend
+- Use cloud-native key management service (AWS KMS, Azure Key Vault) for key rotation
+- Store encryption metadata separately from document content
+- Implement key versioning to support historical document decryption
 - Primary delivery slice: The API exposes read-only access:.
 
 ## Acceptance Criteria
-- Users must authenticate with valid JWT token to access any endpoint
-- GET /documents/{documentId} requires 'viewer' role or higher
-- GET /documents/{documentId}/metadata requires 'auditor' role or higher
-- Invalid or expired tokens return 401 Unauthorized with specific error codes
-- Role violations return 403 Forbidden with audit log entry
+- All document bytes stored in backend are encrypted with AES-256
+- Encryption keys rotate automatically every 90 days
+- Document retrieval via GET /documents/{documentId} returns decrypted content transparently
+- System maintains ability to decrypt documents encrypted with previous key versions
+- Encryption status is verifiable through system health checks
 - Control focus for this feature: The API exposes read-only access:.

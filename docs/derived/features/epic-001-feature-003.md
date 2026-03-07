@@ -6,23 +6,24 @@ derived_from_epic: epic-001
 source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 derived_from_document_id: gov-original-document-system-of-record
-origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Content Integrity Verification
+# Document Integrity Verification
 
 ## Capability
-Validate document integrity using cryptographic checksums and provide clients with verification mechanisms to ensure data hasn't been tampered with
+Cryptographic hash validation system that ensures document immutability and detects tampering
 
 ## Implementation Notes
-- Calculate SHA-256 hashes during document ingestion and store in metadata
-- Include ETag headers in responses for client-side caching validation
-- Provide checksum verification endpoint for batch document validation
-- Implement periodic integrity checks on stored documents
+- Calculate and store SHA-256 hashes during document ingestion process
+- Implement real-time hash verification on document retrieval requests
+- Create background integrity check job that validates stored documents against their hashes
+- Generate integrity violation alerts when hash mismatches are detected
 - Primary delivery slice: The API exposes read-only access:.
 
 ## Acceptance Criteria
-- All document responses include SHA-256 checksum in response headers
-- Clients can verify downloaded content matches stored checksum
-- API detects and reports any documents with integrity violations
-- Batch verification endpoint can process up to 100 documents per request
+- Every document retrieval includes hash verification within 50ms overhead
+- Hash mismatches trigger immediate error responses with 500 status code
+- Background integrity checks complete full document corpus scan within 24 hours
+- System generates alerts within 5 minutes of detecting integrity violations
+- Integrity check results are logged with timestamp and document identification
 - Control focus for this feature: The API exposes read-only access:.

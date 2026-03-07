@@ -8,25 +8,25 @@ derived_from_feature: epic-002-feature-003
 source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 derived_from_document_id: gov-original-document-system-of-record
-origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Export audit trail data in standard format
+# Track failed document access attempts
 
 ## User Story
-As a security analyst, I want to download complete audit trail data in CSV or JSON format for external analysis tools, so that I can I can perform detailed security analysis using specialized tools and maintain backup audit records.
+As a security analyst, I want to I want failed document access attempts to be logged with detailed error information, so that I can so that I can identify potential security threats and unauthorized access patterns.
 
 ## Acceptance Criteria
-- Export endpoint supports CSV and JSON output formats
-- Export includes all audit fields: timestamp, user_id, document_id, action, ip_address, user_agent
-- Large exports are handled asynchronously with status polling
-- Export files are temporarily stored and accessible via secure download link
-- Export operation is itself audited in the system
+- Log entry created for 401, 403, and 404 responses on document endpoints
+- Failed access logs include error code, error message, and attempted resource
+- User information is logged even for unauthenticated requests (IP, user agent)
+- Failed attempts are clearly distinguishable from successful access in logs
+- Rate limiting violations on document endpoints are logged
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement POST /audit/export endpoint with format parameter
-- Use background job queue for large export processing
-- Generate pre-signed URLs for secure file downloads
-- Set appropriate HTTP headers for file downloads
-- Clean up temporary export files after configurable expiration time
+- Extend audit logging middleware to capture error responses
+- Log additional context like User-Agent header and source IP address
+- Use different log level (WARN/ERROR) for failed attempts
+- Include rate limiting headers and violation counts in logs
+- Sanitize error messages to avoid logging sensitive information
 - Implementation should prioritize The API exposes read-only access:.

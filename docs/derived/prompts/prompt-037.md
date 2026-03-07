@@ -1,19 +1,19 @@
 ---
 id: prompt-037
 story: epic-005-feature-001-story-001
-source: docs/derived/governance/original-document-system-of-record.digital.md
+source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
 # Implementation Prompt for epic-005-feature-001-story-001
 
-Implement Generate JWT tokens for authenticated API access.
-Context: I want to authenticate with the API and receive a JWT token.
+Implement Encrypt document content during storage persistence.
+Context: I want document content to be automatically encrypted when stored in the database.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- POST /auth/login endpoint accepts valid credentials and returns JWT token
-- JWT token includes user ID, roles, and expiration timestamp
-- JWT token is signed with secure algorithm (RS256 or HS256)
-- Invalid credentials return 401 Unauthorized with error message
-- Token expires after configurable duration (default 1 hour)
+- Document content is encrypted using AES-256 encryption before database storage
+- Encryption occurs automatically during document upload/save operations
+- Original document bytes are never stored in plaintext in the database
+- Encryption process does not modify document metadata or file structure
+- System maintains encryption key management separate from document storage
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-005-feature-001-story-001 (Generate JWT tokens for authenticated API access).
+- Implementation outcome is unique to epic-005-feature-001-story-001 (Encrypt document content during storage persistence).

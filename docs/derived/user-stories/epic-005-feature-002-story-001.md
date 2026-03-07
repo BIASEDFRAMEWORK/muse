@@ -8,25 +8,23 @@ derived_from_feature: epic-005-feature-002
 source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 derived_from_document_id: gov-original-document-system-of-record
-origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Rate limit API requests per client
+# Retrieve Document Content with Role-Based Access
 
 ## User Story
-As a System Administrator, I want to configure rate limiting rules for API endpoints, so that I can prevent individual clients from overwhelming the system with excessive requests.
+As a authenticated user, I want to I want to access document content through GET /documents/{documentId} based on my assigned role permissions, so that I can so that I can view documents I'm authorized to see while being prevented from accessing restricted content.
 
 ## Acceptance Criteria
-- Rate limiting is applied to both GET /documents/{documentId} and GET /documents/{documentId}/metadata endpoints
-- Rate limit violations return HTTP 429 status code with appropriate headers
-- Rate limit counters reset according to configured time windows
-- Different rate limits can be configured per endpoint
-- Rate limit status is included in response headers (X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset)
+- Given I am authenticated with a valid role, when I request GET /documents/{documentId} for a document I have read access to, then I receive the original document bytes with HTTP 200
+- Given I am authenticated with a valid role, when I request GET /documents/{documentId} for a document I don't have access to, then I receive HTTP 403 Forbidden
+- Given I am not authenticated, when I request GET /documents/{documentId}, then I receive HTTP 401 Unauthorized
+- Given the document does not exist, when I request GET /documents/{documentId}, then I receive HTTP 404 Not Found
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement sliding window or token bucket algorithm
-- Store rate limit counters in Redis or similar fast storage
-- Configure default limits: 1000 requests per hour per IP
-- Support both IP-based and API key-based rate limiting
-- Include rate limit middleware in API gateway or application layer
+- Implement role-based authorization middleware that checks user permissions before streaming document bytes
+- Authorization logic must execute before document retrieval to prevent unnecessary file system access
+- Use streaming response for large documents to optimize memory usage
+- Log access attempts for audit purposes including user role and document ID
 - Implementation should prioritize The API exposes read-only access:.

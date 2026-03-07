@@ -1,19 +1,19 @@
 ---
 id: prompt-033
 story: epic-004-feature-002-story-003
-source: docs/derived/governance/original-document-system-of-record.digital.md
+source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
 # Implementation Prompt for epic-004-feature-002-story-003
 
-Implement Include integrity hash in metadata API responses.
-Context: receive the integrity hash value along with document metadata.
+Implement Enrich documents with content-based metadata.
+Context: automatically analyze document content to extract additional metadata like text content and document properties.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- GET /documents/{documentId}/metadata includes 'integrity_hash' field
-- Hash value is returned as hexadecimal string
-- Hash field is always present for documents with metadata
-- Response schema includes hash field in API documentation
-- Hash format follows consistent 64-character SHA-256 pattern
+- System extracts text content from PDF, DOC, and TXT files
+- System identifies document language for text-based files
+- System extracts document properties (title, author, creation date) when available
+- Content extraction handles corrupted or password-protected files gracefully
+- Extracted content metadata appears in GET /documents/{documentId}/metadata response
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-004-feature-002-story-003 (Include integrity hash in metadata API responses).
+- Implementation outcome is unique to epic-004-feature-002-story-003 (Enrich documents with content-based metadata).
