@@ -6,10 +6,10 @@ import matter from 'gray-matter'
 const repoRoot = process.cwd()
 
 const dirs = {
-  governance: ['specs/governance', 'docs/governance', 'docs/derived/governance'],
-  epics: ['specs/epics', 'docs/derived/epics'],
-  features: ['specs/capabilities', 'docs/derived/features'],
-  stories: ['specs/stories', 'docs/stories', 'docs/derived/user-stories']
+  governance: ['specs/governance', 'docs/governance'],
+  epics: ['specs/epics'],
+  features: ['specs/capabilities'],
+  stories: ['specs/stories']
 }
 
 const errors = []

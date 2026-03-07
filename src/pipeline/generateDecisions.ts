@@ -1,6 +1,46 @@
 import fs from 'fs'
 import path from 'path'
 
+type ArtifactSummary = {
+  epics: string[]
+  features: string[]
+  stories: string[]
+  prompts: string[]
+}
+
+function listMarkdownFiles(...directories: string[]): string[] {
+  const candidateDirs = directories.map((directory) => path.resolve(directory))
+  for (const directory of candidateDirs) {
+    if (!fs.existsSync(directory)) {
+      continue
+    }
+
+    return fs
+      .readdirSync(directory)
+      .filter((name) => name.endsWith('.md'))
+      .sort((a, b) => a.localeCompare(b))
+  }
+
+  return []
+}
+
+function summarizeArtifacts(): ArtifactSummary {
+  return {
+    epics: listMarkdownFiles('specs/epics'),
+    features: listMarkdownFiles('specs/capabilities'),
+    stories: listMarkdownFiles('specs/stories'),
+    prompts: listMarkdownFiles('work-items/prompts/stories'),
+  }
+}
+
+function preview(items: string[], fallback: string): string {
+  if (items.length === 0) {
+    return fallback
+  }
+
+  return items.slice(0, 3).map((name) => `\`${name}\``).join(', ')
+}
+
 export function generateDecisions(governanceMarkdownPath: string): string {
   const absolute = path.resolve(governanceMarkdownPath)
   if (!fs.existsSync(absolute)) {
@@ -8,31 +48,149 @@ export function generateDecisions(governanceMarkdownPath: string): string {
   }
 
   const content = fs.readFileSync(absolute, 'utf8')
-  const outputDir = path.resolve('decisions')
+  const artifactSummary = summarizeArtifacts()
+  const outputDir = path.resolve('specs/decisions')
   fs.mkdirSync(outputDir, { recursive: true })
 
   const outputPath = path.join(outputDir, 'architecture-decisions.md')
-  const text = `# Architecture and Product Decisions
+  const text = `# Architecture Decision Records
 
-## Architecture Decisions
-- Use a CLI-first workflow for deterministic artifact generation.
-- Keep business logic in pipeline modules, separate from command handlers.
+This file captures deterministic ADRs generated from governance source and current derived artifacts.
 
-## Security Decisions
-- Keep governance source references in all generated artifacts.
-- Ensure traceability metadata remains explicit in front matter.
+## ADR-001: Keep a CLI-first deterministic pipeline
 
-## Product Decisions
-- Generate epics, features, stories, and prompts from governance markdown.
-- Prioritize explainability and review-ready markdown output.
+### Status
+Accepted
 
-## Integration Decisions
-- Use Microsoft MarkItDown for document-to-markdown conversion.
-- Use a declarative muse.yaml pipeline for repeatable execution.
+### Context
+The team needs repeatable governance-to-engineering generation that works in CI and local development without hidden UI state. The current source is \`${governanceMarkdownPath}\` (${content.length} characters).
+
+### Decision
+Use command-driven generation as the source of truth and keep orchestration in CLI commands while business logic remains in pipeline modules.
+
+### Alternatives Considered
+1. Web-first workflow with a persistent server and interactive state.
+2. Ad-hoc scripts per artifact type.
+
+### Pros
+- Deterministic runs and easier CI/CD automation.
+- Lower operational complexity than a long-running service.
+- Easier debugging through explicit command boundaries.
+
+### Cons
+- Less interactive for non-technical users.
+- More emphasis on documentation and command discoverability.
+
+### Consequences
+- Pipeline behavior must stay stable across environments.
+- Command contracts become part of the product surface area.
+
+### Validation Criteria
+- \`npm run build\` passes.
+- Core CLI command help and execution paths remain functional.
+
+---
+
+## ADR-002: Keep canonical IDs as filenames for generated artifacts
+
+### Status
+Accepted
+
+### Context
+Generated artifacts require stable lineage across epics, features, stories, and prompts. Recent samples include epics ${preview(artifactSummary.epics, '(no epics generated)')} and stories ${preview(artifactSummary.stories, '(no stories generated)')}.
+
+### Decision
+Keep canonical ID-based filenames (for example \`epic-001.md\`) and store human-friendly names in markdown titles/front matter.
+
+### Alternatives Considered
+1. Friendly-title filenames (for example \`document-retrieval-api-system.md\`).
+2. Hybrid filename with ID and title slug.
+
+### Pros
+- Stable references even when titles evolve.
+- Lower merge churn and fewer broken links.
+- Cleaner traceability for automated tooling.
+
+### Cons
+- Filenames are less human-readable in directory listings.
+
+### Consequences
+- UX should surface title/slug prominently in rendered views.
+- Documentation should explain ID conventions clearly.
+
+### Validation Criteria
+- Traceability resolution by ID remains intact.
+- Renaming titles does not require file renames.
+
+---
+
+## ADR-003: Preserve explicit lineage metadata in artifact front matter
+
+### Status
+Accepted
+
+### Context
+Development teams and AI agents need reliable context to connect generated outputs back to governance source and parent artifacts. Current generated sets include features ${preview(artifactSummary.features, '(no features generated)')} and prompts ${preview(artifactSummary.prompts, '(no prompts generated)')}.
+
+### Decision
+Require front matter lineage fields (such as \`derived_from_document_id\`, \`derived_from_epic\`, \`derived_from_feature\`, and \`source_path\`) across generated artifacts.
+
+### Alternatives Considered
+1. Implicit lineage derived only from directory structure.
+2. External lineage map file without per-artifact metadata.
+
+### Pros
+- Improves explainability for humans and agents.
+- Enables automated traceability validation.
+- Supports audit and compliance evidence workflows.
+
+### Cons
+- Slightly larger file headers and stricter generation requirements.
+
+### Consequences
+- Generators and validators must evolve together.
+- Breaking schema changes require migration guidance.
+
+### Validation Criteria
+- \`node scripts/validate-traceability.mjs\` passes.
+- Each generated story and prompt resolves to its feature/epic lineage.
+
+---
+
+## ADR-004: Prefer deterministic fallback generation when AI is unavailable
+
+### Status
+Accepted
+
+### Context
+Artifact generation should remain available during model outages, auth failures, or restricted environments.
+
+### Decision
+Use deterministic fallback logic for epics/features/stories/prompts when AI generation cannot be used, while preserving ID and lineage conventions.
+
+### Alternatives Considered
+1. Fail hard when AI calls fail.
+2. Cache-only generation from prior AI outputs.
+
+### Pros
+- Better reliability and developer productivity.
+- Predictable outputs useful for tests and demos.
+
+### Cons
+- Fallback quality can be less nuanced than successful AI output.
+
+### Consequences
+- Fallback behavior must be transparent in logs and docs.
+- Teams should periodically review fallback output quality.
+
+### Validation Criteria
+- Generation completes successfully without an API key.
+- Output schema remains valid and traceable.
 
 ## Source Context
-- ${governanceMarkdownPath}
+- Governance source: \`${governanceMarkdownPath}\`
 - Input size: ${content.length} characters
+- Artifact counts: epics=${artifactSummary.epics.length}, features=${artifactSummary.features.length}, stories=${artifactSummary.stories.length}, prompts=${artifactSummary.prompts.length}
 `
   fs.writeFileSync(outputPath, text, 'utf8')
   return outputPath

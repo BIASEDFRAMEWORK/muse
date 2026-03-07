@@ -36,17 +36,17 @@ This creates `muse.yaml` when missing.
 node dist/cli/index.js convertMD path/to/governance.docx
 
 # Derive epics/features/user-stories/prompts from governance markdown
-node dist/cli/index.js deriveArtifacts docs/derived/governance/<file>.md
+node dist/cli/index.js deriveArtifacts specs/governance/<file>.md
 
 # Produce decisions and TODO prioritization
-node dist/cli/index.js decisions docs/derived/governance/<file>.md
-node dist/cli/index.js todo docs/derived/governance/<file>.md
+node dist/cli/index.js decisions specs/governance/<file>.md
+node dist/cli/index.js todo specs/governance/<file>.md
 
 # Run full declarative pipeline from muse.yaml
 node dist/cli/index.js apply
 
 # Explain an artifact and trace lineage
-node dist/cli/index.js explain docs/derived/user-stories/epic-001-feature-001-story-001.md
+node dist/cli/index.js explain specs/stories/epic-001-feature-001-story-001.md
 node dist/cli/index.js trace epic-001-feature-001-story-001
 
 # Stage and commit generated artifacts
@@ -59,9 +59,9 @@ node dist/cli/index.js commit
 
 Typical flow:
 - Convert governance source to markdown (skipped if source already `.md`)
-- Derive artifacts (`docs/derived/epics`, `docs/derived/features`, `docs/derived/user-stories`, `docs/derived/prompts`)
-- Generate decisions (`docs/decisions`)
-- Generate prioritized TODO (`docs/derived/todo/TODO.md`)
+- Derive artifacts (`specs/epics`, `specs/capabilities`, `specs/stories`, `work-items/prompts/stories`)
+- Generate decisions (`specs/decisions`)
+- Generate prioritized TODO (`work-items/tasks/TODO.md`)
 
 ## Directory Map
 
@@ -74,13 +74,13 @@ Primary implementation paths:
 - `scripts/validate-traceability.mjs` — traceability checks
 
 Generated outputs:
-- `docs/derived/governance`
-- `docs/derived/epics`
-- `docs/derived/features`
-- `docs/derived/user-stories`
-- `docs/derived/prompts`
-- `docs/decisions`
-- `docs/derived/todo`
+- `specs/governance`
+- `specs/epics`
+- `specs/capabilities`
+- `specs/stories`
+- `work-items/prompts/stories`
+- `specs/decisions`
+- `work-items/tasks`
 
 ## Validation Loop
 

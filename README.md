@@ -61,13 +61,13 @@ ai:
 
 ## Generated outputs
 
-- `docs/derived/governance/`
-- `docs/derived/epics/`
-- `docs/derived/features/`
-- `docs/derived/user-stories/`
-- `docs/derived/prompts/`
-- `docs/decisions/`
-- `docs/derived/todo/`
+- `specs/governance/`
+- `specs/epics/`
+- `specs/capabilities/`
+- `specs/stories/`
+- `work-items/prompts/stories/`
+- `specs/decisions/`
+- `work-items/tasks/`
 
 ## Notes
 

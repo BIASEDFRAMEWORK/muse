@@ -19,7 +19,7 @@ function inferPriority(index: number): 'P0' | 'P1' | 'P2' {
 }
 
 export function generateTodo(): string {
-  const storyDirs = [path.resolve('specs/stories'), path.resolve('docs/derived/user-stories')]
+  const storyDirs = [path.resolve('specs/stories')]
   const storiesDir = storyDirs.find((dir) => fs.existsSync(dir))
   if (!storiesDir) {
     throw new Error('No user stories found. Run muse deriveArtifacts first.')
@@ -41,7 +41,7 @@ export function generateTodo(): string {
     }
   })
 
-  const outputDir = path.resolve('tasks')
+  const outputDir = path.resolve('work-items/tasks')
   fs.mkdirSync(outputDir, { recursive: true })
   const outputPath = path.join(outputDir, 'TODO.md')
 

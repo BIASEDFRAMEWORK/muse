@@ -6,8 +6,9 @@ src/ @dgaspard @muse-org/platform @muse-org/ai
 
 # AI & Prompting logic
 prompts/ @dgaspard @muse-org/ai
-docs/stories/ @dgaspard @muse-org/ai
-docs/epics/ @dgaspard @muse-org/ai
+specs/stories/ @dgaspard @muse-org/ai
+specs/epics/ @dgaspard @muse-org/ai
+work-items/prompts/ @dgaspard @muse-org/ai
 docs/AI_PROMPT_IMPLEMENTATION.md @dgaspard @muse-org/ai
 docs/FEATURE_GENERATION_IMPLEMENTATION.md @dgaspard @muse-org/ai
 docs/FRONTEND_FEATURE_GENERATION_IMPLEMENTATION.md @dgaspard @muse-org/ai

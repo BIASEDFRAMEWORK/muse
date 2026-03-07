@@ -103,7 +103,7 @@ function ensureDirs(): void {
     'specs/epics',
     'specs/capabilities',
     'specs/stories',
-    'prompts/stories',
+    'work-items/prompts/stories',
   ]
   for (const directory of dirs) {
     const absoluteDir = path.resolve(directory)
@@ -612,7 +612,7 @@ export async function deriveArtifacts(options: DeriveArtifactsOptions): Promise<
       `${frontMatter(storyFrontMatter)}# ${story.title}\n\n## User Story\nAs a ${story.role}, I want to ${story.behavior}, so that I can ${story.benefit}.\n\n## Acceptance Criteria\n${markdownList(story.acceptanceCriteria || ['Implementation behavior is covered by automated tests.'])}\n\n## Technical Notes\n${markdownList(story.technicalNotes || ['Use secure defaults and emit structured operational telemetry.'])}`,
     )
 
-    const promptFile = `prompts/stories/${prompt.id}.md`
+    const promptFile = `work-items/prompts/stories/${prompt.id}.md`
     const requiredChanges = [
       `Implement ${story.title}.`,
       ...normalizeList(story.technicalNotes, [
@@ -647,7 +647,7 @@ export async function deriveArtifacts(options: DeriveArtifactsOptions): Promise<
       '## Repo Context',
       markdownList([
         'Primary code paths: src/cli/, src/pipeline/, src/config/',
-        'Generated artifacts: specs/epics/, specs/capabilities/, specs/stories/, prompts/stories/',
+        'Generated artifacts: specs/epics/, specs/capabilities/, specs/stories/, work-items/prompts/stories/',
         `Story linkage: ${story.id} -> ${story.feature} -> ${story.epic}`,
       ]),
       '',
@@ -873,11 +873,7 @@ export function resolveArtifactByIdOrPath(artifact: string): { path: string; dat
     'specs/stories',
     'specs/capabilities',
     'specs/epics',
-    'prompts/stories',
-    'docs/derived/user-stories',
-    'docs/derived/features',
-    'docs/derived/epics',
-    'docs/derived/prompts',
+    'work-items/prompts/stories',
   ]
   for (const directory of dirs) {
     const absoluteDir = path.resolve(directory)

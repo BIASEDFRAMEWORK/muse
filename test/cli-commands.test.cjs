@@ -42,8 +42,8 @@ for (const [command] of commandHelpCases) {
 }
 
 test('trace resolves prompt lineage to story feature epic', () => {
-  const storiesDir = path.join(repoRoot, 'docs/derived/user-stories')
-  const promptsDir = path.join(repoRoot, 'docs/derived/prompts')
+  const storiesDir = path.join(repoRoot, 'specs/stories')
+  const promptsDir = path.join(repoRoot, 'work-items/prompts/stories')
   fs.mkdirSync(storiesDir, { recursive: true })
   fs.mkdirSync(promptsDir, { recursive: true })
 

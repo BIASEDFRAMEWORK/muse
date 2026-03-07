@@ -28,7 +28,7 @@ program
 
 program
   .command('convertMD <file>')
-  .description('Convert governance document to markdown in docs/governance')
+  .description('Convert governance document to markdown in specs/governance')
   .action((file: string) => convertMDCommand(file))
 
 program

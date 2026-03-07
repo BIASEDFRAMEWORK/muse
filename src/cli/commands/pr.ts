@@ -1,4 +1,11 @@
 import { execSync } from 'child_process'
+import fs from 'fs'
+
+const GENERATED_ARTIFACT_DIRS = ['specs', 'work-items']
+
+function existingArtifactDirs(): string[] {
+  return GENERATED_ARTIFACT_DIRS.filter((directory) => fs.existsSync(directory))
+}
 
 function commandExists(command: string): boolean {
   try {
@@ -18,10 +25,15 @@ function isGitRepository(): boolean {
   }
 }
 
-function hasDocsChanges(): boolean {
+function hasGeneratedArtifactChanges(directories: string[]): boolean {
+  if (directories.length === 0) {
+    return false
+  }
+
+  const scopedDirs = directories.join(' ')
   try {
-    execSync('git diff --quiet -- docs/', { stdio: 'inherit' })
-    execSync('git diff --cached --quiet -- docs/', { stdio: 'inherit' })
+    execSync(`git diff --quiet -- ${scopedDirs}`, { stdio: 'inherit' })
+    execSync(`git diff --cached --quiet -- ${scopedDirs}`, { stdio: 'inherit' })
     return false
   } catch {
     return true
@@ -50,8 +62,10 @@ export function prCommand(): void {
     throw new Error('GitHub CLI (gh) is required to open a pull request.')
   }
 
-  if (!hasDocsChanges()) {
-    process.stdout.write('No changes detected in docs/ — nothing to commit.\n')
+  const artifactDirs = existingArtifactDirs()
+
+  if (!hasGeneratedArtifactChanges(artifactDirs)) {
+    process.stdout.write('No changes detected in generated artifact directories — nothing to commit.\n')
     return
   }
 
@@ -61,7 +75,7 @@ export function prCommand(): void {
   execSync(`git checkout -b ${branch}`, { stdio: 'inherit' })
 
   process.stdout.write('Staging generated artifacts\n')
-  execSync('git add docs/', { stdio: 'inherit' })
+  execSync(`git add ${artifactDirs.join(' ')}`, { stdio: 'inherit' })
 
   process.stdout.write('Committing changes\n')
   execSync('git commit -m "Muse: generated governance artifacts"', { stdio: 'inherit' })

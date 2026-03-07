@@ -38,9 +38,9 @@ Fix:
 - Regenerate artifacts from governance markdown:
 
 ```bash
-node dist/cli/index.js deriveArtifacts docs/derived/governance/<file>.md
-node dist/cli/index.js decisions docs/derived/governance/<file>.md
-node dist/cli/index.js todo docs/derived/governance/<file>.md
+node dist/cli/index.js deriveArtifacts specs/governance/<file>.md
+node dist/cli/index.js decisions specs/governance/<file>.md
+node dist/cli/index.js todo specs/governance/<file>.md
 npm run traceability:check
 ```
 
@@ -51,7 +51,7 @@ Cause:
 
 Fix:
 - Use a valid path (example):
-  - `node dist/cli/index.js explain docs/derived/user-stories/epic-001-feature-001-story-001.md`
+  - `node dist/cli/index.js explain specs/stories/epic-001-feature-001-story-001.md`
 - Or use an existing ID:
   - `node dist/cli/index.js trace epic-001-feature-001-story-001`
 
@@ -78,13 +78,13 @@ node dist/cli/index.js commit --pr
 
 After a successful `muse apply`:
 
-- `docs/derived/governance/`
-- `docs/derived/epics/`
-- `docs/derived/features/`
-- `docs/derived/user-stories/`
-- `docs/derived/prompts/`
-- `docs/decisions/`
-- `docs/derived/todo/`
+- `specs/governance/`
+- `specs/epics/`
+- `specs/capabilities/`
+- `specs/stories/`
+- `work-items/prompts/stories/`
+- `specs/decisions/`
+- `work-items/tasks/`
 
 ## CI Validation
 
