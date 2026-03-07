@@ -10,24 +10,24 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# Stream original document bytes by ID
+# Document Binary Retrieval by ID
 
 ## User Story
-As a API consumer, I want to request a document by its ID and receive the original bytes as a stream, so that I can I can efficiently download large documents without loading them entirely into memory.
+As a API consumer, I want to retrieve the original document bytes using a document ID, so that I can I can access the exact original file content that was stored.
 
 ## Acceptance Criteria
-- GET /documents/{documentId} returns HTTP 200 with original document bytes
-- Response includes appropriate Content-Type header based on document type
-- Response includes Content-Length header when document size is known
-- Invalid documentId returns HTTP 404 with error message
-- Malformed documentId returns HTTP 400 with validation error
-- Stream delivers bytes in chunks without buffering entire document
+- GET /documents/{documentId} returns HTTP 200 with original document bytes when document exists
+- Response includes appropriate Content-Type header based on document format
+- Response includes Content-Length header with exact byte size
+- Returns HTTP 404 when documentId does not exist
+- Returns HTTP 400 when documentId format is invalid
+- Supports streaming response for large documents
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement chunked transfer encoding for large files
-- Use streaming response to avoid memory issues with large documents
+- Implement streaming response to handle large files efficiently
+- Use appropriate MIME type detection for Content-Type header
 - Include ETag header for caching support
-- Set appropriate cache-control headers
 - Validate documentId format before database lookup
+- Log access attempts for audit purposes
 - Implementation should prioritize The API exposes read-only access:.

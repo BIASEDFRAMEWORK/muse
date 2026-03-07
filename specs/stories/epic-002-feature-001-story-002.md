@@ -10,24 +10,22 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# Retrieve document metadata for integrity verification
+# Query access events by document ID
 
 ## User Story
-As a API consumer, I want to access document metadata including cryptographic hashes and timestamps, so that I can I can verify document integrity using stored cryptographic information.
+As a compliance officer, I want to retrieve all access events for a specific document, so that I can I can investigate access patterns for specific documents during audits.
 
 ## Acceptance Criteria
-- GET /documents/{documentId}/metadata endpoint returns JSON metadata
-- Response includes cryptographic hash values (SHA-256 minimum)
-- Response includes original file size in bytes
-- Response includes upload timestamp in ISO 8601 format
-- Response includes original filename and content type
-- Returns 404 status code when document ID does not exist
-- Returns 200 status code for successful retrieval
+- API endpoint GET /audit/documents/{documentId}/access-events returns all access events for the document
+- Results include event timestamp, user identifier, endpoint accessed, and response status
+- Results are paginated with configurable page size (default 50, max 500)
+- Results are sorted by timestamp in descending order (most recent first)
+- Endpoint returns 404 if document ID doesn't exist in the system
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Store multiple hash algorithms (SHA-256, SHA-512) for enhanced security
-- Include file creation and modification timestamps from original file
-- Consider adding digital signature information if applicable
-- Ensure metadata is immutable after document storage
+- Index access events by document_id for efficient querying
+- Implement cursor-based pagination for better performance with large result sets
+- Add query parameters for date range filtering (start_date, end_date)
+- Consider caching frequently accessed audit data
 - Implementation should prioritize The API exposes read-only access:.

@@ -10,23 +10,23 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# As an API client, I need to securely stream document bytes with proper authorization
+# Query audit logs for document access history
 
 ## User Story
-As a API client, I want to receive document content via authenticated and authorized streaming endpoint, so that I can access original document data securely while preventing unauthorized data exposure.
+As a compliance officer, I want to I want to query audit logs to view document access history, so that I can so that I can generate compliance reports and investigate security incidents.
 
 ## Acceptance Criteria
-- GET /documents/{documentId} requires valid authentication token
-- GET /documents/{documentId} verifies client has read permission for the specific document
-- Successful requests stream document bytes with appropriate Content-Type header
-- Non-existent document IDs return 404 Not Found to authorized clients
-- Document access attempts are logged with client identity and timestamp
+- Can filter logs by document ID to see all access attempts for a specific document
+- Can filter logs by date range to view activity within specific time periods
+- Can filter logs by client IP address to track access from specific sources
+- Can filter logs by response status (success, failure, specific error codes)
+- Query results include all logged fields: timestamp, document ID, client IP, status, duration, correlation ID
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement document-level authorization checks
-- Use streaming response to handle large documents efficiently
-- Set appropriate HTTP headers (Content-Type, Content-Length, Cache-Control)
-- Add request/response logging middleware
-- Consider implementing document access token with expiration for additional security
+- Implement dedicated audit log query API endpoints or admin interface
+- Index logs by document ID, timestamp, and client IP for efficient querying
+- Support pagination for large result sets
+- Implement query parameter validation and sanitization
+- Consider read-only database replica for audit queries to avoid impacting main application
 - Implementation should prioritize The API exposes read-only access:.

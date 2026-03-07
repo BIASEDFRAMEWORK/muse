@@ -10,22 +10,23 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# As an API client, I need to authenticate to access document endpoints
+# Log API document retrieval requests
 
 ## User Story
-As a API client, I want to authenticate using valid credentials before accessing any document endpoints, so that I can ensure only authorized systems can access sensitive document data.
+As a system administrator, I want to I want all document retrieval requests to be logged with request details, so that I can so that I can monitor document access patterns and ensure compliance.
 
 ## Acceptance Criteria
-- Unauthenticated requests to /documents/{documentId} return 401 Unauthorized
-- Unauthenticated requests to /documents/{documentId}/metadata return 401 Unauthorized
-- Valid authentication credentials allow access to document endpoints
-- Invalid or expired credentials return 401 Unauthorized with appropriate error message
-- Authentication method is documented in API specification
+- GET /documents/{documentId} requests are logged with timestamp, document ID, client IP, and response status
+- GET /documents/{documentId}/metadata requests are logged with timestamp, document ID, client IP, and response status
+- Log entries include request duration in milliseconds
+- Failed requests (4xx, 5xx status codes) are logged with error details
+- Logs are written in structured JSON format
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement Bearer token authentication or API key authentication
-- Add authentication middleware to document routes
-- Return consistent 401 response format with error details
-- Consider rate limiting for failed authentication attempts
+- Implement middleware to intercept all API requests before route handling
+- Use structured logging library (e.g., Winston, Logrus) for consistent format
+- Include correlation ID for request tracing
+- Log sensitive data exclusion - avoid logging full document content
+- Consider async logging to avoid impacting response times
 - Implementation should prioritize The API exposes read-only access:.

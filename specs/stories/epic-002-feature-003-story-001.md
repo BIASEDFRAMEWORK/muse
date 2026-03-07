@@ -10,23 +10,23 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# Audit Trail for Document Upload Events
+# As a compliance officer, I want the system to automatically scan document metadata for missing required fields so that I can identify non-compliant documents
 
 ## User Story
-As a System Administrator, I want to capture and store audit events when documents are uploaded to the system, so that I can I can track who uploaded what documents and when for compliance and security purposes.
+As a compliance officer, I want to automatically scan document metadata for missing required fields, so that I can identify non-compliant documents.
 
 ## Acceptance Criteria
-- System logs an audit event when a document is successfully uploaded via API
-- Audit event includes timestamp, user ID, document ID, file size, and content type
-- Audit event includes source IP address and user agent of the request
-- Failed upload attempts are also logged with error details
-- Audit events are stored in a tamper-evident format with digital signatures
+- System scans all document metadata on ingestion for required fields
+- Missing required fields are flagged as compliance violations
+- Violation details include document ID, missing field name, and timestamp
+- Violations are stored in a queryable compliance violations table
+- System generates violation events for downstream processing
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement audit logging middleware that intercepts document upload requests
-- Use structured logging format (JSON) for audit events
-- Store audit logs in separate database table from document metadata
-- Include request correlation ID to trace related system events
-- Ensure audit logging does not impact upload performance significantly
+- Implement metadata validation rules engine
+- Required fields configuration should be externalized
+- Use GET /documents/{documentId}/metadata endpoint for validation
+- Store violations with foreign key to document record
+- Emit compliance violation events to message queue
 - Implementation should prioritize The API exposes read-only access:.

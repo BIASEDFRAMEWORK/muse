@@ -9,32 +9,32 @@ source: specs/governance/original-document-system-of-record.digital.md
 # AI Implementation Prompt: epic-001-feature-003-prompt-003
 
 ## Objective
-Implement As an API client, I need to securely stream document bytes with proper authorization.
+Implement Query audit logs for document access history.
 
 ## Repo Context
 - Primary code paths: src/cli/, src/pipeline/, src/config/
-- Generated artifacts: specs/epics/, specs/capabilities/, specs/stories/, work-items/prompts/stories/
+- Generated artifacts: specs/capabilities/, specs/epics/, specs/features/, specs/stories/, work-items/prompts/stories/
 - Story linkage: epic-001-feature-003-story-003 -> epic-001-feature-003 -> epic-001
 
 ## Required Changes
-1. Implement As an API client, I need to securely stream document bytes with proper authorization.
-2. Implement document-level authorization checks
-3. Use streaming response to handle large documents efficiently
-4. Set appropriate HTTP headers (Content-Type, Content-Length, Cache-Control)
-5. Add request/response logging middleware
+1. Implement Query audit logs for document access history.
+2. Implement dedicated audit log query API endpoints or admin interface
+3. Index logs by document ID, timestamp, and client IP for efficient querying
+4. Support pagination for large result sets
+5. Implement query parameter validation and sanitization
 
 ## Constraints
 - Preserve traceability metadata and naming conventions for generated artifacts.
-- Do not modify files under /contracts without explicit instruction.
+- Do not modify files under /docs/organizational-contracts without explicit instruction.
 - Keep changes scoped to the requested objective and avoid unrelated refactors.
 - Use governance source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 
 ## Acceptance Criteria
-- GET /documents/{documentId} requires valid authentication token
-- GET /documents/{documentId} verifies client has read permission for the specific document
-- Successful requests stream document bytes with appropriate Content-Type header
-- Non-existent document IDs return 404 Not Found to authorized clients
-- Document access attempts are logged with client identity and timestamp
+- Can filter logs by document ID to see all access attempts for a specific document
+- Can filter logs by date range to view activity within specific time periods
+- Can filter logs by client IP address to track access from specific sources
+- Can filter logs by response status (success, failure, specific error codes)
+- Query results include all logged fields: timestamp, document ID, client IP, status, duration, correlation ID
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Validation
@@ -45,15 +45,15 @@ Implement As an API client, I need to securely stream document bytes with proper
 Return a patch plus a short summary of modified files and validation results.
 
 ## Implementation Brief
-Implement As an API client, I need to securely stream document bytes with proper authorization.
-Context: receive document content via authenticated and authorized streaming endpoint.
+Implement Query audit logs for document access history.
+Context: I want to query audit logs to view document access history.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- GET /documents/{documentId} requires valid authentication token
-- GET /documents/{documentId} verifies client has read permission for the specific document
-- Successful requests stream document bytes with appropriate Content-Type header
-- Non-existent document IDs return 404 Not Found to authorized clients
-- Document access attempts are logged with client identity and timestamp
+- Can filter logs by document ID to see all access attempts for a specific document
+- Can filter logs by date range to view activity within specific time periods
+- Can filter logs by client IP address to track access from specific sources
+- Can filter logs by response status (success, failure, specific error codes)
+- Query results include all logged fields: timestamp, document ID, client IP, status, duration, correlation ID
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-001-feature-003-story-003 (As an API client, I need to securely stream document bytes with proper authorization).
+- Implementation outcome is unique to epic-001-feature-003-story-003 (Query audit logs for document access history).

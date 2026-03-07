@@ -9,32 +9,32 @@ source: specs/governance/original-document-system-of-record.digital.md
 # AI Implementation Prompt: epic-002-feature-002-prompt-002
 
 ## Objective
-Implement Configure role-based permissions for document access.
+Implement Retrieve document metadata with role-based filtering.
 
 ## Repo Context
 - Primary code paths: src/cli/, src/pipeline/, src/config/
-- Generated artifacts: specs/epics/, specs/capabilities/, specs/stories/, work-items/prompts/stories/
+- Generated artifacts: specs/capabilities/, specs/epics/, specs/features/, specs/stories/, work-items/prompts/stories/
 - Story linkage: epic-002-feature-002-story-002 -> epic-002-feature-002 -> epic-002
 
 ## Required Changes
-1. Implement Configure role-based permissions for document access.
-2. Extend document metadata schema to include 'allowed_roles' array field
-3. Implement role registry service or integration with existing identity provider
-4. Add audit logging for permission modifications
-5. Consider caching role permissions for performance optimization
+1. Implement Retrieve document metadata with role-based filtering.
+2. Implement field-level access control for metadata responses
+3. Create metadata filtering service that maps user roles to allowed metadata fields
+4. Store role-based metadata permissions in configuration or database
+5. Return consistent metadata schema regardless of user role (omit restricted fields)
 
 ## Constraints
 - Preserve traceability metadata and naming conventions for generated artifacts.
-- Do not modify files under /contracts without explicit instruction.
+- Do not modify files under /docs/organizational-contracts without explicit instruction.
 - Keep changes scoped to the requested objective and avoid unrelated refactors.
 - Use governance source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 
 ## Acceptance Criteria
-- Document metadata includes access control list with allowed roles
-- Permissions can be set at individual document level
-- Role permissions are validated against a centralized role registry
-- Permission changes take effect immediately for new requests
-- System logs all permission changes with timestamp and administrator ID
+- GET /documents/{documentId}/metadata returns 200 with metadata JSON when user has read permission
+- GET /documents/{documentId}/metadata returns 403 when user lacks metadata read permission
+- Response includes only metadata fields the user's role is permitted to view
+- Metadata includes document ID, upload timestamp, file size, content type, and custom properties
+- Sensitive metadata fields are filtered out based on user role permissions
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Validation
@@ -45,15 +45,15 @@ Implement Configure role-based permissions for document access.
 Return a patch plus a short summary of modified files and validation results.
 
 ## Implementation Brief
-Implement Configure role-based permissions for document access.
-Context: I want to configure which roles can access specific documents.
+Implement Retrieve document metadata with role-based filtering.
+Context: I want to fetch document metadata via GET /documents/{documentId}/metadata endpoint.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- Document metadata includes access control list with allowed roles
-- Permissions can be set at individual document level
-- Role permissions are validated against a centralized role registry
-- Permission changes take effect immediately for new requests
-- System logs all permission changes with timestamp and administrator ID
+- GET /documents/{documentId}/metadata returns 200 with metadata JSON when user has read permission
+- GET /documents/{documentId}/metadata returns 403 when user lacks metadata read permission
+- Response includes only metadata fields the user's role is permitted to view
+- Metadata includes document ID, upload timestamp, file size, content type, and custom properties
+- Sensitive metadata fields are filtered out based on user role permissions
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-002-feature-002-story-002 (Configure role-based permissions for document access).
+- Implementation outcome is unique to epic-002-feature-002-story-002 (Retrieve document metadata with role-based filtering).

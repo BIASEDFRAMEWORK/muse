@@ -10,23 +10,22 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# Subscribe to filtered audit event streams
+# Dynamic permission evaluation for document metadata access
 
 ## User Story
-As a compliance officer, I want to subscribe to audit event streams with filters for specific documents or event types, so that I can I can focus on relevant audit events without being overwhelmed by all system activity.
+As a API consumer, I want to I want the system to evaluate my permissions when accessing document metadata, so that I can so that I only see metadata for documents I'm authorized to access.
 
 ## Acceptance Criteria
-- Can filter events by document ID or document ID pattern
-- Can filter events by event type (access, metadata_access, error)
-- Can filter events by time range (from/to timestamps)
-- Subscription endpoint accepts filter parameters and returns filtered stream
-- Multiple concurrent filtered subscriptions are supported
+- GET /documents/{documentId}/metadata returns 403 Forbidden when user lacks metadata read permission
+- GET /documents/{documentId}/metadata returns metadata object when user has appropriate permission
+- Metadata permissions can be evaluated independently from document content permissions
+- Permission evaluation supports granular metadata field-level access control
+- System returns consistent permission decisions across multiple requests
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement GET /audit/stream endpoint with query parameters for filters
-- Use event broker (Redis Streams, Apache Kafka, or similar) for scalable event distribution
-- Implement server-side filtering to reduce bandwidth usage
-- Support wildcard patterns for document ID filtering using glob or regex syntax
-- Rate limit subscriptions per client to prevent resource exhaustion
+- Implement separate permission evaluation for metadata vs content access
+- Support attribute-based access control (ABAC) for fine-grained permissions
+- Use policy engine to evaluate complex permission rules
+- Implement permission result caching with cache invalidation strategy
 - Implementation should prioritize The API exposes read-only access:.

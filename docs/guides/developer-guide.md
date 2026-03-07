@@ -59,7 +59,8 @@ node dist/cli/index.js commit
 
 Typical flow:
 - Convert governance source to markdown (skipped if source already `.md`)
-- Derive artifacts (`specs/epics`, `specs/capabilities`, `specs/stories`, `work-items/prompts/stories`)
+- Extract capabilities (`specs/capabilities`)
+- Derive artifacts (`specs/epics`, `specs/features`, `specs/stories`, `work-items/prompts/stories`)
 - Generate decisions (`specs/decisions`)
 - Generate prioritized TODO (`work-items/tasks/TODO.md`)
 
@@ -75,8 +76,9 @@ Primary implementation paths:
 
 Generated outputs:
 - `specs/governance`
-- `specs/epics`
 - `specs/capabilities`
+- `specs/epics`
+- `specs/features`
 - `specs/stories`
 - `work-items/prompts/stories`
 - `specs/decisions`

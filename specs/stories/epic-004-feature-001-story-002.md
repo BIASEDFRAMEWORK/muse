@@ -10,22 +10,24 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# Retrieve document metadata with role-based filtering
+# Retrieve document metadata via API
 
 ## User Story
-As a System User, I want to I want to access document metadata through the API, so that I can so that I can view document properties and attributes based on my access level.
+As a API consumer, I want to I want to get document metadata without downloading the full document, so that I can so that I can verify document properties and integrity information efficiently.
 
 ## Acceptance Criteria
-- GET /documents/{documentId}/metadata returns HTTP 200 with metadata JSON when authorized
-- GET /documents/{documentId}/metadata returns HTTP 403 when user lacks metadata read permissions
-- GET /documents/{documentId}/metadata returns HTTP 404 when document does not exist
-- Metadata response excludes sensitive fields based on user role permissions
+- GET /documents/{documentId}/metadata returns HTTP 200 with JSON metadata object
+- Response includes document hash, size, upload timestamp, and content type
+- Returns HTTP 404 when documentId does not exist
+- Returns HTTP 400 for malformed documentId parameters
 - Response time is under 200ms for metadata retrieval
+- Metadata includes integrity validation fields like checksums
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement metadata filtering based on user role permissions
-- Cache metadata responses to improve performance
-- Use JSON schema validation for consistent metadata structure
-- Add audit logging for metadata access attempts
+- Store metadata separately from document bytes for fast retrieval
+- Include cryptographic hashes (SHA-256) for integrity verification
+- Consider caching metadata for frequently accessed documents
+- Ensure metadata schema is versioned for future extensibility
+- Add creation and last-accessed timestamps to metadata
 - Implementation should prioritize The API exposes read-only access:.

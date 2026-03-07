@@ -9,32 +9,31 @@ source: specs/governance/original-document-system-of-record.digital.md
 # AI Implementation Prompt: epic-004-feature-002-prompt-002
 
 ## Objective
-Implement Store comprehensive audit trail metadata.
+Implement As an authenticated user, I can only retrieve documents my role has permission to access.
 
 ## Repo Context
 - Primary code paths: src/cli/, src/pipeline/, src/config/
-- Generated artifacts: specs/epics/, specs/capabilities/, specs/stories/, work-items/prompts/stories/
+- Generated artifacts: specs/capabilities/, specs/epics/, specs/features/, specs/stories/, work-items/prompts/stories/
 - Story linkage: epic-004-feature-002-story-002 -> epic-004-feature-002 -> epic-004
 
 ## Required Changes
-1. Implement Store comprehensive audit trail metadata.
-2. Extract client metadata from HTTP request context
-3. Store audit logs in dedicated audit_trail table with indexed columns for common queries
-4. Include fields: session_id, client_ip, user_agent, request_headers, document_size_bytes, document_format
-5. Implement audit log data validation and checksum generation
+1. Implement As an authenticated user, I can only retrieve documents my role has permission to access.
+2. Add authorization middleware before document retrieval logic
+3. Implement user role lookup from authentication token/session
+4. Check role permissions against document access control list
+5. Return appropriate HTTP status codes and error messages
 
 ## Constraints
 - Preserve traceability metadata and naming conventions for generated artifacts.
-- Do not modify files under /contracts without explicit instruction.
+- Do not modify files under /docs/organizational-contracts without explicit instruction.
 - Keep changes scoped to the requested objective and avoid unrelated refactors.
 - Use governance source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 
 ## Acceptance Criteria
-- Audit logs include client IP address and user agent for each request
-- Audit logs capture request headers relevant to security (authorization type, content-type requested)
-- Audit logs include document size and format information when available
-- Audit logs record session ID or correlation ID for request tracing
-- All audit data is stored with data integrity checksums
+- GET /documents/{documentId} returns 403 Forbidden when user lacks permission
+- GET /documents/{documentId} returns document bytes when user has valid role permission
+- User authentication is validated before checking role permissions
+- Error responses include clear messaging about insufficient permissions
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Validation
@@ -45,15 +44,14 @@ Implement Store comprehensive audit trail metadata.
 Return a patch plus a short summary of modified files and validation results.
 
 ## Implementation Brief
-Implement Store comprehensive audit trail metadata.
-Context: I want detailed audit information captured for each document access.
+Implement As an authenticated user, I can only retrieve documents my role has permission to access.
+Context: I receive document content when calling GET /documents/{documentId} only if my assigned role has read permission for that document.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- Audit logs include client IP address and user agent for each request
-- Audit logs capture request headers relevant to security (authorization type, content-type requested)
-- Audit logs include document size and format information when available
-- Audit logs record session ID or correlation ID for request tracing
-- All audit data is stored with data integrity checksums
+- GET /documents/{documentId} returns 403 Forbidden when user lacks permission
+- GET /documents/{documentId} returns document bytes when user has valid role permission
+- User authentication is validated before checking role permissions
+- Error responses include clear messaging about insufficient permissions
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-004-feature-002-story-002 (Store comprehensive audit trail metadata).
+- Implementation outcome is unique to epic-004-feature-002-story-002 (As an authenticated user, I can only retrieve documents my role has permission to access).

@@ -10,22 +10,22 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# Capture user session context during document access
+# Query document access history by document
 
 ## User Story
-As a Security Auditor, I want to I want to capture comprehensive session context when users access documents, so that I can so that I can perform detailed security audits and investigate suspicious activities.
+As a compliance officer, I want to retrieve chronological access history for any specific document, so that I can I can investigate document access patterns and generate compliance reports.
 
 ## Acceptance Criteria
-- Session ID is captured and associated with document access
-- User agent and browser fingerprint are logged
-- Geographic location is determined from IP address when possible
-- Access duration is tracked from request to response completion
-- Referrer information is captured when available
+- GET /audit/documents/{documentId}/access-history returns paginated access log entries
+- Response includes timestamp, user ID, access type (document/metadata), and outcome for each entry
+- Results are ordered by timestamp (newest first) by default
+- Support date range filtering via query parameters (from_date, to_date)
+- API returns 404 for non-existent document IDs
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement session tracking using secure session tokens
-- Use GeoIP service for location lookup with privacy considerations
-- Store session data with appropriate data retention policies
-- Ensure GDPR compliance for geographic data collection
+- Index audit logs by document_id for efficient querying
+- Implement cursor-based pagination for large result sets
+- Use ISO 8601 format for timestamp parameters and responses
+- Consider read replicas for audit queries to avoid impacting main database
 - Implementation should prioritize The API exposes read-only access:.

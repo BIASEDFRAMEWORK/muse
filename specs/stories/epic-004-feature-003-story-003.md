@@ -10,22 +10,24 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# Expose integrity status in metadata endpoint
+# Automated metadata extraction on document upload
 
 ## User Story
-As a Compliance Officer, I want to I want to check document integrity status through the metadata API, so that I can so that I can audit document integrity without downloading full document content.
+As a system administrator, I want to automatically extract and persist metadata when documents are ingested, so that I can metadata is available immediately without manual processing.
 
 ## Acceptance Criteria
-- GET /documents/{documentId}/metadata includes integrity verification fields
-- Response includes stored document hash
-- Response includes timestamp of last integrity verification
-- Response includes boolean field indicating last verification result
-- Metadata endpoint performs integrity check and updates verification timestamp
+- Metadata extraction triggers automatically on document ingestion
+- Extraction completes within 30 seconds for documents under 100MB
+- Failed extractions are logged with specific error details
+- Extracted metadata is persisted before document ingestion completes
+- Pipeline handles common formats: PDF, DOC, DOCX, TXT, images
+- System continues functioning if metadata extraction fails for individual documents
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Add fields to metadata response: sha256Hash, lastVerifiedAt, integrityValid
-- lastVerifiedAt should be ISO 8601 formatted timestamp
-- Cache verification results for 5 minutes to avoid repeated hash calculations
-- Update verification timestamp only when integrity check is performed
+- Implement asynchronous processing pipeline with message queue
+- Use libraries like Apache Tika or equivalent for format-specific extraction
+- Store extraction status and error details for monitoring
+- Implement retry logic for transient extraction failures
+- Add circuit breaker pattern for external extraction services
 - Implementation should prioritize The API exposes read-only access:.

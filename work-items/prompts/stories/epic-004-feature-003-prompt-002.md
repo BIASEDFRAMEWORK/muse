@@ -9,32 +9,33 @@ source: specs/governance/original-document-system-of-record.digital.md
 # AI Implementation Prompt: epic-004-feature-003-prompt-002
 
 ## Objective
-Implement Verify document integrity on retrieval.
+Implement API endpoint for retrieving document metadata.
 
 ## Repo Context
 - Primary code paths: src/cli/, src/pipeline/, src/config/
-- Generated artifacts: specs/epics/, specs/capabilities/, specs/stories/, work-items/prompts/stories/
+- Generated artifacts: specs/capabilities/, specs/epics/, specs/features/, specs/stories/, work-items/prompts/stories/
 - Story linkage: epic-004-feature-003-story-002 -> epic-004-feature-003 -> epic-004
 
 ## Required Changes
-1. Implement Verify document integrity on retrieval.
-2. Hash verification should occur before streaming document bytes
-3. Include custom header 'X-Integrity-Verified: true' on successful responses
-4. Log integrity violations for monitoring and alerting
-5. Error response should include fields: storedHash, calculatedHash, documentId
+1. Implement API endpoint for retrieving document metadata.
+2. Store metadata in searchable format (JSON in database or search index)
+3. Include version information for metadata extraction pipeline
+4. Add ETag header for caching based on metadata version
+5. Consider pagination for metadata with large arrays or nested objects
 
 ## Constraints
 - Preserve traceability metadata and naming conventions for generated artifacts.
-- Do not modify files under /contracts without explicit instruction.
+- Do not modify files under /docs/organizational-contracts without explicit instruction.
 - Keep changes scoped to the requested objective and avoid unrelated refactors.
 - Use governance source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 
 ## Acceptance Criteria
-- System recalculates document hash when serving GET /documents/{documentId}
-- Comparison is made between stored hash and calculated hash
-- If hashes match, document is served normally with HTTP 200
-- If hashes don't match, system returns HTTP 409 with integrity violation error
-- Response includes both stored and calculated hashes in error details
+- GET /documents/{documentId}/metadata endpoint returns 200 status with JSON metadata
+- Response includes all extracted metadata fields in structured format
+- Returns 404 status when documentId does not exist
+- Response includes timestamp of when metadata was extracted
+- Metadata includes file size, content type, and creation date at minimum
+- Response time is under 500ms for typical metadata requests
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Validation
@@ -45,15 +46,16 @@ Implement Verify document integrity on retrieval.
 Return a patch plus a short summary of modified files and validation results.
 
 ## Implementation Brief
-Implement Verify document integrity on retrieval.
-Context: I want the system to verify document integrity when I retrieve documents.
+Implement API endpoint for retrieving document metadata.
+Context: retrieve extracted metadata for a specific document.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- System recalculates document hash when serving GET /documents/{documentId}
-- Comparison is made between stored hash and calculated hash
-- If hashes match, document is served normally with HTTP 200
-- If hashes don't match, system returns HTTP 409 with integrity violation error
-- Response includes both stored and calculated hashes in error details
+- GET /documents/{documentId}/metadata endpoint returns 200 status with JSON metadata
+- Response includes all extracted metadata fields in structured format
+- Returns 404 status when documentId does not exist
+- Response includes timestamp of when metadata was extracted
+- Metadata includes file size, content type, and creation date at minimum
+- Response time is under 500ms for typical metadata requests
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-004-feature-003-story-002 (Verify document integrity on retrieval).
+- Implementation outcome is unique to epic-004-feature-003-story-002 (API endpoint for retrieving document metadata).

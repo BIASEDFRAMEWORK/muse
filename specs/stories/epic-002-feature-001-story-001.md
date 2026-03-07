@@ -10,23 +10,21 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# Stream original document bytes via API
+# Log document access events with metadata
 
 ## User Story
-As a API consumer, I want to retrieve the original bytes of a document using its document ID, so that I can I can access the exact original document content for integrity verification.
+As a system administrator, I want to capture and persist access event data whenever documents are retrieved, so that I can I can audit document access patterns and ensure compliance with governance policies.
 
 ## Acceptance Criteria
-- GET /documents/{documentId} endpoint returns the original document bytes as a stream
-- Response includes appropriate Content-Type header based on document type
-- Response includes Content-Length header with actual file size
-- Returns 404 status code when document ID does not exist
-- Returns 200 status code for successful retrieval
-- Stream maintains byte-for-byte accuracy of original document
+- Access events are logged for both GET /documents/{documentId} and GET /documents/{documentId}/metadata endpoints
+- Each log entry includes timestamp, document ID, user/client identifier, endpoint accessed, and response status
+- Log entries are persisted to a searchable data store within 100ms of the request
+- Failed access attempts (4xx, 5xx responses) are also logged with error details
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement streaming response to handle large documents efficiently
-- Use appropriate MIME type detection for Content-Type header
-- Consider implementing Range header support for partial content requests
-- Ensure proper error handling for corrupted or missing files
+- Implement middleware to intercept requests before they reach document retrieval handlers
+- Use structured logging format (JSON) for consistent parsing
+- Consider async logging to avoid impacting document retrieval performance
+- Include correlation IDs to trace related requests
 - Implementation should prioritize The API exposes read-only access:.

@@ -10,23 +10,23 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# Block unauthorized IP addresses from document endpoints
+# Implement Authentication and Authorization Logging
 
 ## User Story
-As a API consumer, I want to receive appropriate HTTP responses when accessing document endpoints from non-allowlisted IP addresses, so that I can understand access restrictions and receive clear feedback about authorization failures.
+As a Compliance Officer, I want to I want all authentication and authorization events to be audited, so that I can so that I can verify proper access controls are being enforced and detect unauthorized access attempts.
 
 ## Acceptance Criteria
-- Requests from non-allowlisted IPs return HTTP 403 Forbidden status
-- Response includes generic error message without revealing allowlist details
-- Both GET /documents/{documentId} and GET /documents/{documentId}/metadata endpoints enforce IP restrictions
-- Response headers do not leak internal system information
-- Blocked requests are not processed beyond IP validation
+- All authentication attempts (success/failure) are logged with user credentials hash, timestamp, and source IP
+- Authorization decisions for document access are logged including user roles and permissions evaluated
+- Token validation failures and expired tokens are logged with user context
+- Rate limiting violations are logged with offending IP and request patterns
+- Privilege escalation attempts are detected and logged as security events
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement IP validation as early middleware in request pipeline
-- Return consistent error response format matching existing API standards
-- Avoid exposing allowlist configuration or internal IP details in responses
-- Ensure IP validation occurs before any business logic processing
-- Consider rate limiting for blocked IPs to prevent abuse
+- Integrate with JWT token validation to capture auth events
+- Hash sensitive authentication data before logging
+- Implement real-time alerting for suspicious authentication patterns
+- Use security event categorization (OWASP logging cheat sheet)
+- Ensure logs cannot be modified by application users
 - Implementation should prioritize The API exposes read-only access:.

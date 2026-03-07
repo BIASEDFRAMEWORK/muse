@@ -9,32 +9,31 @@ source: specs/governance/original-document-system-of-record.digital.md
 # AI Implementation Prompt: epic-004-feature-002-prompt-001
 
 ## Objective
-Implement Log document retrieval events for audit trail.
+Implement As a system administrator, I can configure role-based permissions for document access.
 
 ## Repo Context
 - Primary code paths: src/cli/, src/pipeline/, src/config/
-- Generated artifacts: specs/epics/, specs/capabilities/, specs/stories/, work-items/prompts/stories/
+- Generated artifacts: specs/capabilities/, specs/epics/, specs/features/, specs/stories/, work-items/prompts/stories/
 - Story linkage: epic-004-feature-002-story-001 -> epic-004-feature-002 -> epic-004
 
 ## Required Changes
-1. Implement Log document retrieval events for audit trail.
-2. Implement audit logging as middleware in the API layer
-3. Log structure should include: timestamp (ISO 8601), user_id, document_id, operation (GET_DOCUMENT|GET_METADATA), status_code, response_time_ms
-4. Use structured logging format (JSON) for consistent parsing
-5. Ensure logging doesn't impact API performance with async logging where possible
+1. Implement As a system administrator, I can configure role-based permissions for document access.
+2. Implement role-based access control middleware for API endpoints
+3. Store role-document permissions mapping in database
+4. Cache role permissions for performance optimization
+5. Add role validation to existing GET /documents/{documentId} endpoint
 
 ## Constraints
 - Preserve traceability metadata and naming conventions for generated artifacts.
-- Do not modify files under /contracts without explicit instruction.
+- Do not modify files under /docs/organizational-contracts without explicit instruction.
 - Keep changes scoped to the requested objective and avoid unrelated refactors.
 - Use governance source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 
 ## Acceptance Criteria
-- When GET /documents/{documentId} is called, an audit log entry is created with timestamp, user ID, document ID, and operation type
-- When GET /documents/{documentId}/metadata is called, an audit log entry is created with timestamp, user ID, document ID, and operation type
-- Audit log entries include response status code (success/failure)
-- Audit logs are written synchronously before returning the response
-- Failed retrieval attempts are logged with error details
+- Admin interface allows creation and management of user roles
+- Admin can assign document access permissions to specific roles
+- Role permissions are persisted and validated on each API request
+- Changes to role permissions take effect immediately without system restart
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Validation
@@ -45,15 +44,14 @@ Implement Log document retrieval events for audit trail.
 Return a patch plus a short summary of modified files and validation results.
 
 ## Implementation Brief
-Implement Log document retrieval events for audit trail.
-Context: I want all document retrieval operations to be automatically logged.
+Implement As a system administrator, I can configure role-based permissions for document access.
+Context: I can assign read permissions to specific roles for document collections so that only authorized users can access sensitive documents.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- When GET /documents/{documentId} is called, an audit log entry is created with timestamp, user ID, document ID, and operation type
-- When GET /documents/{documentId}/metadata is called, an audit log entry is created with timestamp, user ID, document ID, and operation type
-- Audit log entries include response status code (success/failure)
-- Audit logs are written synchronously before returning the response
-- Failed retrieval attempts are logged with error details
+- Admin interface allows creation and management of user roles
+- Admin can assign document access permissions to specific roles
+- Role permissions are persisted and validated on each API request
+- Changes to role permissions take effect immediately without system restart
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-004-feature-002-story-001 (Log document retrieval events for audit trail).
+- Implementation outcome is unique to epic-004-feature-002-story-001 (As a system administrator, I can configure role-based permissions for document access).

@@ -10,22 +10,21 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# Log document retrieval events for audit trail
+# As a system administrator, I can configure role-based permissions for document access
 
 ## User Story
-As a System Administrator, I want to I want all document retrieval operations to be automatically logged, so that I can so that I can track who accessed which documents and when for compliance purposes.
+As a System Administrator, I want to I can assign read permissions to specific roles for document collections so that only authorized users can access sensitive documents, so that I can ensuring proper security controls are maintained across the document system.
 
 ## Acceptance Criteria
-- When GET /documents/{documentId} is called, an audit log entry is created with timestamp, user ID, document ID, and operation type
-- When GET /documents/{documentId}/metadata is called, an audit log entry is created with timestamp, user ID, document ID, and operation type
-- Audit log entries include response status code (success/failure)
-- Audit logs are written synchronously before returning the response
-- Failed retrieval attempts are logged with error details
+- Admin interface allows creation and management of user roles
+- Admin can assign document access permissions to specific roles
+- Role permissions are persisted and validated on each API request
+- Changes to role permissions take effect immediately without system restart
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement audit logging as middleware in the API layer
-- Log structure should include: timestamp (ISO 8601), user_id, document_id, operation (GET_DOCUMENT|GET_METADATA), status_code, response_time_ms
-- Use structured logging format (JSON) for consistent parsing
-- Ensure logging doesn't impact API performance with async logging where possible
+- Implement role-based access control middleware for API endpoints
+- Store role-document permissions mapping in database
+- Cache role permissions for performance optimization
+- Add role validation to existing GET /documents/{documentId} endpoint
 - Implementation should prioritize The API exposes read-only access:.

@@ -10,23 +10,21 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# Retrieve original document bytes via read-only API
+# Retrieve document metadata with role-based access control
 
 ## User Story
-As a authorized user, I want to retrieve the original document bytes using the document ID, so that I can access authentic document content while maintaining audit trail integrity.
+As a authorized user, I want to I want to retrieve document metadata via GET /documents/{documentId}/metadata, so that I can so that I can view document properties and attributes for documents I have access to.
 
 ## Acceptance Criteria
-- GET /documents/{documentId} endpoint streams original document bytes
-- Response includes appropriate content-type headers
-- System verifies document integrity using stored hash before serving
-- Endpoint returns 404 for non-existent documents
-- Streaming response handles large files efficiently without memory overflow
+- Given I have read permissions for a document, when I call GET /documents/{documentId}/metadata, then I receive the persisted metadata as JSON
+- Given I do not have read permissions for a document, when I call GET /documents/{documentId}/metadata, then I receive a 403 Forbidden response
+- Given the document does not exist, when I call GET /documents/{documentId}/metadata, then I receive a 404 Not Found response
+- Given I am not authenticated, when I call GET /documents/{documentId}/metadata, then I receive a 401 Unauthorized response
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement streaming response to handle large documents
-- Add integrity verification before each retrieval
-- Include proper HTTP caching headers for performance
-- Implement rate limiting to prevent abuse
-- Log all retrieval attempts for audit purposes
+- Apply same role-based access control as document content retrieval
+- Return metadata in consistent JSON format with standard fields
+- Ensure metadata does not expose sensitive information not authorized for the user role
+- Cache metadata responses where appropriate for performance
 - Implementation should prioritize The API exposes read-only access:.

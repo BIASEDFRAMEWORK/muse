@@ -10,22 +10,23 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# Verify document integrity on retrieval
+# API endpoint for retrieving document metadata
 
 ## User Story
-As a API Consumer, I want to I want the system to verify document integrity when I retrieve documents, so that I can so that I can be confident the document content has not been corrupted or tampered with.
+As a API consumer, I want to retrieve extracted metadata for a specific document, so that I can I can access structured metadata without downloading the full document.
 
 ## Acceptance Criteria
-- System recalculates document hash when serving GET /documents/{documentId}
-- Comparison is made between stored hash and calculated hash
-- If hashes match, document is served normally with HTTP 200
-- If hashes don't match, system returns HTTP 409 with integrity violation error
-- Response includes both stored and calculated hashes in error details
+- GET /documents/{documentId}/metadata endpoint returns 200 status with JSON metadata
+- Response includes all extracted metadata fields in structured format
+- Returns 404 status when documentId does not exist
+- Response includes timestamp of when metadata was extracted
+- Metadata includes file size, content type, and creation date at minimum
+- Response time is under 500ms for typical metadata requests
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Hash verification should occur before streaming document bytes
-- Include custom header 'X-Integrity-Verified: true' on successful responses
-- Log integrity violations for monitoring and alerting
-- Error response should include fields: storedHash, calculatedHash, documentId
+- Store metadata in searchable format (JSON in database or search index)
+- Include version information for metadata extraction pipeline
+- Add ETag header for caching based on metadata version
+- Consider pagination for metadata with large arrays or nested objects
 - Implementation should prioritize The API exposes read-only access:.

@@ -9,32 +9,32 @@ source: specs/governance/original-document-system-of-record.digital.md
 # AI Implementation Prompt: epic-005-feature-001-prompt-001
 
 ## Objective
-Implement JWT token authentication for API endpoints.
+Implement JWT Token Generation and Validation.
 
 ## Repo Context
 - Primary code paths: src/cli/, src/pipeline/, src/config/
-- Generated artifacts: specs/epics/, specs/capabilities/, specs/stories/, work-items/prompts/stories/
+- Generated artifacts: specs/capabilities/, specs/epics/, specs/features/, specs/stories/, work-items/prompts/stories/
 - Story linkage: epic-005-feature-001-story-001 -> epic-005-feature-001 -> epic-005
 
 ## Required Changes
-1. Implement JWT token authentication for API endpoints.
-2. Use Bearer token format in Authorization header
-3. Implement JWT verification middleware for all protected routes
-4. Token expiration should be configurable via environment variable
-5. Use RS256 or HS256 signing algorithm based on configuration
+1. Implement JWT Token Generation and Validation.
+2. Use RS256 algorithm for token signing
+3. Include 'iat', 'exp', 'sub', and 'roles' claims in JWT payload
+4. Implement middleware that extracts and validates Bearer tokens from Authorization header
+5. Store JWT secret in environment variables
 
 ## Constraints
 - Preserve traceability metadata and naming conventions for generated artifacts.
-- Do not modify files under /contracts without explicit instruction.
+- Do not modify files under /docs/organizational-contracts without explicit instruction.
 - Keep changes scoped to the requested objective and avoid unrelated refactors.
 - Use governance source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 
 ## Acceptance Criteria
-- Valid JWT token in Authorization header allows access to protected endpoints
-- Requests without JWT token return 401 Unauthorized
-- Expired JWT tokens return 401 Unauthorized with appropriate error message
-- Invalid JWT tokens return 401 Unauthorized
-- JWT token payload contains user identity and permissions claims
+- JWT tokens are generated with configurable expiration time
+- JWT tokens include user ID and roles in payload
+- Invalid or expired tokens return 401 Unauthorized
+- Token validation middleware can be applied to protected routes
+- Tokens are signed with a secure secret key
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Validation
@@ -45,15 +45,15 @@ Implement JWT token authentication for API endpoints.
 Return a patch plus a short summary of modified files and validation results.
 
 ## Implementation Brief
-Implement JWT token authentication for API endpoints.
-Context: I want to authenticate using JWT tokens when accessing protected endpoints.
+Implement JWT Token Generation and Validation.
+Context: implement JWT token generation and validation middleware.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- Valid JWT token in Authorization header allows access to protected endpoints
-- Requests without JWT token return 401 Unauthorized
-- Expired JWT tokens return 401 Unauthorized with appropriate error message
-- Invalid JWT tokens return 401 Unauthorized
-- JWT token payload contains user identity and permissions claims
+- JWT tokens are generated with configurable expiration time
+- JWT tokens include user ID and roles in payload
+- Invalid or expired tokens return 401 Unauthorized
+- Token validation middleware can be applied to protected routes
+- Tokens are signed with a secure secret key
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-005-feature-001-story-001 (JWT token authentication for API endpoints).
+- Implementation outcome is unique to epic-005-feature-001-story-001 (JWT Token Generation and Validation).

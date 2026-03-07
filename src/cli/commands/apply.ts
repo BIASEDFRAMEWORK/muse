@@ -4,6 +4,7 @@ import { deriveArtifacts } from '../../pipeline/deriveArtifacts'
 import { generateDecisions } from '../../pipeline/generateDecisions'
 import { generateTodo } from '../../pipeline/generateTodo'
 import { filterDigitalContent } from '../../pipeline/filterDigitalContent'
+import { extractCapabilities } from '../../pipeline/extractCapabilities'
 
 export interface ApplyCommandOptions {
   fast?: boolean
@@ -25,6 +26,8 @@ export async function applyCommand(options: ApplyCommandOptions = {}): Promise<v
   process.stdout.write(`Using digital-only governance source: ${governanceMarkdown}\n`)
 
   if (config.pipeline.derive_artifacts) {
+    extractCapabilities(governanceMarkdown)
+
     if (options.demo) {
       process.stdout.write('Demo mode enabled for apply: fastest profile with progressive output.\n')
     } else if (options.fast) {

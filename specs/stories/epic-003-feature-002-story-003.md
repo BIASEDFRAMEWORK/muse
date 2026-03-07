@@ -10,24 +10,23 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# Receive audit events in standardized format
+# Context-aware permission evaluation engine
 
 ## User Story
-As a security analyst, I want to receive audit events in a consistent, machine-readable format suitable for SIEM integration, so that I can I can integrate audit streams with existing security monitoring tools and automated analysis systems.
+As a System administrator, I want to I want the permission engine to evaluate access based on contextual factors, so that I can so that permissions can be dynamically adjusted based on time, location, device, or other contextual attributes.
 
 ## Acceptance Criteria
-- All audit events follow consistent JSON schema with required fields
-- Events include standard fields: timestamp, event_type, document_id, user_id, ip_address, user_agent
-- Timestamps are in ISO 8601 format with timezone information
-- Event schema is versioned and backward compatible
-- Schema documentation is available via API endpoint
+- Permission evaluation considers user attributes (role, department, clearance level)
+- Permission evaluation considers environmental context (time, IP address, device type)
+- Permission evaluation considers document attributes (classification, owner, creation date)
+- System supports conditional permission rules based on multiple context factors
+- Permission decisions are explainable and include reasoning in audit logs
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Define JSON Schema specification for audit events
-- Implement schema validation for outgoing events
-- Include event schema version in each event payload
-- Provide GET /audit/schema endpoint returning current schema
-- Use consistent field naming convention (snake_case recommended)
-- Include severity levels for different event types
+- Implement context collection middleware to gather request attributes
+- Design policy decision point (PDP) architecture for rule evaluation
+- Support external context providers (HR systems, device management)
+- Implement policy information point (PIP) for attribute retrieval
+- Use JSON-based policy language for rule definition
 - Implementation should prioritize The API exposes read-only access:.

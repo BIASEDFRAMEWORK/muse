@@ -10,22 +10,23 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# Retrieve document metadata by document ID
+# Implement API key authentication for document retrieval endpoints
 
 ## User Story
-As a API consumer, I want to request metadata for a specific document using its ID, so that I can I can access structured information about a document without downloading the full content.
+As a API consumer, I want to authenticate with a valid API key to access document retrieval endpoints, so that I can I can securely access documents without exposing the system to unauthorized users.
 
 ## Acceptance Criteria
-- GET /documents/{documentId}/metadata returns 200 status with metadata JSON when document exists
-- Response includes all persisted metadata fields in structured format
-- Returns 404 status when document ID does not exist
-- Returns 400 status when document ID format is invalid
-- Response time is under 500ms for standard requests
+- API key must be provided in the Authorization header using Bearer token format
+- Invalid or missing API keys return HTTP 401 Unauthorized
+- Valid API keys allow access to both document and metadata endpoints
+- API key validation occurs before any business logic execution
+- Rate limiting is applied per API key to prevent abuse
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement path parameter validation for documentId format
-- Return metadata as JSON object with consistent field names
-- Include proper HTTP status codes and error messages
-- Add request logging for monitoring and debugging
+- Implement middleware to intercept requests and validate API keys
+- Store API keys in secure configuration or database with hashing
+- Use standard HTTP Authorization header: 'Authorization: Bearer {api_key}'
+- Return consistent error response format for authentication failures
+- Log authentication attempts for security monitoring
 - Implementation should prioritize The API exposes read-only access:.

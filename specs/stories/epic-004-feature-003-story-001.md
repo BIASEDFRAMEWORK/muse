@@ -10,21 +10,23 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# Calculate and store document hash for integrity verification
+# API endpoint for streaming original document bytes
 
 ## User Story
-As a System Administrator, I want to I want the system to automatically calculate and store cryptographic hashes when documents are uploaded, so that I can so that I can verify document integrity and detect any unauthorized modifications.
+As a API consumer, I want to retrieve original document content as a byte stream, so that I can I can access the unmodified source document for processing or display.
 
 ## Acceptance Criteria
-- System calculates SHA-256 hash of document bytes during upload
-- Hash is stored in document metadata alongside other document properties
-- Hash calculation occurs before document is persisted to storage
-- Hash is included in metadata response from GET /documents/{documentId}/metadata endpoint
+- GET /documents/{documentId} endpoint returns 200 status with original document bytes
+- Response includes appropriate Content-Type header based on document format
+- Response includes Content-Length header with accurate byte count
+- Returns 404 status when documentId does not exist
+- Streams large files without loading entire content into memory
+- Preserves exact binary content of original document
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Use SHA-256 algorithm for hash calculation
-- Hash should be calculated on original document bytes before any processing
-- Store hash as hexadecimal string in metadata field 'sha256Hash'
-- Ensure hash calculation is performed synchronously during upload process
+- Use streaming HTTP response to handle large files efficiently
+- Implement content type detection based on file extension or magic bytes
+- Add appropriate caching headers for document content
+- Consider implementing Range request support for partial content retrieval
 - Implementation should prioritize The API exposes read-only access:.

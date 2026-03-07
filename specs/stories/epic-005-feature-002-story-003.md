@@ -10,23 +10,21 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# Query Audit Logs by Document
+# Track and monitor rate limit usage by tier
 
 ## User Story
-As a security analyst, I want to I want to retrieve all access logs for a specific document, so that I can so that I can investigate who accessed sensitive documents and when.
+As a system administrator, I want to I want to monitor rate limit usage patterns across different tiers so that I can optimize quotas and identify potential abuse, so that I can I can make data-driven decisions about rate limit adjustments and detect unusual usage patterns.
 
 ## Acceptance Criteria
-- API endpoint GET /audit/documents/{documentId} returns all access logs for specified document
-- Results include timestamp, user ID, IP address, action type, and response status
-- Results are paginated with configurable page size
-- Results can be filtered by date range using query parameters
-- Endpoint requires admin-level authentication
+- System logs rate limit events with user ID, tier, endpoint, and timestamp
+- Metrics are available for requests allowed, blocked, and tier utilization
+- Rate limit violations are logged with sufficient detail for investigation
+- Metrics can be queried by time range, tier, and endpoint
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Index audit logs table on document_id and timestamp for efficient queries
-- Implement cursor-based pagination for large result sets
-- Support date range filters with ISO 8601 format
-- Return results in reverse chronological order (newest first)
-- Include total count in response headers for UI pagination
+- Implement structured logging for rate limit events
+- Use metrics collection library (Prometheus/StatsD) for real-time monitoring
+- Store rate limit violation events in time-series database
+- Include correlation IDs for request tracing
 - Implementation should prioritize The API exposes read-only access:.

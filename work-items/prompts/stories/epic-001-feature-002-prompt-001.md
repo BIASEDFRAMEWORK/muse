@@ -9,32 +9,32 @@ source: specs/governance/original-document-system-of-record.digital.md
 # AI Implementation Prompt: epic-001-feature-002-prompt-001
 
 ## Objective
-Implement Retrieve document metadata by document ID.
+Implement Implement API key authentication for document retrieval endpoints.
 
 ## Repo Context
 - Primary code paths: src/cli/, src/pipeline/, src/config/
-- Generated artifacts: specs/epics/, specs/capabilities/, specs/stories/, work-items/prompts/stories/
+- Generated artifacts: specs/capabilities/, specs/epics/, specs/features/, specs/stories/, work-items/prompts/stories/
 - Story linkage: epic-001-feature-002-story-001 -> epic-001-feature-002 -> epic-001
 
 ## Required Changes
-1. Implement Retrieve document metadata by document ID.
-2. Implement path parameter validation for documentId format
-3. Return metadata as JSON object with consistent field names
-4. Include proper HTTP status codes and error messages
-5. Add request logging for monitoring and debugging
+1. Implement Implement API key authentication for document retrieval endpoints.
+2. Implement middleware to intercept requests and validate API keys
+3. Store API keys in secure configuration or database with hashing
+4. Use standard HTTP Authorization header: 'Authorization: Bearer {api_key}'
+5. Return consistent error response format for authentication failures
 
 ## Constraints
 - Preserve traceability metadata and naming conventions for generated artifacts.
-- Do not modify files under /contracts without explicit instruction.
+- Do not modify files under /docs/organizational-contracts without explicit instruction.
 - Keep changes scoped to the requested objective and avoid unrelated refactors.
 - Use governance source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 
 ## Acceptance Criteria
-- GET /documents/{documentId}/metadata returns 200 status with metadata JSON when document exists
-- Response includes all persisted metadata fields in structured format
-- Returns 404 status when document ID does not exist
-- Returns 400 status when document ID format is invalid
-- Response time is under 500ms for standard requests
+- API key must be provided in the Authorization header using Bearer token format
+- Invalid or missing API keys return HTTP 401 Unauthorized
+- Valid API keys allow access to both document and metadata endpoints
+- API key validation occurs before any business logic execution
+- Rate limiting is applied per API key to prevent abuse
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Validation
@@ -45,15 +45,15 @@ Implement Retrieve document metadata by document ID.
 Return a patch plus a short summary of modified files and validation results.
 
 ## Implementation Brief
-Implement Retrieve document metadata by document ID.
-Context: request metadata for a specific document using its ID.
+Implement Implement API key authentication for document retrieval endpoints.
+Context: authenticate with a valid API key to access document retrieval endpoints.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- GET /documents/{documentId}/metadata returns 200 status with metadata JSON when document exists
-- Response includes all persisted metadata fields in structured format
-- Returns 404 status when document ID does not exist
-- Returns 400 status when document ID format is invalid
-- Response time is under 500ms for standard requests
+- API key must be provided in the Authorization header using Bearer token format
+- Invalid or missing API keys return HTTP 401 Unauthorized
+- Valid API keys allow access to both document and metadata endpoints
+- API key validation occurs before any business logic execution
+- Rate limiting is applied per API key to prevent abuse
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-001-feature-002-story-001 (Retrieve document metadata by document ID).
+- Implementation outcome is unique to epic-001-feature-002-story-001 (Implement API key authentication for document retrieval endpoints).

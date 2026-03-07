@@ -1,6 +1,6 @@
 ---
-id: epic-001-feature-003
-feature_id: epic-001-feature-003
+id: epic-001-feature-002
+feature_id: epic-001-feature-002
 epic: epic-001
 derived_from_epic: epic-001
 source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
@@ -11,20 +11,20 @@ origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/spec
 # API Authentication and Authorization
 
 ## Capability
-Implement token-based authentication with role-based access control for document retrieval endpoints
+Token-based authentication with role-based access controls for document retrieval
 
 ## Implementation Notes
-- Support Bearer token authentication via Authorization header
-- Implement JWT token validation with expiration checking
-- Define read-only permission scopes for document access
+- Integrate with JWT or OAuth 2.0 bearer token authentication
+- Implement role-based permissions (read-only, admin) for document access
 - Add API key authentication option for service-to-service calls
-- Cache authentication results to reduce validation overhead
+- Validate user permissions against document access control lists
+- Return standardized 401/403 HTTP responses for auth failures
 - Primary delivery slice: The API exposes read-only access:.
 
 ## Acceptance Criteria
-- Returns 401 for requests without valid authentication tokens
-- Returns 403 for authenticated users without document read permissions
-- Accepts both JWT and API key authentication methods
-- Token validation completes within 50ms
-- Authentication state persists for the duration of streaming requests
+- Valid bearer token required for all API endpoints
+- Unauthorized requests return HTTP 401 with standard error format
+- Users can only access documents they have explicit read permissions for
+- API keys work for automated systems without user context
+- Token validation completes within 100ms
 - Control focus for this feature: The API exposes read-only access:.

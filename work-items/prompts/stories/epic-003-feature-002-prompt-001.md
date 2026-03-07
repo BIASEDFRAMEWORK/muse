@@ -9,32 +9,32 @@ source: specs/governance/original-document-system-of-record.digital.md
 # AI Implementation Prompt: epic-003-feature-002-prompt-001
 
 ## Objective
-Implement Stream audit events when documents are retrieved.
+Implement Dynamic permission evaluation for document read access.
 
 ## Repo Context
 - Primary code paths: src/cli/, src/pipeline/, src/config/
-- Generated artifacts: specs/epics/, specs/capabilities/, specs/stories/, work-items/prompts/stories/
+- Generated artifacts: specs/capabilities/, specs/epics/, specs/features/, specs/stories/, work-items/prompts/stories/
 - Story linkage: epic-003-feature-002-story-001 -> epic-003-feature-002 -> epic-003
 
 ## Required Changes
-1. Implement Stream audit events when documents are retrieved.
-2. Implement event streaming using Server-Sent Events (SSE) or WebSocket connection
-3. Hook into API gateway or middleware layer to capture all document access requests
-4. Use structured logging format (JSON) with consistent field names
-5. Include correlation ID for request tracing
+1. Implement Dynamic permission evaluation for document read access.
+2. Implement middleware that intercepts requests before document retrieval
+3. Integration with external authorization service required
+4. Cache permission results for 5 minutes to optimize performance
+5. Include user context (roles, groups, attributes) in evaluation
 
 ## Constraints
 - Preserve traceability metadata and naming conventions for generated artifacts.
-- Do not modify files under /contracts without explicit instruction.
+- Do not modify files under /docs/organizational-contracts without explicit instruction.
 - Keep changes scoped to the requested objective and avoid unrelated refactors.
 - Use governance source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 
 ## Acceptance Criteria
-- Audit event is generated when GET /documents/{documentId} is called
-- Audit event is generated when GET /documents/{documentId}/metadata is called
-- Event includes timestamp, document ID, requesting user/system, and request outcome
-- Event is streamed in real-time with latency under 100ms
-- Failed access attempts are also audited with error details
+- GET /documents/{documentId} returns 403 Forbidden when user lacks read permission
+- GET /documents/{documentId} returns document bytes when user has read permission
+- Permission evaluation occurs in real-time for each request
+- System logs permission evaluation decisions for audit purposes
+- Response time for permission evaluation is under 100ms
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Validation
@@ -45,15 +45,15 @@ Implement Stream audit events when documents are retrieved.
 Return a patch plus a short summary of modified files and validation results.
 
 ## Implementation Brief
-Implement Stream audit events when documents are retrieved.
-Context: receive real-time audit events when documents are accessed via the read-only API.
+Implement Dynamic permission evaluation for document read access.
+Context: I want the system to dynamically evaluate my permissions when I request document access.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- Audit event is generated when GET /documents/{documentId} is called
-- Audit event is generated when GET /documents/{documentId}/metadata is called
-- Event includes timestamp, document ID, requesting user/system, and request outcome
-- Event is streamed in real-time with latency under 100ms
-- Failed access attempts are also audited with error details
+- GET /documents/{documentId} returns 403 Forbidden when user lacks read permission
+- GET /documents/{documentId} returns document bytes when user has read permission
+- Permission evaluation occurs in real-time for each request
+- System logs permission evaluation decisions for audit purposes
+- Response time for permission evaluation is under 100ms
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-003-feature-002-story-001 (Stream audit events when documents are retrieved).
+- Implementation outcome is unique to epic-003-feature-002-story-001 (Dynamic permission evaluation for document read access).

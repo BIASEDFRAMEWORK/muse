@@ -9,32 +9,33 @@ source: specs/governance/original-document-system-of-record.digital.md
 # AI Implementation Prompt: epic-004-feature-003-prompt-003
 
 ## Objective
-Implement Expose integrity status in metadata endpoint.
+Implement Automated metadata extraction on document upload.
 
 ## Repo Context
 - Primary code paths: src/cli/, src/pipeline/, src/config/
-- Generated artifacts: specs/epics/, specs/capabilities/, specs/stories/, work-items/prompts/stories/
+- Generated artifacts: specs/capabilities/, specs/epics/, specs/features/, specs/stories/, work-items/prompts/stories/
 - Story linkage: epic-004-feature-003-story-003 -> epic-004-feature-003 -> epic-004
 
 ## Required Changes
-1. Implement Expose integrity status in metadata endpoint.
-2. Add fields to metadata response: sha256Hash, lastVerifiedAt, integrityValid
-3. lastVerifiedAt should be ISO 8601 formatted timestamp
-4. Cache verification results for 5 minutes to avoid repeated hash calculations
-5. Update verification timestamp only when integrity check is performed
+1. Implement Automated metadata extraction on document upload.
+2. Implement asynchronous processing pipeline with message queue
+3. Use libraries like Apache Tika or equivalent for format-specific extraction
+4. Store extraction status and error details for monitoring
+5. Implement retry logic for transient extraction failures
 
 ## Constraints
 - Preserve traceability metadata and naming conventions for generated artifacts.
-- Do not modify files under /contracts without explicit instruction.
+- Do not modify files under /docs/organizational-contracts without explicit instruction.
 - Keep changes scoped to the requested objective and avoid unrelated refactors.
 - Use governance source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 
 ## Acceptance Criteria
-- GET /documents/{documentId}/metadata includes integrity verification fields
-- Response includes stored document hash
-- Response includes timestamp of last integrity verification
-- Response includes boolean field indicating last verification result
-- Metadata endpoint performs integrity check and updates verification timestamp
+- Metadata extraction triggers automatically on document ingestion
+- Extraction completes within 30 seconds for documents under 100MB
+- Failed extractions are logged with specific error details
+- Extracted metadata is persisted before document ingestion completes
+- Pipeline handles common formats: PDF, DOC, DOCX, TXT, images
+- System continues functioning if metadata extraction fails for individual documents
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Validation
@@ -45,15 +46,16 @@ Implement Expose integrity status in metadata endpoint.
 Return a patch plus a short summary of modified files and validation results.
 
 ## Implementation Brief
-Implement Expose integrity status in metadata endpoint.
-Context: I want to check document integrity status through the metadata API.
+Implement Automated metadata extraction on document upload.
+Context: automatically extract and persist metadata when documents are ingested.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- GET /documents/{documentId}/metadata includes integrity verification fields
-- Response includes stored document hash
-- Response includes timestamp of last integrity verification
-- Response includes boolean field indicating last verification result
-- Metadata endpoint performs integrity check and updates verification timestamp
+- Metadata extraction triggers automatically on document ingestion
+- Extraction completes within 30 seconds for documents under 100MB
+- Failed extractions are logged with specific error details
+- Extracted metadata is persisted before document ingestion completes
+- Pipeline handles common formats: PDF, DOC, DOCX, TXT, images
+- System continues functioning if metadata extraction fails for individual documents
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-004-feature-003-story-003 (Expose integrity status in metadata endpoint).
+- Implementation outcome is unique to epic-004-feature-003-story-003 (Automated metadata extraction on document upload).

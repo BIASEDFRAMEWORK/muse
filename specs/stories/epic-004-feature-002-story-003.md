@@ -10,23 +10,21 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# Query audit trail logs via API
+# As an authenticated user, I can only retrieve document metadata my role has permission to access
 
 ## User Story
-As a Security Analyst, I want to I want to programmatically query audit trail logs, so that I can so that I can integrate with security monitoring tools and generate custom reports.
+As a Authenticated User, I want to I receive document metadata when calling GET /documents/{documentId}/metadata only if my assigned role has read permission for that document, so that I can preventing information leakage through metadata exposure.
 
 ## Acceptance Criteria
-- GET /audit-trail endpoint supports filtering by date range, user ID, document ID, and operation type
-- API returns paginated results with configurable page size (max 1000 records)
-- Query results include all captured audit metadata in consistent JSON format
-- API supports sorting by timestamp in ascending or descending order
-- Invalid query parameters return appropriate error responses with clear messages
+- GET /documents/{documentId}/metadata returns 403 Forbidden when user lacks permission
+- GET /documents/{documentId}/metadata returns metadata when user has valid role permission
+- Metadata endpoint uses same permission validation as document content endpoint
+- Permission checks are applied consistently across both retrieval endpoints
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement audit trail API with query parameter validation
-- Use database indexes on timestamp, user_id, document_id columns for performance
-- Implement cursor-based pagination for large result sets
-- Add rate limiting to prevent abuse of audit trail queries
-- Return audit logs in read-only format with no modification endpoints
+- Reuse authorization middleware from document content endpoint
+- Apply same role-based permission checking logic
+- Ensure metadata access control matches document access control
+- Consider partial metadata filtering for different permission levels
 - Implementation should prioritize The API exposes read-only access:.

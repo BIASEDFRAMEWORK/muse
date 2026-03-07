@@ -10,23 +10,23 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# Implement role-based document retrieval authorization
+# Stream original document bytes with role-based access control
 
 ## User Story
-As a system user, I want to I want to retrieve documents only if my role has proper authorization, so that I can so that sensitive documents are protected from unauthorized access.
+As a authenticated user, I want to I want to retrieve original document content via GET /documents/{documentId} endpoint, so that I can so that I can access documents I'm authorized to view while being blocked from unauthorized content.
 
 ## Acceptance Criteria
-- GET /documents/{documentId} returns 403 Forbidden when user lacks document read permission
-- GET /documents/{documentId} streams document bytes when user has valid read permission
-- GET /documents/{documentId}/metadata returns 403 Forbidden when user lacks metadata read permission
-- GET /documents/{documentId}/metadata returns metadata JSON when user has valid read permission
-- Authorization header is validated on every request
-- Invalid or missing authorization returns 401 Unauthorized
+- GET /documents/{documentId} returns 200 with original bytes when user has read permission
+- GET /documents/{documentId} returns 403 when user lacks read permission for the document
+- GET /documents/{documentId} returns 404 when document doesn't exist
+- Response includes appropriate Content-Type header based on original document format
+- Streaming response handles large files efficiently without loading entire content into memory
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement middleware to intercept requests before document retrieval
-- Add role validation logic that checks user permissions against document access rules
-- Return appropriate HTTP status codes (401, 403) for authorization failures
-- Ensure authorization check occurs before any document streaming begins
+- Implement middleware to check user role against document ACL before streaming
+- Use streaming response to handle large document files
+- Cache ACL lookups to avoid database hits on every request
+- Log all access attempts for audit trail
+- Consider implementing rate limiting per user role
 - Implementation should prioritize The API exposes read-only access:.

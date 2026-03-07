@@ -10,22 +10,22 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# Provide real-time access monitoring dashboard
+# Search audit trail by user activity
 
 ## User Story
-As a System Administrator, I want to I want to view real-time document access activity through a dashboard, so that I can so that I can quickly identify and respond to unusual access patterns or security threats.
+As a security analyst, I want to query all document access attempts by a specific user across all documents, so that I can I can investigate suspicious user behavior and enforce access policies.
 
 ## Acceptance Criteria
-- Dashboard displays active document access sessions in real-time
-- Shows top accessed documents and most active users
-- Provides filters for time range, user, and document type
-- Displays alerts for suspicious access patterns
-- Updates automatically without manual refresh
+- GET /audit/users/{userId}/access-history returns all document access attempts by the user
+- Response includes document ID, timestamp, access type, and outcome for each entry
+- Support date range filtering and pagination
+- Include document metadata (title, classification level) in response when available
+- Handle cases where user ID doesn't exist in audit logs gracefully
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Use WebSocket connections for real-time updates
-- Implement caching layer for dashboard performance
-- Create background jobs to calculate access statistics
-- Use time-series database for efficient time-based queries
+- Index audit logs by user_id for efficient user-based queries
+- Join audit logs with document metadata table for enriched responses
+- Consider rate limiting for audit queries to prevent abuse
+- Implement proper access controls - users should only see their own audit history unless they have admin privileges
 - Implementation should prioritize The API exposes read-only access:.

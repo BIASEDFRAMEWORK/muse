@@ -10,23 +10,21 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# Store immutable document with metadata in audit trail
+# Retrieve document content with role-based access control
 
 ## User Story
-As a system administrator, I want to store a document with its metadata in an immutable audit trail, so that I can ensure document integrity and prevent tampering for compliance purposes.
+As a authorized user, I want to I want to retrieve original document bytes via GET /documents/{documentId}, so that I can so that I can access documents I have permissions to view while being blocked from unauthorized content.
 
 ## Acceptance Criteria
-- Document and metadata are stored with cryptographic hash for integrity verification
-- Storage operation creates an immutable record that cannot be modified
-- Each storage operation generates a unique audit trail entry with timestamp
-- System rejects attempts to modify or delete existing audit trail entries
-- Storage operation returns confirmation with document ID and hash
+- Given I have read permissions for a document, when I call GET /documents/{documentId}, then I receive the original document bytes as a stream
+- Given I do not have read permissions for a document, when I call GET /documents/{documentId}, then I receive a 403 Forbidden response
+- Given the document does not exist, when I call GET /documents/{documentId}, then I receive a 404 Not Found response
+- Given I am not authenticated, when I call GET /documents/{documentId}, then I receive a 401 Unauthorized response
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement cryptographic hashing (SHA-256 or higher) for document integrity
-- Use append-only data structure or blockchain-style immutable storage
-- Include metadata fields: timestamp, document size, content type, hash
-- Consider using content-addressed storage for deduplication
-- Implement atomic storage operations to prevent partial writes
+- Implement role-based access control middleware that validates user permissions before document retrieval
+- Stream document bytes directly from storage to avoid memory issues with large files
+- Include proper Content-Type and Content-Length headers in response
+- Log all access attempts for audit purposes
 - Implementation should prioritize The API exposes read-only access:.

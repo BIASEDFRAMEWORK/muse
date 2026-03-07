@@ -10,23 +10,21 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# Store comprehensive audit trail metadata
+# As an authenticated user, I can only retrieve documents my role has permission to access
 
 ## User Story
-As a Compliance Officer, I want to I want detailed audit information captured for each document access, so that I can so that I can generate comprehensive audit reports for regulatory compliance.
+As a Authenticated User, I want to I receive document content when calling GET /documents/{documentId} only if my assigned role has read permission for that document, so that I can protecting sensitive information from unauthorized access.
 
 ## Acceptance Criteria
-- Audit logs include client IP address and user agent for each request
-- Audit logs capture request headers relevant to security (authorization type, content-type requested)
-- Audit logs include document size and format information when available
-- Audit logs record session ID or correlation ID for request tracing
-- All audit data is stored with data integrity checksums
+- GET /documents/{documentId} returns 403 Forbidden when user lacks permission
+- GET /documents/{documentId} returns document bytes when user has valid role permission
+- User authentication is validated before checking role permissions
+- Error responses include clear messaging about insufficient permissions
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Extract client metadata from HTTP request context
-- Store audit logs in dedicated audit_trail table with indexed columns for common queries
-- Include fields: session_id, client_ip, user_agent, request_headers, document_size_bytes, document_format
-- Implement audit log data validation and checksum generation
-- Consider GDPR implications for IP address storage and retention
+- Add authorization middleware before document retrieval logic
+- Implement user role lookup from authentication token/session
+- Check role permissions against document access control list
+- Return appropriate HTTP status codes and error messages
 - Implementation should prioritize The API exposes read-only access:.

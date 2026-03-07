@@ -9,32 +9,32 @@ source: specs/governance/original-document-system-of-record.digital.md
 # AI Implementation Prompt: epic-001-feature-002-prompt-002
 
 ## Objective
-Implement Handle metadata retrieval errors gracefully.
+Implement Implement role-based authorization for document access.
 
 ## Repo Context
 - Primary code paths: src/cli/, src/pipeline/, src/config/
-- Generated artifacts: specs/epics/, specs/capabilities/, specs/stories/, work-items/prompts/stories/
+- Generated artifacts: specs/capabilities/, specs/epics/, specs/features/, specs/stories/, work-items/prompts/stories/
 - Story linkage: epic-001-feature-002-story-002 -> epic-001-feature-002 -> epic-001
 
 ## Required Changes
-1. Implement Handle metadata retrieval errors gracefully.
-2. Implement standardized error response format across all endpoints
-3. Add try-catch blocks around database operations
-4. Use appropriate HTTP status codes for different error types
-5. Include correlation IDs in error responses for troubleshooting
+1. Implement Implement role-based authorization for document access.
+2. Implement role-permission mapping in database or configuration
+3. Create authorization middleware that runs after authentication
+4. Document metadata should include access control information
+5. Use consistent error response format for authorization failures
 
 ## Constraints
 - Preserve traceability metadata and naming conventions for generated artifacts.
-- Do not modify files under /contracts without explicit instruction.
+- Do not modify files under /docs/organizational-contracts without explicit instruction.
 - Keep changes scoped to the requested objective and avoid unrelated refactors.
 - Use governance source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 
 ## Acceptance Criteria
-- Returns 404 with descriptive error message when document not found
-- Returns 500 with generic error message for server-side failures
-- Error responses follow consistent JSON structure with error code and message
-- No sensitive system information is exposed in error responses
-- All error scenarios are logged appropriately
+- Each API key is associated with one or more roles (viewer, admin, etc.)
+- Document access is restricted based on user role permissions
+- Unauthorized access attempts return HTTP 403 Forbidden
+- Role permissions are enforced on both GET /documents/{documentId} and GET /documents/{documentId}/metadata endpoints
+- System supports hierarchical roles where higher roles inherit lower role permissions
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Validation
@@ -45,15 +45,15 @@ Implement Handle metadata retrieval errors gracefully.
 Return a patch plus a short summary of modified files and validation results.
 
 ## Implementation Brief
-Implement Handle metadata retrieval errors gracefully.
-Context: receive appropriate error responses when metadata cannot be retrieved.
+Implement Implement role-based authorization for document access.
+Context: configure role-based permissions to control which documents users can access.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- Returns 404 with descriptive error message when document not found
-- Returns 500 with generic error message for server-side failures
-- Error responses follow consistent JSON structure with error code and message
-- No sensitive system information is exposed in error responses
-- All error scenarios are logged appropriately
+- Each API key is associated with one or more roles (viewer, admin, etc.)
+- Document access is restricted based on user role permissions
+- Unauthorized access attempts return HTTP 403 Forbidden
+- Role permissions are enforced on both GET /documents/{documentId} and GET /documents/{documentId}/metadata endpoints
+- System supports hierarchical roles where higher roles inherit lower role permissions
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-001-feature-002-story-002 (Handle metadata retrieval errors gracefully).
+- Implementation outcome is unique to epic-001-feature-002-story-002 (Implement role-based authorization for document access).

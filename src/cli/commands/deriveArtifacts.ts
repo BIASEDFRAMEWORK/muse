@@ -1,6 +1,7 @@
 import { loadConfig } from '../../config/loadConfig'
 import { deriveArtifacts } from '../../pipeline/deriveArtifacts'
 import { filterDigitalContent } from '../../pipeline/filterDigitalContent'
+import { extractCapabilities } from '../../pipeline/extractCapabilities'
 
 interface DeriveArtifactsCliOptions {
   fast?: boolean
@@ -16,10 +17,13 @@ export async function deriveArtifactsCommand(markdown: string, options: DeriveAr
   if (options.fast) {
     process.stdout.write('Fast mode enabled: reduced token budget and parallel story generation.\n')
   }
+
+  extractCapabilities(sourceMarkdownPath)
+
   await deriveArtifacts({
     sourceMarkdownPath,
     ai: config.ai,
     mode: options.fast ? 'fast' : 'standard',
   })
-  process.stdout.write('Generated epics, features, user stories, and prompts.\n')
+  process.stdout.write('Generated capabilities, epics, features, user stories, and prompts.\n')
 }

@@ -7,8 +7,9 @@ const repoRoot = process.cwd()
 
 const dirs = {
   governance: ['specs/governance', 'docs/governance'],
+  capabilities: ['specs/capabilities'],
   epics: ['specs/epics'],
-  features: ['specs/capabilities'],
+  features: ['specs/features'],
   stories: ['specs/stories']
 }
 
@@ -21,9 +22,33 @@ const report = {
   warnings,
   artifacts: {
     governance: [],
+    capabilities: [],
     epics: [],
     features: [],
     stories: []
+  }
+}
+
+function collectCapabilities() {
+  const files = walkFiles(dirs.capabilities, ['.md', '.markdown', '.yaml', '.yml'])
+  for (const filePath of files) {
+    if (shouldExcludeFile(filePath)) continue
+
+    const rel = path.relative(repoRoot, filePath)
+    const data = readFrontMatterBlocks(filePath)[0]?.data || {}
+    const capabilityId = data.capability_id || data.id
+    const sourcePath = data.source_path || data.governance_source || null
+
+    if (!capabilityId) {
+      errors.push(`Capability file missing capability_id in front matter: ${rel}`)
+      continue
+    }
+
+    report.artifacts.capabilities.push({
+      capability_id: capabilityId,
+      source_path: sourcePath,
+      path: rel,
+    })
   }
 }
 
@@ -180,12 +205,14 @@ function collectEpics(muse) {
     const epicId = data.epic_id || data.id
     const derivedFromDocumentId = data.derived_from_document_id || data.document_id || null
     const sourcePath = data.source_path || data.source || null
+    const capabilityRef = data.derived_from_capability || data.capability || null
     if (!epicId) {
       errors.push(`Epic file missing epic_id in front matter: ${rel}`)
       continue
     }
     report.artifacts.epics.push({
       epic_id: epicId,
+      derived_from_capability: capabilityRef,
       derived_from_document_id: derivedFromDocumentId,
       source_path: sourcePath,
       path: rel,
@@ -201,6 +228,7 @@ function collectEpics(muse) {
     if (report.artifacts.epics.some((e) => e.epic_id === epic.epic_id)) continue
     report.artifacts.epics.push({
       epic_id: epic.epic_id,
+      derived_from_capability: epic.derived_from_capability || epic.capability || null,
       derived_from_document_id: epic.derived_from_document_id || epic.derived_from || null,
       source_path: epic.source_path || epic.source || null,
       path: rel || epic.epic_path || 'unknown'
@@ -310,7 +338,7 @@ function recordDuplicateIds(items, key, label) {
 }
 
 // Validates that all governance, epic, feature, and story references resolve correctly and are bidirectionally linked.
-function validateReferences(governanceMap, epicMap, featureMap, storyMap) {
+function validateReferences(governanceMap, capabilityMap, epicMap, featureMap, storyMap) {
   const governancePathMap = new Map()
   for (const governance of report.artifacts.governance) {
     const normalized = normalizePathRef(governance.path)
@@ -320,6 +348,12 @@ function validateReferences(governanceMap, epicMap, featureMap, storyMap) {
   }
 
   for (const epic of epicMap.values()) {
+    if (!epic.derived_from_capability) {
+      errors.push(`Epic ${epic.epic_id} missing capability reference`)
+    } else if (!capabilityMap.has(epic.derived_from_capability)) {
+      errors.push(`Epic ${epic.epic_id} references missing capability_id: ${epic.derived_from_capability}`)
+    }
+
     const referencedDocumentId = epic.derived_from_document_id || null
     const normalizedSourcePath = normalizePathRef(epic.source_path)
     const sourcePathExists = normalizedSourcePath ? fs.existsSync(path.resolve(repoRoot, normalizedSourcePath)) : false
@@ -407,6 +441,11 @@ function buildMaps() {
     if (g.document_id) governanceMap.set(g.document_id, g)
   }
 
+  const capabilityMap = new Map()
+  for (const c of report.artifacts.capabilities) {
+    if (c.capability_id && !capabilityMap.has(c.capability_id)) capabilityMap.set(c.capability_id, c)
+  }
+
   const epicMap = new Map()
   for (const e of report.artifacts.epics) {
     if (e.epic_id && !epicMap.has(e.epic_id)) epicMap.set(e.epic_id, e)
@@ -422,7 +461,7 @@ function buildMaps() {
     if (s.story_id && !storyMap.has(s.story_id)) storyMap.set(s.story_id, s)
   }
 
-  return { governanceMap, epicMap, featureMap, storyMap }
+  return { governanceMap, capabilityMap, epicMap, featureMap, storyMap }
 }
 
 // Writes traceability validation results to JSON and text report files.
@@ -431,6 +470,7 @@ function writeReports(status) {
     status,
     counts: {
       governance: report.artifacts.governance.length,
+      capabilities: report.artifacts.capabilities.length,
       epics: report.artifacts.epics.length,
       features: report.artifacts.features.length,
       stories: report.artifacts.stories.length
@@ -442,7 +482,7 @@ function writeReports(status) {
 
   const lines = [
     `Traceability status: ${status.toUpperCase()}`,
-    `Governance: ${report.summary.counts.governance} | Epics: ${report.summary.counts.epics} | Features: ${report.summary.counts.features} | Stories: ${report.summary.counts.stories}`,
+    `Governance: ${report.summary.counts.governance} | Capabilities: ${report.summary.counts.capabilities} | Epics: ${report.summary.counts.epics} | Features: ${report.summary.counts.features} | Stories: ${report.summary.counts.stories}`,
     errors.length ? 'Errors:' : 'Errors: none'
   ]
 
@@ -464,18 +504,20 @@ function main() {
   const muse = loadMuseYaml()
 
   collectGovernance()
+  collectCapabilities()
   collectEpics(muse)
   collectFeatures(muse)
   collectStories(muse)
 
-  const { governanceMap, epicMap, featureMap, storyMap } = buildMaps()
+  const { governanceMap, capabilityMap, epicMap, featureMap, storyMap } = buildMaps()
 
   recordDuplicateIds(report.artifacts.epics, 'epic_id', 'epic')
+  recordDuplicateIds(report.artifacts.capabilities, 'capability_id', 'capability')
   recordDuplicateIds(report.artifacts.features, 'feature_id', 'feature')
   recordDuplicateIds(report.artifacts.stories, 'story_id', 'story')
 
   if (report.artifacts.epics.length || report.artifacts.features.length || report.artifacts.stories.length) {
-    validateReferences(governanceMap, epicMap, featureMap, storyMap)
+    validateReferences(governanceMap, capabilityMap, epicMap, featureMap, storyMap)
   } else {
     warnings.push('No epics/features/stories discovered; validation skipped')
   }

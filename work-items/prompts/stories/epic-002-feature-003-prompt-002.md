@@ -9,32 +9,32 @@ source: specs/governance/original-document-system-of-record.digital.md
 # AI Implementation Prompt: epic-002-feature-003-prompt-002
 
 ## Objective
-Implement Audit Trail for Document Access Events.
+Implement As a system administrator, I want to configure compliance rules for document retention periods so that I can automatically detect retention policy violations.
 
 ## Repo Context
 - Primary code paths: src/cli/, src/pipeline/, src/config/
-- Generated artifacts: specs/epics/, specs/capabilities/, specs/stories/, work-items/prompts/stories/
+- Generated artifacts: specs/capabilities/, specs/epics/, specs/features/, specs/stories/, work-items/prompts/stories/
 - Story linkage: epic-002-feature-003-story-002 -> epic-002-feature-003 -> epic-002
 
 ## Required Changes
-1. Implement Audit Trail for Document Access Events.
-2. Add audit logging to document retrieval controllers
-3. Log before and after document access to capture complete request lifecycle
-4. Include response time metrics in audit events for performance monitoring
-5. Handle streaming responses appropriately in audit logging
+1. Implement As a system administrator, I want to configure compliance rules for document retention periods so that I can automatically detect retention policy violations.
+2. Create retention_rules configuration table with document_type and retention_days
+3. Implement scheduled job to check document ages against rules
+4. Calculate age using metadata creation timestamp
+5. Store retention violations with violation_type = 'RETENTION_EXCEEDED'
 
 ## Constraints
 - Preserve traceability metadata and naming conventions for generated artifacts.
-- Do not modify files under /contracts without explicit instruction.
+- Do not modify files under /docs/organizational-contracts without explicit instruction.
 - Keep changes scoped to the requested objective and avoid unrelated refactors.
 - Use governance source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 
 ## Acceptance Criteria
-- System logs audit event for GET /documents/{documentId} requests
-- System logs audit event for GET /documents/{documentId}/metadata requests
-- Each access event includes timestamp, user ID, document ID, and access type (content vs metadata)
-- Failed access attempts are logged with denial reason (unauthorized, not found, etc.)
-- Audit trail includes response status codes and data transfer sizes
+- Admin can define retention period rules by document type via API
+- System calculates document age from creation timestamp in metadata
+- Documents exceeding retention period are flagged as violations
+- Retention violations include document ID, creation date, and retention period
+- Rules can be updated without system restart
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Validation
@@ -45,15 +45,15 @@ Implement Audit Trail for Document Access Events.
 Return a patch plus a short summary of modified files and validation results.
 
 ## Implementation Brief
-Implement Audit Trail for Document Access Events.
-Context: track all document retrieval activities through the read-only API endpoints.
+Implement As a system administrator, I want to configure compliance rules for document retention periods so that I can automatically detect retention policy violations.
+Context: configure compliance rules for document retention periods.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- System logs audit event for GET /documents/{documentId} requests
-- System logs audit event for GET /documents/{documentId}/metadata requests
-- Each access event includes timestamp, user ID, document ID, and access type (content vs metadata)
-- Failed access attempts are logged with denial reason (unauthorized, not found, etc.)
-- Audit trail includes response status codes and data transfer sizes
+- Admin can define retention period rules by document type via API
+- System calculates document age from creation timestamp in metadata
+- Documents exceeding retention period are flagged as violations
+- Retention violations include document ID, creation date, and retention period
+- Rules can be updated without system restart
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-002-feature-003-story-002 (Audit Trail for Document Access Events).
+- Implementation outcome is unique to epic-002-feature-003-story-002 (As a system administrator, I want to configure compliance rules for document retention periods so that I can automatically detect retention policy violations).

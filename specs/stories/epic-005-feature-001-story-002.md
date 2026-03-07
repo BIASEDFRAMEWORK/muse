@@ -10,23 +10,23 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# Rate limiting per authenticated user
+# Role-based Access Control for Document Retrieval
 
 ## User Story
-As a system administrator, I want to I want to enforce rate limits based on authenticated user identity, so that I can so that individual users cannot overwhelm the API and system resources are fairly distributed.
+As a API Consumer, I want to access document endpoints based on assigned roles, so that I can ensure only authorized users can retrieve documents and metadata.
 
 ## Acceptance Criteria
-- Rate limit is applied per user ID extracted from JWT token
-- Requests exceeding rate limit return 429 Too Many Requests
-- Rate limit headers are included in all responses (X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset)
-- Rate limit counters reset after configured time window
-- Different rate limits can be configured for different user roles
+- Users with 'reader' role can access GET /documents/{documentId}
+- Users with 'reader' role can access GET /documents/{documentId}/metadata
+- Users without proper roles receive 403 Forbidden response
+- Admin users can access all document endpoints regardless of document ownership
+- Role validation occurs before endpoint logic execution
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Use sliding window or token bucket algorithm for rate limiting
-- Store rate limit counters in Redis or in-memory cache
-- Extract user ID from JWT sub claim for rate limit key
-- Configure rate limits via environment variables or config file
-- Implement rate limiting middleware that runs after JWT authentication
+- Implement role-checking middleware that runs after JWT validation
+- Define role hierarchy: admin > reader
+- Extract roles from JWT token claims
+- Return structured error responses with appropriate HTTP status codes
+- Log access attempts for audit purposes
 - Implementation should prioritize The API exposes read-only access:.

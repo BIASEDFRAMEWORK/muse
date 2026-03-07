@@ -10,23 +10,23 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# As a system administrator, I need to authorize specific clients for document read access
+# Configure audit log retention and storage
 
 ## User Story
-As a system administrator, I want to configure authorization rules that control which authenticated clients can read documents, so that I can enforce principle of least privilege for document access.
+As a platform engineer, I want to I want to configure where audit logs are stored and how long they are retained, so that I can so that I can meet compliance requirements and manage storage costs.
 
 ## Acceptance Criteria
-- Authenticated clients without read permission receive 403 Forbidden for GET /documents/{documentId}
-- Authenticated clients without read permission receive 403 Forbidden for GET /documents/{documentId}/metadata
-- Authorized clients can successfully retrieve documents and metadata
-- Authorization decisions are logged for audit purposes
-- Permission changes take effect immediately without service restart
+- Audit logs can be configured to write to file, database, or external service
+- Log retention period is configurable via environment variables
+- Logs older than retention period are automatically purged
+- Log rotation prevents individual log files from exceeding configurable size limits
+- Configuration validation prevents invalid storage/retention settings
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement role-based access control (RBAC) or attribute-based access control
-- Create authorization middleware that checks permissions after authentication
-- Store permissions in database or configuration system
-- Add audit logging for all authorization decisions
-- Return 403 with minimal error details to prevent information leakage
+- Support multiple log destinations (file system, database, cloud logging services)
+- Implement log rotation using daily/size-based triggers
+- Use cron job or scheduled task for automatic log cleanup
+- Validate configuration on application startup
+- Default retention should be 90 days if not specified
 - Implementation should prioritize The API exposes read-only access:.

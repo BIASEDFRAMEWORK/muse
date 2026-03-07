@@ -62,8 +62,9 @@ ai:
 ## Generated outputs
 
 - `specs/governance/`
-- `specs/epics/`
 - `specs/capabilities/`
+- `specs/epics/`
+- `specs/features/`
 - `specs/stories/`
 - `work-items/prompts/stories/`
 - `specs/decisions/`

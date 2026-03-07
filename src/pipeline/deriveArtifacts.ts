@@ -7,6 +7,7 @@ import { EpicArtifact } from '../artifacts/epic'
 import { FeatureArtifact } from '../artifacts/feature'
 import { UserStoryArtifact } from '../artifacts/userStory'
 import { AIPromptArtifact } from '../artifacts/aiPrompt'
+import { extractCapabilities, loadCapabilities } from './extractCapabilities'
 
 export interface DeriveArtifactsOptions {
   sourceMarkdownPath: string
@@ -101,7 +102,7 @@ function promptIdFromStoryId(storyIdValue: string): string {
 function ensureDirs(): void {
   const dirs = [
     'specs/epics',
-    'specs/capabilities',
+    'specs/features',
     'specs/stories',
     'work-items/prompts/stories',
   ]
@@ -164,6 +165,7 @@ function fallbackEpics(markdown: string, source: string): EpicArtifact[] {
 
   return selected.slice(0, 7).map((title, index) => ({
     id: id('epic', index),
+    capability: 'CAP-001',
     title,
     objective: `Deliver ${title.toLowerCase()} capabilities from governance requirements.`,
     outcomes: [
@@ -375,6 +377,16 @@ export async function deriveArtifacts(options: DeriveArtifactsOptions): Promise<
   const source = options.sourceMarkdownPath
   const markdown = readGovernanceMarkdown(source)
   const governanceLineage = resolveGovernanceLineage(source, markdown)
+  let capabilities = loadCapabilities(source)
+  if (capabilities.length === 0) {
+    extractCapabilities(source)
+    capabilities = loadCapabilities(source)
+  }
+  if (capabilities.length === 0) {
+    throw new Error('No capabilities found. Run extractCapabilities before deriveArtifacts.')
+  }
+
+  const capabilityById = new Map(capabilities.map((capability) => [capability.id, capability]))
   const controlStatements = extractControlStatements(markdown, 16)
   const llm = new LlmClient(options.ai)
 
@@ -423,17 +435,24 @@ export async function deriveArtifacts(options: DeriveArtifactsOptions): Promise<
     seenEpicTitles.add(fallbackEpic.title.toLowerCase())
   }
 
-  const epics: EpicArtifact[] = epicSeed.map((epic, index) => ({
-    id: id('epic', index),
-    title: epic.title,
-    objective: epic.objective,
-    outcomes: normalizeList(
-      [...(epic.outcomes || []), `Primary outcome focus: ${focusForIndex(controlStatements, index, `digital control area ${index + 1}`)}.`],
-      [`Primary outcome focus: ${focusForIndex(controlStatements, index, `digital control area ${index + 1}`)}.`],
-    ),
-    nonGoals: epic.nonGoals,
-    source,
-  }))
+  const epics: EpicArtifact[] = epicSeed.map((epic, index) => {
+    const mappedCapability = capabilities[index % capabilities.length]
+    return {
+      id: id('epic', index),
+      capability: mappedCapability.id,
+      title: epic.title,
+      objective: epic.objective,
+      outcomes: normalizeList(
+        [
+          ...(epic.outcomes || []),
+          `Primary outcome focus: ${focusForIndex(controlStatements, index, `digital control area ${index + 1}`)}.`,
+        ],
+        [`Primary outcome focus: ${focusForIndex(controlStatements, index, `digital control area ${index + 1}`)}.`],
+      ),
+      nonGoals: epic.nonGoals,
+      source,
+    }
+  })
 
   const seenFinalEpicTitles = new Set<string>()
   for (let index = 0; index < epics.length; index += 1) {
@@ -449,6 +468,8 @@ export async function deriveArtifacts(options: DeriveArtifactsOptions): Promise<
     const epicFrontMatter = {
       id: epic.id,
       epic_id: epic.id,
+      capability: epic.capability,
+      derived_from_capability: epic.capability,
       source: governanceLineage.sourcePath,
       source_path: governanceLineage.sourcePath,
       ...(governanceLineage.documentId ? { derived_from_document_id: governanceLineage.documentId } : {}),
@@ -456,7 +477,7 @@ export async function deriveArtifacts(options: DeriveArtifactsOptions): Promise<
     }
     writeArtifact(
       file,
-      `${frontMatter(epicFrontMatter)}# ${epic.title}\n\n## Objective\n${epic.objective}\n\n## Outcomes\n${markdownList(epic.outcomes || ['Deliver measurable software controls aligned to governance requirements.'])}\n\n## Non-Goals\n${markdownList(epic.nonGoals || ['Physical/manual controls are out of implementation scope.'])}`,
+      `${frontMatter(epicFrontMatter)}# ${epic.title}\n\n## Capability\n${capabilityById.get(epic.capability)?.name || epic.capability} (${epic.capability})\n\n## Objective\n${epic.objective}\n\n## Outcomes\n${markdownList(epic.outcomes || ['Deliver measurable software controls aligned to governance requirements.'])}\n\n## Non-Goals\n${markdownList(epic.nonGoals || ['Physical/manual controls are out of implementation scope.'])}`,
     )
   }
 
@@ -549,7 +570,7 @@ export async function deriveArtifacts(options: DeriveArtifactsOptions): Promise<
       })
 
       const createdFeature = featureResults[featureResults.length - 1]
-      const featureFile = `specs/capabilities/${createdFeature.id}.md`
+      const featureFile = `specs/features/${createdFeature.id}.md`
       const featureFrontMatter = {
         id: createdFeature.id,
         feature_id: createdFeature.id,
@@ -647,7 +668,7 @@ export async function deriveArtifacts(options: DeriveArtifactsOptions): Promise<
       '## Repo Context',
       markdownList([
         'Primary code paths: src/cli/, src/pipeline/, src/config/',
-        'Generated artifacts: specs/epics/, specs/capabilities/, specs/stories/, work-items/prompts/stories/',
+        'Generated artifacts: specs/capabilities/, specs/epics/, specs/features/, specs/stories/, work-items/prompts/stories/',
         `Story linkage: ${story.id} -> ${story.feature} -> ${story.epic}`,
       ]),
       '',
@@ -871,6 +892,7 @@ export function resolveArtifactByIdOrPath(artifact: string): { path: string; dat
 
   const dirs = [
     'specs/stories',
+    'specs/features',
     'specs/capabilities',
     'specs/epics',
     'work-items/prompts/stories',

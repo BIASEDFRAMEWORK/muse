@@ -79,8 +79,9 @@ node dist/cli/index.js commit --pr
 After a successful `muse apply`:
 
 - `specs/governance/`
-- `specs/epics/`
 - `specs/capabilities/`
+- `specs/epics/`
+- `specs/features/`
 - `specs/stories/`
 - `work-items/prompts/stories/`
 - `specs/decisions/`

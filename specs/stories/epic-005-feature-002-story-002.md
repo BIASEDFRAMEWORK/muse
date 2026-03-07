@@ -10,23 +10,21 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# Store Audit Logs Securely
+# Enforce adaptive rate limiting on document retrieval endpoints
 
 ## User Story
-As a compliance officer, I want to I want API access logs to be stored in a tamper-evident manner, so that I can so that audit trails maintain integrity for regulatory compliance.
+As a system, I want to I want to automatically apply appropriate rate limits to users based on their assigned tier when they access document endpoints, so that I can system resources are protected while ensuring fair access according to user privileges.
 
 ## Acceptance Criteria
-- Audit logs are written to append-only storage system
-- Log entries include cryptographic hash of previous entry for chain integrity
-- Logs are stored separately from application database
-- Log storage has different access controls than main application
-- Failed log writes trigger system alerts
+- GET /documents/{documentId} endpoint enforces user's tier-specific rate limits
+- GET /documents/{documentId}/metadata endpoint enforces user's tier-specific rate limits
+- Rate limit headers (X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset) are included in responses
+- HTTP 429 status returned with Retry-After header when limits exceeded
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement log rotation with maximum file size limits
-- Use dedicated logging service or database table with insert-only permissions
-- Consider using blockchain-style hash chaining for tamper detection
-- Configure log retention policy based on compliance requirements
-- Implement dead letter queue for failed log writes
+- Implement rate limiting middleware that runs before endpoint handlers
+- Use user authentication context to determine tier assignment
+- Implement token bucket or sliding window counter in Redis
+- Include rate limit information in response headers per RFC 6585
 - Implementation should prioritize The API exposes read-only access:.

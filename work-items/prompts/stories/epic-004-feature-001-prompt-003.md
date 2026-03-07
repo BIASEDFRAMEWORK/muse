@@ -9,32 +9,33 @@ source: specs/governance/original-document-system-of-record.digital.md
 # AI Implementation Prompt: epic-004-feature-001-prompt-003
 
 ## Objective
-Implement Enforce document access control based on user roles.
+Implement Validate document integrity on retrieval.
 
 ## Repo Context
 - Primary code paths: src/cli/, src/pipeline/, src/config/
-- Generated artifacts: specs/epics/, specs/capabilities/, specs/stories/, work-items/prompts/stories/
+- Generated artifacts: specs/capabilities/, specs/epics/, specs/features/, specs/stories/, work-items/prompts/stories/
 - Story linkage: epic-004-feature-001-story-003 -> epic-004-feature-001 -> epic-004
 
 ## Required Changes
-1. Implement Enforce document access control based on user roles.
-2. Implement middleware pattern for consistent permission checking
-3. Use role-based access control (RBAC) with configurable permissions
-4. Cache user permissions to reduce database queries
-5. Integrate with existing authentication system for user context
+1. Implement Validate document integrity on retrieval.
+2. Implement background hash calculation to minimize response latency
+3. Store original hash values securely in metadata database
+4. Consider using streaming hash calculation for large files
+5. Add configuration options for hash algorithm selection
 
 ## Constraints
 - Preserve traceability metadata and naming conventions for generated artifacts.
-- Do not modify files under /contracts without explicit instruction.
+- Do not modify files under /docs/organizational-contracts without explicit instruction.
 - Keep changes scoped to the requested objective and avoid unrelated refactors.
 - Use governance source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 
 ## Acceptance Criteria
-- System validates user permissions before allowing document access
-- Access control rules are applied consistently across all API endpoints
-- Unauthorized access attempts are logged with user ID and timestamp
-- Permission checks complete within 50ms to avoid impacting response times
-- System supports multiple role types (read-only, full-access, admin)
+- System calculates and compares document hash on each retrieval request
+- Returns HTTP 500 with error details when integrity check fails
+- Logs integrity validation results for audit purposes
+- Integrity check completes within 500ms for documents under 10MB
+- System supports multiple hash algorithms (SHA-256, MD5) for validation
+- Failed integrity checks trigger automated alerts to administrators
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Validation
@@ -45,15 +46,16 @@ Implement Enforce document access control based on user roles.
 Return a patch plus a short summary of modified files and validation results.
 
 ## Implementation Brief
-Implement Enforce document access control based on user roles.
-Context: I want the system to automatically enforce access permissions.
+Implement Validate document integrity on retrieval.
+Context: I want the system to automatically verify document integrity when accessed.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- System validates user permissions before allowing document access
-- Access control rules are applied consistently across all API endpoints
-- Unauthorized access attempts are logged with user ID and timestamp
-- Permission checks complete within 50ms to avoid impacting response times
-- System supports multiple role types (read-only, full-access, admin)
+- System calculates and compares document hash on each retrieval request
+- Returns HTTP 500 with error details when integrity check fails
+- Logs integrity validation results for audit purposes
+- Integrity check completes within 500ms for documents under 10MB
+- System supports multiple hash algorithms (SHA-256, MD5) for validation
+- Failed integrity checks trigger automated alerts to administrators
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-004-feature-001-story-003 (Enforce document access control based on user roles).
+- Implementation outcome is unique to epic-004-feature-001-story-003 (Validate document integrity on retrieval).

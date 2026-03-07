@@ -10,22 +10,23 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# Handle metadata retrieval errors gracefully
+# Implement role-based authorization for document access
 
 ## User Story
-As a API consumer, I want to receive appropriate error responses when metadata cannot be retrieved, so that I can I can handle failures programmatically and provide meaningful feedback to users.
+As a system administrator, I want to configure role-based permissions to control which documents users can access, so that I can I can ensure users only access documents they are authorized to view.
 
 ## Acceptance Criteria
-- Returns 404 with descriptive error message when document not found
-- Returns 500 with generic error message for server-side failures
-- Error responses follow consistent JSON structure with error code and message
-- No sensitive system information is exposed in error responses
-- All error scenarios are logged appropriately
+- Each API key is associated with one or more roles (viewer, admin, etc.)
+- Document access is restricted based on user role permissions
+- Unauthorized access attempts return HTTP 403 Forbidden
+- Role permissions are enforced on both GET /documents/{documentId} and GET /documents/{documentId}/metadata endpoints
+- System supports hierarchical roles where higher roles inherit lower role permissions
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement standardized error response format across all endpoints
-- Add try-catch blocks around database operations
-- Use appropriate HTTP status codes for different error types
-- Include correlation IDs in error responses for troubleshooting
+- Implement role-permission mapping in database or configuration
+- Create authorization middleware that runs after authentication
+- Document metadata should include access control information
+- Use consistent error response format for authorization failures
+- Consider implementing resource-level permissions for fine-grained control
 - Implementation should prioritize The API exposes read-only access:.

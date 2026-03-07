@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 
 type ArtifactSummary = {
+  capabilities: string[]
   epics: string[]
   features: string[]
   stories: string[]
@@ -26,8 +27,9 @@ function listMarkdownFiles(...directories: string[]): string[] {
 
 function summarizeArtifacts(): ArtifactSummary {
   return {
+    capabilities: listMarkdownFiles('specs/capabilities'),
     epics: listMarkdownFiles('specs/epics'),
-    features: listMarkdownFiles('specs/capabilities'),
+    features: listMarkdownFiles('specs/features'),
     stories: listMarkdownFiles('specs/stories'),
     prompts: listMarkdownFiles('work-items/prompts/stories'),
   }
@@ -190,7 +192,7 @@ Use deterministic fallback logic for epics/features/stories/prompts when AI gene
 ## Source Context
 - Governance source: \`${governanceMarkdownPath}\`
 - Input size: ${content.length} characters
-- Artifact counts: epics=${artifactSummary.epics.length}, features=${artifactSummary.features.length}, stories=${artifactSummary.stories.length}, prompts=${artifactSummary.prompts.length}
+- Artifact counts: capabilities=${artifactSummary.capabilities.length}, epics=${artifactSummary.epics.length}, features=${artifactSummary.features.length}, stories=${artifactSummary.stories.length}, prompts=${artifactSummary.prompts.length}
 `
   fs.writeFileSync(outputPath, text, 'utf8')
   return outputPath

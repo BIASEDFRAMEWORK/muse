@@ -10,23 +10,24 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# Secure document retrieval with authentication
+# Protected Document Streaming Endpoint
 
 ## User Story
-As a authenticated user, I want to I want to retrieve documents and metadata using authenticated requests, so that I can so that I can access document content securely while preventing unauthorized access.
+As a Authenticated User, I want to stream original document bytes through authenticated API endpoint, so that I can securely retrieve document content with proper authorization.
 
 ## Acceptance Criteria
-- GET /documents/{documentId} requires valid JWT authentication
-- GET /documents/{documentId}/metadata requires valid JWT authentication
-- Unauthenticated requests to document endpoints return 401 Unauthorized
-- Authenticated requests return document data with appropriate content headers
-- Document access is logged with user identity from JWT token
+- GET /documents/{documentId} requires valid JWT token
+- Endpoint streams original document bytes as response body
+- Content-Type header matches original document MIME type
+- Content-Length header includes document size
+- Unauthorized requests return 401, forbidden requests return 403
+- Invalid document IDs return 404 Not Found
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Apply JWT authentication middleware to both document endpoints
-- Preserve existing streaming behavior for document bytes
-- Log user ID from JWT sub claim for audit purposes
-- Maintain existing response formats and headers
-- Ensure rate limiting is applied to document retrieval endpoints
+- Apply JWT validation and role-based access control middleware
+- Use streaming response to handle large documents efficiently
+- Implement proper error handling for missing or corrupted documents
+- Set appropriate cache headers for document content
+- Log document access events with user ID and timestamp
 - Implementation should prioritize The API exposes read-only access:.

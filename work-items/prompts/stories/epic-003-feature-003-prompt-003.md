@@ -9,32 +9,32 @@ source: specs/governance/original-document-system-of-record.digital.md
 # AI Implementation Prompt: epic-003-feature-003-prompt-003
 
 ## Objective
-Implement Provide real-time access monitoring dashboard.
+Implement Search audit trail by user activity.
 
 ## Repo Context
 - Primary code paths: src/cli/, src/pipeline/, src/config/
-- Generated artifacts: specs/epics/, specs/capabilities/, specs/stories/, work-items/prompts/stories/
+- Generated artifacts: specs/capabilities/, specs/epics/, specs/features/, specs/stories/, work-items/prompts/stories/
 - Story linkage: epic-003-feature-003-story-003 -> epic-003-feature-003 -> epic-003
 
 ## Required Changes
-1. Implement Provide real-time access monitoring dashboard.
-2. Use WebSocket connections for real-time updates
-3. Implement caching layer for dashboard performance
-4. Create background jobs to calculate access statistics
-5. Use time-series database for efficient time-based queries
+1. Implement Search audit trail by user activity.
+2. Index audit logs by user_id for efficient user-based queries
+3. Join audit logs with document metadata table for enriched responses
+4. Consider rate limiting for audit queries to prevent abuse
+5. Implement proper access controls - users should only see their own audit history unless they have admin privileges
 
 ## Constraints
 - Preserve traceability metadata and naming conventions for generated artifacts.
-- Do not modify files under /contracts without explicit instruction.
+- Do not modify files under /docs/organizational-contracts without explicit instruction.
 - Keep changes scoped to the requested objective and avoid unrelated refactors.
 - Use governance source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 
 ## Acceptance Criteria
-- Dashboard displays active document access sessions in real-time
-- Shows top accessed documents and most active users
-- Provides filters for time range, user, and document type
-- Displays alerts for suspicious access patterns
-- Updates automatically without manual refresh
+- GET /audit/users/{userId}/access-history returns all document access attempts by the user
+- Response includes document ID, timestamp, access type, and outcome for each entry
+- Support date range filtering and pagination
+- Include document metadata (title, classification level) in response when available
+- Handle cases where user ID doesn't exist in audit logs gracefully
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Validation
@@ -45,15 +45,15 @@ Implement Provide real-time access monitoring dashboard.
 Return a patch plus a short summary of modified files and validation results.
 
 ## Implementation Brief
-Implement Provide real-time access monitoring dashboard.
-Context: I want to view real-time document access activity through a dashboard.
+Implement Search audit trail by user activity.
+Context: query all document access attempts by a specific user across all documents.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- Dashboard displays active document access sessions in real-time
-- Shows top accessed documents and most active users
-- Provides filters for time range, user, and document type
-- Displays alerts for suspicious access patterns
-- Updates automatically without manual refresh
+- GET /audit/users/{userId}/access-history returns all document access attempts by the user
+- Response includes document ID, timestamp, access type, and outcome for each entry
+- Support date range filtering and pagination
+- Include document metadata (title, classification level) in response when available
+- Handle cases where user ID doesn't exist in audit logs gracefully
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-003-feature-003-story-003 (Provide real-time access monitoring dashboard).
+- Implementation outcome is unique to epic-003-feature-003-story-003 (Search audit trail by user activity).

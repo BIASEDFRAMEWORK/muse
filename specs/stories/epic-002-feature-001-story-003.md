@@ -10,23 +10,22 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governa
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# Verify document integrity using cryptographic hashes
+# Query access events by time range
 
 ## User Story
-As a system administrator, I want to compare stored cryptographic hashes against recalculated hashes of retrieved documents, so that I can I can detect any tampering or corruption of stored documents.
+As a security analyst, I want to retrieve all document access events within a specified time period, so that I can I can analyze system-wide access patterns and identify potential security incidents.
 
 ## Acceptance Criteria
-- System calculates hash of retrieved document bytes on demand
-- Comparison between stored and calculated hashes is performed
-- Returns verification status (valid/invalid) in response
-- Logs verification attempts and results for audit purposes
-- Supports multiple hash algorithms for verification
-- Process completes within reasonable time limits for large documents
+- API endpoint GET /audit/access-events supports start_date and end_date query parameters
+- Date parameters accept ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ)
+- Results include document ID, timestamp, user identifier, endpoint, and response status
+- Results are paginated and sorted by timestamp descending
+- Maximum query range is limited to 90 days to prevent performance issues
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement hash calculation using streaming to handle large files
-- Use constant-time comparison to prevent timing attacks
-- Consider implementing background verification jobs for periodic checks
-- Store verification results with timestamps for audit trails
+- Index access events by timestamp for efficient range queries
+- Validate date range inputs and return 400 for invalid formats
+- Implement rate limiting on audit endpoints to prevent abuse
+- Add optional filters for user_id, status_code, and endpoint_type
 - Implementation should prioritize The API exposes read-only access:.

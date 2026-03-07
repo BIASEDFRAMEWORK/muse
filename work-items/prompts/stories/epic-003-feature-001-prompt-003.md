@@ -9,32 +9,31 @@ source: specs/governance/original-document-system-of-record.digital.md
 # AI Implementation Prompt: epic-003-feature-001-prompt-003
 
 ## Objective
-Implement Retrieve document metadata via read-only API.
+Implement Validate user authentication for document access.
 
 ## Repo Context
 - Primary code paths: src/cli/, src/pipeline/, src/config/
-- Generated artifacts: specs/epics/, specs/capabilities/, specs/stories/, work-items/prompts/stories/
+- Generated artifacts: specs/capabilities/, specs/epics/, specs/features/, specs/stories/, work-items/prompts/stories/
 - Story linkage: epic-003-feature-001-story-003 -> epic-003-feature-001 -> epic-003
 
 ## Required Changes
-1. Implement Retrieve document metadata via read-only API.
-2. Store metadata separately from document content for fast retrieval
-3. Include fields: hash, size, contentType, createdAt, documentId
-4. Implement efficient indexing for metadata queries
-5. Add audit trail fields: storageConfirmation, integrityStatus
+1. Implement Validate user authentication for document access.
+2. Implement JWT token validation middleware
+3. Support token refresh mechanism for expired tokens
+4. Include rate limiting to prevent brute force authentication attempts
+5. Log authentication failures for security monitoring
 
 ## Constraints
 - Preserve traceability metadata and naming conventions for generated artifacts.
-- Do not modify files under /contracts without explicit instruction.
+- Do not modify files under /docs/organizational-contracts without explicit instruction.
 - Keep changes scoped to the requested objective and avoid unrelated refactors.
 - Use governance source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 
 ## Acceptance Criteria
-- GET /documents/{documentId}/metadata endpoint returns JSON metadata
-- Response includes document hash, size, timestamp, and content type
-- Metadata includes audit trail information like creation date and storage confirmation
-- Endpoint returns 404 for non-existent documents
-- Response time is consistently fast regardless of document size
+- Given a request without authentication token, when accessing any document endpoint, then return 401 Unauthorized
+- Given a request with invalid authentication token, when accessing any document endpoint, then return 401 Unauthorized
+- Given a request with expired authentication token, when accessing any document endpoint, then return 401 Unauthorized
+- Given a request with valid authentication token, when accessing any document endpoint, then proceed to authorization check
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Validation
@@ -45,15 +44,14 @@ Implement Retrieve document metadata via read-only API.
 Return a patch plus a short summary of modified files and validation results.
 
 ## Implementation Brief
-Implement Retrieve document metadata via read-only API.
-Context: retrieve document metadata without accessing the document content.
+Implement Validate user authentication for document access.
+Context: I want the system to authenticate users before allowing document access.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- GET /documents/{documentId}/metadata endpoint returns JSON metadata
-- Response includes document hash, size, timestamp, and content type
-- Metadata includes audit trail information like creation date and storage confirmation
-- Endpoint returns 404 for non-existent documents
-- Response time is consistently fast regardless of document size
+- Given a request without authentication token, when accessing any document endpoint, then return 401 Unauthorized
+- Given a request with invalid authentication token, when accessing any document endpoint, then return 401 Unauthorized
+- Given a request with expired authentication token, when accessing any document endpoint, then return 401 Unauthorized
+- Given a request with valid authentication token, when accessing any document endpoint, then proceed to authorization check
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-003-feature-001-story-003 (Retrieve document metadata via read-only API).
+- Implementation outcome is unique to epic-003-feature-001-story-003 (Validate user authentication for document access).

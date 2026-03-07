@@ -4,6 +4,7 @@ import { loadConfig } from '../../config/loadConfig'
 import { deriveArtifacts } from '../../pipeline/deriveArtifacts'
 import { generateDecisions } from '../../pipeline/generateDecisions'
 import { generateTodo } from '../../pipeline/generateTodo'
+import { extractCapabilities } from '../../pipeline/extractCapabilities'
 
 export async function runCommand(file: string): Promise<void> {
   const config = loadConfig()
@@ -13,6 +14,7 @@ export async function runCommand(file: string): Promise<void> {
     markdownPath = convertDocumentToMarkdown(file)
   }
 
+  extractCapabilities(markdownPath)
   await deriveArtifacts({ sourceMarkdownPath: markdownPath, ai: config.ai })
   generateDecisions(markdownPath)
   generateTodo()
