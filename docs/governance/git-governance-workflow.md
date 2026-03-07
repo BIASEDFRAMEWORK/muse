@@ -1,3 +1,7 @@
+---
+document_id: gov-git-governance-workflow
+---
+
 # Git Governance Workflow
 
 ## Purpose

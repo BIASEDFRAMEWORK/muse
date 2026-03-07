@@ -1,127 +1,96 @@
-# Governance Document Validation Guide
+# Muse Validation Guide (CLI-first)
 
-## Understanding the 422 Error
+## Quick Checks
 
-When you upload a document and receive a **422 Unprocessable Entity** error, it means the document failed validation before being processed by the pipeline. This is **intentional** and working as designed.
-
-### What Validation Checks For
-
-The Governance Markdown Validator ensures documents meet minimum quality standards:
-
-1. **Section Headings**: Document must contain at least 1 section heading
-   - Valid heading formats: `# Title`, `## Section`, `### Subsection`
-   - Plain text headings (bold or not) are NOT recognized
-   - Markdown heading syntax is **required**
-
-2. **Content Length**: Document must be at least 500 characters after conversion
-
-3. **Structure**: Content must follow governance document conventions
-
-## Why Your Document Failed
-
-### Issue: "No section headings found"
-
-This means when your PDF was converted to text, the heading structure was not preserved or detected.
-
-### Common Causes
-
-1. **PDF is image-based (scanned)**: If your PDF is a scan or screenshot, the text extraction library cannot read it
-   - Solution: Use a searchable PDF with actual text content
-
-2. **PDF has visual formatting, not markdown headings**: If your PDF uses bold or larger fonts for headings instead of actual heading structure
-   - Solution: Your document content was extracted, but it lacks markdown heading syntax
-
-3. **PDF is too short**: If the extracted text is less than 500 characters
-   - Solution: Provide a more substantial document
-
-## How to Fix
-
-### Option 1: Ensure Your PDF Has Clear Text (Recommended)
-
-1. Create or download a PDF with actual text content (not scanned/image)
-2. Make sure it has clear section structure with headings
-3. Example structure:
-
-   ```yaml
-   # Governance Policy Document
-   
-   ## Section 1: Overview
-   This policy outlines the governance requirements...
-   
-   ## Section 2: Requirements
-   Organizations must implement the following:
-   - Clear organizational structure
-   - Regular compliance reviews
-   - Documented procedures
-   
-   ## Section 3: Implementation
-   Implementation follows these guidelines...
-   ```
-
-### Option 2: Convert Your Document First
-
-If you have a document in Word, Google Docs, or another format:
-
-1. Export to PDF as a searchable PDF (not image)
-2. Ensure it has section headings using standard formatting
-3. Upload to Muse
-
-## Testing With a Valid Document
-
-To test the pipeline end-to-end:
+Run these in order:
 
 ```bash
-# Use the test script to create and upload a sample governance document
-bash ./scripts/smoke_test.sh
-```plaintext
+npm run build
+node dist/cli/index.js apply
+npm run traceability:check
+```
 
-The smoke test includes a sample governance document that passes validation.
+## Common Issues
 
-## API Response Details
+### 1) `muse apply` fails on markdown conversion
 
-### Success Response (200 OK)
+Cause:
+- MarkItDown is not installed in Python.
 
-```json
-{
-  "ok": true,
-  "document": { /* document metadata */ },
-  "markdown": "# Document Title\n...",
-  "epic": { /* derived epic */ },
-  "features": [ /* derived features */ ],
-  "user_stories": [ /* derived user stories */ ]
-}
-```plaintext
+Fix:
 
-### Validation Failure (422 Unprocessable Entity)
+```bash
+python3 -m pip install markitdown
+```
 
-```json
-{
-  "ok": false,
-  "error": "governance content validation failed",
-  "details": "[NO_STRUCTURE] Content has no section headings. Found 0, minimum required: 1.",
-  "validationBlockedPipeline": true
-}
-```plaintext
+Then rerun:
 
-The web UI now displays the full validation error message to help you understand what went wrong.
+```bash
+node dist/cli/index.js convertMD path/to/file.pdf
+```
 
-## Document Requirements Summary
+### 2) `traceability:check` fails
 
-| Requirement | Minimum | Notes |
-| ----------- | ------- | ----- |
-| Section Headings | 1 | Must use markdown syntax: `#`, `##`, etc. |
-| Content Length | 500 chars | After text extraction from PDF |
-| Document Type | Text PDF | Not scanned/image, must have searchable text |
-| Formatting | Markdown | Headings must use markdown heading syntax |
+Cause:
+- Missing lineage metadata or orphan artifacts.
 
-## Need Help?
+Fix:
+- Regenerate artifacts from governance markdown:
 
-If your document meets these requirements but still fails:
+```bash
+node dist/cli/index.js deriveArtifacts docs/derived/governance/<file>.md
+node dist/cli/index.js decisions docs/derived/governance/<file>.md
+node dist/cli/index.js todo docs/derived/governance/<file>.md
+npm run traceability:check
+```
 
-1. Check the error message displayed in the web UI
-2. Run `docker-compose logs api` to see validation details
-3. Verify your PDF opens in a text editor and contains readable text
+### 3) `muse explain` or `muse trace` cannot find artifact
 
----
+Cause:
+- ID/path mismatch.
 
-**Note**: This validation ensures that documents uploaded to Muse meet organizational governance standards. It prevents processing of incomplete or improperly structured documents.
+Fix:
+- Use a valid path (example):
+  - `node dist/cli/index.js explain docs/derived/user-stories/epic-001-feature-001-story-001.md`
+- Or use an existing ID:
+  - `node dist/cli/index.js trace epic-001-feature-001-story-001`
+
+### 4) `muse commit` fails
+
+Cause:
+- No changes staged, or `gh` not installed for PR creation.
+
+Fix:
+
+```bash
+git status
+node dist/cli/index.js commit
+```
+
+For PR mode, install and auth GitHub CLI first:
+
+```bash
+gh auth status
+node dist/cli/index.js commit --pr
+```
+
+## Expected Output Directories
+
+After a successful `muse apply`:
+
+- `docs/derived/governance/`
+- `docs/derived/epics/`
+- `docs/derived/features/`
+- `docs/derived/user-stories/`
+- `docs/derived/prompts/`
+- `docs/decisions/`
+- `docs/derived/todo/`
+
+## CI Validation
+
+Workflow `.github/workflows/muse-pipeline.yml` runs:
+
+- dependency install
+- build
+- `muse apply`
+- commit + PR automation

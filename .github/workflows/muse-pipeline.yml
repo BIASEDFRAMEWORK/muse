@@ -1,0 +1,67 @@
+name: Muse Pipeline
+
+permissions:
+  contents: write
+  pull-requests: write
+
+on:
+  push:
+    paths:
+      - 'docs/governance/**'
+  workflow_dispatch:
+
+jobs:
+  muse-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          python -m pip install --upgrade pip
+          pip install markitdown
+
+      - name: Build CLI
+        run: npm run build
+
+      - name: Initialize config if missing
+        run: |
+          if [ ! -f muse.yaml ]; then
+            node dist/cli/index.js init
+          fi
+
+      - name: Run Muse apply
+        run: node dist/cli/index.js apply
+
+      - name: Commit generated artifacts
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'muse: generated backlog artifacts'
+          file_pattern: docs/**
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: 'muse: generated backlog artifacts'
+          title: 'muse: generated backlog artifacts'
+          body: 'Automated Muse pipeline output updates from governance document changes.'
+          branch: muse/auto-generated-artifacts
+          labels: |
+            automation
+            muse

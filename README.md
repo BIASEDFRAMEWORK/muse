@@ -1,61 +1,75 @@
-# Muse (prototype)
+# Muse (CLI-first)
 
-Muse converts governance and compliance documents into Markdown,
-user stories, TODOs, and AI prompts.
+Muse is a CLI pipeline that converts governance documents into engineering artifacts.
 
-This is an intentionally minimal prototype scaffold.
+## What it does
 
-Security and authentication are deferred — everything runs locally with Docker
-Compose.
+1. Converts governance documents to markdown
+2. Derives epics, features, user stories, and AI prompts
+3. Generates architecture/product decision documents
+4. Builds a prioritized TODO backlog
+5. Supports explainability and traceability from CLI
 
-Quick start
+## Install
 
-1. Copy `.env.example` to `.env` and edit values if needed.
-2. Run: `docker-compose up --build`
-3. Health endpoints:
+```bash
+npm install
+npm run build
+```
 
-   - Web: [http://localhost:3000/](http://localhost:3000/)
-   - API: [http://localhost:4000/health](http://localhost:4000/health)
-   - Worker: [http://localhost:4100/health](http://localhost:4100/health)
+Microsoft MarkItDown is required for document conversion:
 
-Integration E2E upload test
+```bash
+python3 -m pip install markitdown
+```
 
-- Run locally: `npm run e2e-upload` or `bash ./scripts/e2e_upload.sh`. This script brings up a minimal stack (minio, api, web), posts a sample file to `http://localhost:3000/api/uploads`, asserts an HTTP 200 and `"ok": true` in the JSON response, and then tears the stack down. Docker and Docker Compose are required; the script uses ports 3000, 4000, and 9000.
+## CLI commands
 
-- CI: A GitHub Actions workflow `.github/workflows/integration.yml` runs this script on pull requests and can also be triggered manually from the Actions UI.
+```bash
+muse init
+muse apply
+muse convertMD <file>
+muse deriveArtifacts <markdown>
+muse decisions <markdown>
+muse todo <markdown>
+muse run <file>
+muse explain <artifact>
+muse trace <artifact>
+muse commit [--pr]
+```
 
-Structure
+## Declarative config
 
-- apps/web — Next.js frontend (minimal)
-- services/api — Node.js API (Express) with health route
-- services/workers — Node.js worker process (minimal health server)
-- contracts/, docs/, backlog/, prompts/ — placeholders for future artifacts
+Create `muse.yaml` with:
 
-Before implementing features, refer to:
+```yaml
+project: system-access-logging
 
-- **Guides**: [Developer Guide](./docs/guides/developer-guide.md), [Validation Guide](./docs/guides/validation-guide.md)
-- **Architecture**: [System Architecture](./docs/architecture/system-architecture.md), [Architectural Decisions](./docs/architecture/)
-- **Contracts** (specifications):
-  - [Product Vision](./contracts/product-vision.md)
-  - [User Story Format](./contracts/user-story-format.md)
-  - [AI Prompt Format](./contracts/ai-prompt-format-spec.md)
-  - [AI Constraints Policy](./contracts/ai-constraints-policy.md)
-- **Examples**: [End-to-End Workflow](./docs/examples/end-to-end-workflow.md)
+governance:
+  source: docs/governance/policy.pdf
 
-**Full Documentation**: See [docs/README.md](./docs/README.md) for complete documentation index.
-Guidelines
+pipeline:
+  convert_markdown: true
+  derive_artifacts: true
+  decisions: true
+  todo: true
 
-- Prefer clarity over cleverness; code is intentionally explicit and commented.
-- Keep business logic out of this scaffold; add it to services as needed.
+ai:
+  provider: anthropic
+  model: claude-sonnet-4-20250514
+```
 
-Project constraints (apply to contributors):
+## Generated outputs
 
-- **Do NOT modify files under `/contracts`** without explicit instruction.
-- **Do NOT modify tests to make failures pass.** Fix code or add tests that
-  reflect intended behavior.
-- **Prefer explicit, readable code** and add `// TODO:` comments instead of
-  guessing behavior.
-- **Assume regulated environments;** favor explicit checks, clear logs, and
-  auditability.
+- `docs/derived/governance/`
+- `docs/derived/epics/`
+- `docs/derived/features/`
+- `docs/derived/user-stories/`
+- `docs/derived/prompts/`
+- `docs/decisions/`
+- `docs/derived/todo/`
 
-If anything is unclear, open an issue and pick sensible defaults.
+## Notes
+
+- Keep business logic in `src/pipeline/` and keep CLI parsing in `src/cli/`.
+- Do not modify files in `contracts/` unless explicitly requested.

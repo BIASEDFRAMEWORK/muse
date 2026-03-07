@@ -1,13 +1,8 @@
 # Default ownership: Admin + Platform team
 * @dgaspard @muse-org/platform
 
-# Frontend (Next.js web application)
-apps/web/ @dgaspard @muse-org/frontend
-
-# Backend (API, pipeline, and workers)
-services/api/ @dgaspard @muse-org/backend
-services/pipeline/ @dgaspard @muse-org/backend
-services/workers/ @dgaspard @muse-org/backend
+# CLI source and pipeline
+src/ @dgaspard @muse-org/platform @muse-org/ai
 
 # AI & Prompting logic
 prompts/ @dgaspard @muse-org/ai
@@ -19,10 +14,6 @@ docs/FRONTEND_FEATURE_GENERATION_IMPLEMENTATION.md @dgaspard @muse-org/ai
 docs/governance/ai-derivation-guardrails.md @dgaspard @muse-org/ai
 
 # Security & Compliance
-services/api/src/auth/ @dgaspard @muse-org/security
-services/api/src/secrets/ @dgaspard @muse-org/security
-services/api/src/upload/ @dgaspard @muse-org/security
-services/pipeline/app/storage/ @dgaspard @muse-org/security
 storage/ @dgaspard @muse-org/security
 contracts/ai-constraints-policy.md @dgaspard @muse-org/security
 contracts/ai-prompt-format-spec.md @dgaspard @muse-org/security
@@ -37,15 +28,11 @@ docs/ARTIFACT-BOUNDARY-VALIDATION.md @dgaspard @muse-org/security
 scripts/ @dgaspard @muse-org/platform
 
 # Infrastructure & Configuration
-Dockerfile @dgaspard @muse-org/platform
-docker-compose.yml @dgaspard @muse-org/platform
 package.json @dgaspard @muse-org/platform
 package-lock.json @dgaspard @muse-org/platform
 */package.json @dgaspard @muse-org/platform
-services/pipeline/requirements.txt @dgaspard @muse-org/platform
 tsconfig.json @dgaspard @muse-org/platform
 vitest.config.ts @dgaspard @muse-org/platform
-next.config.js @dgaspard @muse-org/platform
 
 # Documentation
 architecture/ @dgaspard @muse-org/docs

@@ -1,3 +1,7 @@
+---
+document_id: gov-original-document-system-of-record
+---
+
 # Original Document as System of Record
 
 ## Purpose

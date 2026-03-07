@@ -1,3 +1,7 @@
+---
+document_id: gov-markdown-derivation
+---
+
 # Markdown Derivation — Why, What, and How
 
 **Date:** January 10, 2026  

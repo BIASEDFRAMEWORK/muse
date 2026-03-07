@@ -21,12 +21,11 @@ expect contributors to follow.
 ## Getting started (local dev)
 
 - Copy `.env.example` → `.env` and adjust as needed.
-- Start the stack: `docker compose up --build` (recommended).
-- Health endpoints:
-  - API: `http://localhost:4000/health`
-  - Pipeline: `http://localhost:8000/health`
-  - Worker: `http://localhost:4100/health`
-- Smoke tests: `bash ./scripts/smoke_test.sh` (CI also runs this on push).
+- Install dependencies: `npm install`
+- Build CLI: `npm run build`
+- Initialize config: `npm run muse:init`
+- Run full pipeline: `node dist/cli/index.js apply`
+- Validate traceability: `npm run traceability:check`
 
 ## Making changes / PR checklist
 
@@ -36,13 +35,13 @@ expect contributors to follow.
   - Example: `MUSE-005: resolve TypeScript compilation errors from GitHub Actions`
 - Include a short description and manual verification steps (endpoints to
   call, env vars to set).
-- Run `./scripts/smoke_test.sh` before opening a PR; fix any failing
-  checks.
+- Run `npm run build` and `npm run traceability:check` before opening a PR;
+  fix any failing checks.
 - Add tests for new behavior where appropriate; do not change existing
   tests to force them to pass.
 - Use `// TODO:` comments for behavior that cannot be implemented yet and
   reference an issue if possible.
-- Document public API changes in `docs/` or the relevant service folder.
+- Document behavior changes in `docs/` or the relevant `src/` module.
 
 ## Contact
 

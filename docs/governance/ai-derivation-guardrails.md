@@ -1,3 +1,7 @@
+---
+document_id: gov-ai-derivation-guardrails
+---
+
 # AI Derivation Guardrails
 
 ## Scope Rules

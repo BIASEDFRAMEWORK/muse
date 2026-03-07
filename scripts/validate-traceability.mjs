@@ -6,10 +6,10 @@ import matter from 'gray-matter'
 const repoRoot = process.cwd()
 
 const dirs = {
-  governance: ['docs/governance', 'services/api/docs/governance'],
-  epics: ['docs/epics', 'services/api/docs/epics'],
-  features: ['docs/features', 'services/api/docs/features'],
-  stories: ['docs/stories', 'services/api/docs/stories']
+  governance: ['docs/governance', 'docs/derived/governance'],
+  epics: ['docs/derived/epics'],
+  features: ['docs/derived/features'],
+  stories: ['docs/derived/user-stories', 'docs/stories']
 }
 
 const errors = []
@@ -37,9 +37,6 @@ function shouldExcludeFile(filePath) {
   
   // Exclude epic-003 documentation files (completion status, quick reference)
   if (basename.includes('epic-003-completion') || basename.includes('epic-003-quickref')) return true
-  
-  // Exclude files in services/api/docs/* (test/example files)
-  if (relativePath.startsWith('services/api/docs/')) return true
   
   // Exclude files with temp directory references
   const content = fs.readFileSync(filePath, 'utf-8')
@@ -151,8 +148,8 @@ function collectEpics(muse) {
     
     const rel = path.relative(repoRoot, filePath)
     const data = readFrontMatterBlocks(filePath)[0]?.data || {}
-    const epicId = data.epic_id
-    const derivedFrom = data.derived_from || data.document_id || null
+    const epicId = data.epic_id || data.id
+    const derivedFrom = data.derived_from || data.document_id || data.source || null
     if (!epicId) {
       errors.push(`Epic file missing epic_id in front matter: ${rel}`)
       continue
@@ -183,8 +180,8 @@ function collectFeatures(muse) {
     
     const rel = path.relative(repoRoot, filePath)
     const data = readFrontMatterBlocks(filePath)[0]?.data || {}
-    const featureId = data.feature_id
-    const epicRef = data.epic_id || data.derived_from_epic
+    const featureId = data.feature_id || data.id
+    const epicRef = data.epic_id || data.derived_from_epic || data.epic
     const parent = data.parent_feature_id || null
     if (!featureId) {
       errors.push(`Feature file missing feature_id in front matter: ${rel}`)
@@ -229,9 +226,9 @@ function collectStories(muse) {
 
     for (const block of blocks) {
       const data = block.data || {}
-      const storyId = data.story_id
-      const featureRef = data.derived_from_feature
-      const epicRef = data.derived_from_epic
+      const storyId = data.story_id || data.id
+      const featureRef = data.derived_from_feature || data.feature || data.feature_id
+      const epicRef = data.derived_from_epic || data.epic || data.epic_id
       if (!storyId) {
         errors.push(`Story entry missing story_id in ${rel}`)
         continue
@@ -280,7 +277,9 @@ function recordDuplicateIds(items, key, label) {
 function validateReferences(governanceMap, epicMap, featureMap, storyMap) {
   for (const epic of epicMap.values()) {
     if (!epic.derived_from) continue
-    if (!governanceMap.has(epic.derived_from)) {
+    const derivedPath = path.join(repoRoot, epic.derived_from)
+    const resolvesByPath = epic.derived_from.endsWith('.md') && fs.existsSync(derivedPath)
+    if (!governanceMap.has(epic.derived_from) && !resolvesByPath) {
       errors.push(`Epic ${epic.epic_id} references missing governance document_id: ${epic.derived_from}`)
     }
   }

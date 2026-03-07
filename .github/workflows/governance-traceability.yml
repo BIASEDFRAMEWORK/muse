@@ -18,10 +18,13 @@ jobs:
           persist-credentials: false
 
       - name: Use Node.js 20
-        uses: ./.github/actions/setup-node-workspaces
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: echo "Installed via composite action"
+        run: npm ci
 
       - name: Run governance traceability validation
         run: npm run traceability:check
