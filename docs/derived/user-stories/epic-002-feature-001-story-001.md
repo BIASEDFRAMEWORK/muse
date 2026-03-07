@@ -10,22 +10,20 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Document retrieval with authentication
+# As an authenticated user, I can retrieve document metadata based on my role permissions
 
 ## User Story
-As a API consumer, I want to request a specific document by ID with valid credentials, so that I can I can securely access authorized documents.
+As a authenticated user, I want to I can access the GET /documents/{documentId}/metadata endpoint and receive metadata only for documents I have permission to view, so that I can so that I can see document information relevant to my access level without exposing restricted metadata.
 
 ## Acceptance Criteria
-- GET /documents/{documentId} returns 200 with document bytes when authenticated
-- GET /documents/{documentId} returns 401 when authentication is missing
-- GET /documents/{documentId} returns 403 when user lacks document access permissions
-- GET /documents/{documentId} returns 404 when document does not exist
-- Response includes appropriate Content-Type header for document format
+- When I make a GET request to /documents/{documentId}/metadata with valid authentication, I receive a 200 response with metadata I'm authorized to see
+- When I request metadata for a document I don't have access to, I receive a 403 Forbidden response
+- When I request metadata for a non-existent document, I receive a 404 Not Found response
+- The response only includes metadata fields that my role is permitted to access
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Implement JWT or API key authentication middleware
-- Add document access control checks before streaming bytes
-- Stream response for large documents to optimize memory usage
-- Log all document access attempts for audit trail
+- Implement role-based filtering of metadata fields before returning response
+- Add authorization middleware to validate user permissions against document access rules
+- Cache user role permissions to avoid database lookups on each request
 - Implementation should prioritize The API exposes read-only access:.

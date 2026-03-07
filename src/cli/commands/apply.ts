@@ -7,6 +7,7 @@ import { filterDigitalContent } from '../../pipeline/filterDigitalContent'
 
 export interface ApplyCommandOptions {
   fast?: boolean
+  demo?: boolean
 }
 
 export async function applyCommand(options: ApplyCommandOptions = {}): Promise<void> {
@@ -24,13 +25,15 @@ export async function applyCommand(options: ApplyCommandOptions = {}): Promise<v
   process.stdout.write(`Using digital-only governance source: ${governanceMarkdown}\n`)
 
   if (config.pipeline.derive_artifacts) {
-    if (options.fast) {
+    if (options.demo) {
+      process.stdout.write('Demo mode enabled for apply: fastest profile with progressive output.\n')
+    } else if (options.fast) {
       process.stdout.write('Fast mode enabled for apply: reduced token budget and parallel story generation.\n')
     }
     await deriveArtifacts({
       sourceMarkdownPath: governanceMarkdown,
       ai: config.ai,
-      mode: options.fast ? 'fast' : 'standard',
+      mode: options.demo ? 'demo' : options.fast ? 'fast' : 'standard',
     })
   }
 

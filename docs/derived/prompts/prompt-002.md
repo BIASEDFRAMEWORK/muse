@@ -1,20 +1,15 @@
 ---
 id: prompt-002
-story: epic-001-feature-001-story-002
+story: epic-002-feature-002-story-001
 source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Implementation Prompt for epic-001-feature-001-story-002
+# Implementation Prompt for epic-002-feature-002-story-001
 
-Implement Retrieve document metadata by ID.
-Context: request metadata for a document without downloading the full content.
+Implement Comprehensive Access Audit Trail — implementation path.
+Context: implement comprehensive access audit trail for the implementation path.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- GET /documents/{documentId}/metadata returns HTTP 200 with JSON metadata when document exists
-- Response includes document size, content type, upload timestamp, and checksum
-- GET /documents/{documentId}/metadata returns HTTP 404 when document does not exist
-- Response time is consistently fast regardless of document size
-- Metadata includes immutable properties that cannot be modified after creation
-- Response follows consistent JSON schema structure
-- Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-001-feature-001-story-002 (Retrieve document metadata by ID).
+- Behavior for the implementation path is implemented behind automated tests with deterministic outcomes.
+- Audit and security events for the implementation path are emitted with identifiers and timestamps.
+- Implementation outcome is unique to epic-002-feature-002-story-001 (Comprehensive Access Audit Trail — implementation path).

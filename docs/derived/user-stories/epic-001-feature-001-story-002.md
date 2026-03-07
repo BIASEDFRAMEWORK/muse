@@ -10,24 +10,17 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Retrieve document metadata by ID
+# Document Retrieval API Endpoints — operational evidence path
 
 ## User Story
-As a API consumer, I want to request metadata for a document without downloading the full content, so that I can I can inspect document properties and make decisions before retrieving the full document.
+As a platform engineer, I want to implement document retrieval api endpoints for the operational evidence path, so that I can satisfy governance requirements for the operational evidence path.
 
 ## Acceptance Criteria
-- GET /documents/{documentId}/metadata returns HTTP 200 with JSON metadata when document exists
-- Response includes document size, content type, upload timestamp, and checksum
-- GET /documents/{documentId}/metadata returns HTTP 404 when document does not exist
-- Response time is consistently fast regardless of document size
-- Metadata includes immutable properties that cannot be modified after creation
-- Response follows consistent JSON schema structure
+- Behavior for the operational evidence path is implemented behind automated tests with deterministic outcomes.
+- Audit and security events for the operational evidence path are emitted with identifiers and timestamps.
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Store metadata separately from document content for fast retrieval
-- Include fields like: id, filename, content_type, size_bytes, created_at, checksum
-- Implement proper JSON serialization with consistent date formats
-- Consider adding ETag header based on document checksum for caching
-- Validate that metadata retrieval doesn't require loading document content
+- Apply least-privilege authorization checks for the operational evidence path.
+- Ensure structured logs for the operational evidence path are queryable for compliance evidence.
 - Implementation should prioritize The API exposes read-only access:.

@@ -8,22 +8,21 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Document Access Authorization
+# Authentication and Authorization Controls
 
 ## Capability
-Role-based access control system that validates user permissions before allowing document retrieval
+Implement API key-based authentication with role-based access control for document retrieval
 
 ## Implementation Notes
-- Integrate with OAuth 2.0 or JWT token validation middleware
-- Implement document-level access control lists (ACLs) stored in metadata database
-- Create permission matrix supporting read permissions by user role and document classification
-- Cache authorization decisions with configurable TTL to improve performance
+- Implement API key validation middleware with configurable key rotation
+- Create role-based permissions system with read permissions per document or collection
+- Add request rate limiting per API key with configurable thresholds
+- Implement IP whitelisting support for additional security layers
 - Primary delivery slice: The API exposes read-only access:.
 
 ## Acceptance Criteria
-- Unauthorized requests return 401 Unauthorized with proper WWW-Authenticate header
-- Users without document access permissions receive 403 Forbidden responses
-- Authorization checks complete within 100ms for cached decisions
-- Access control supports both individual user and role-based permissions
-- System logs all authorization decisions for compliance audit trails
+- All API endpoints require valid API key in Authorization header
+- Users can only access documents they have explicit read permissions for
+- Rate limiting blocks requests exceeding 1000 calls per hour per API key
+- Invalid or expired API keys return 401 Unauthorized with standard error format
 - Control focus for this feature: The API exposes read-only access:.

@@ -10,23 +10,15 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Retrieve Document by ID with Authorization
+# Authentication and Authorization Controls — implementation path
 
 ## User Story
-As a authenticated user, I want to I want to retrieve a document by its ID through the GET /documents/{documentId} endpoint, so that I can so that I can access the original document bytes if I have proper authorization.
+As a platform engineer, I want to implement authentication and authorization controls for the implementation path, so that I can satisfy governance requirements for the implementation path.
 
 ## Acceptance Criteria
-- Given a valid document ID and proper authorization, when I call GET /documents/{documentId}, then I receive the original document bytes as a stream
-- Given an invalid document ID, when I call GET /documents/{documentId}, then I receive a 404 Not Found response
-- Given a valid document ID but insufficient authorization, when I call GET /documents/{documentId}, then I receive a 403 Forbidden response
-- Given an unauthenticated request, when I call GET /documents/{documentId}, then I receive a 401 Unauthorized response
-- Given a valid authorized request, when I call GET /documents/{documentId}, then the response includes appropriate Content-Type headers
-- Outcome focus for this story: The API exposes read-only access:.
+- Behavior for the implementation path is implemented behind automated tests with deterministic outcomes.
+- Audit and security events for the implementation path are emitted with identifiers and timestamps.
 
 ## Technical Notes
-- Implement streaming response to handle large document files efficiently
-- Validate document ID format before database lookup
-- Integrate with authorization service to verify user permissions for specific document
-- Return original MIME type in Content-Type header based on stored metadata
-- Log access attempts for audit trail
-- Implementation should prioritize The API exposes read-only access:.
+- Apply least-privilege authorization checks for the implementation path.
+- Ensure structured logs for the implementation path are queryable for compliance evidence.

@@ -1,19 +1,18 @@
 ---
 id: prompt-006
-story: epic-001-feature-002-story-003
+story: epic-002-feature-001-story-002
 source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Implementation Prompt for epic-001-feature-002-story-003
+# Implementation Prompt for epic-002-feature-001-story-002
 
-Implement Role-based Document Access Control.
-Context: I want the system to enforce role-based access control for document retrieval endpoints.
+Implement As an authenticated user, I can stream document content based on my role permissions.
+Context: I can access the GET /documents/{documentId} endpoint to stream original document bytes only if my role has read access.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- Given a user with 'viewer' role, when they access a document they have permission to view, then they can successfully retrieve the document and metadata
-- Given a user with 'viewer' role, when they access a document they don't have permission to view, then they receive a 403 Forbidden response
-- Given a user with 'admin' role, when they access any document, then they can successfully retrieve the document and metadata
-- Given role permissions are updated, when a user accesses a document, then the current permissions are enforced without requiring system restart
-- Given an expired authentication token, when a user accesses any document endpoint, then they receive a 401 Unauthorized response
+- When I make a GET request to /documents/{documentId} with valid authentication and proper permissions, I receive a 200 response streaming the document bytes
+- When I request a document I don't have access to, I receive a 403 Forbidden response with no document content
+- When I request a non-existent document, I receive a 404 Not Found response
+- The response includes appropriate Content-Type and Content-Length headers
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-001-feature-002-story-003 (Role-based Document Access Control).
+- Implementation outcome is unique to epic-002-feature-001-story-002 (As an authenticated user, I can stream document content based on my role permissions).

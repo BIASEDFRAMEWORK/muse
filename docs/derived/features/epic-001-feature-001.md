@@ -8,22 +8,22 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Immutable Document Retrieval API
+# Document Retrieval API Endpoints
 
 ## Capability
-RESTful API endpoints that provide read-only access to stored documents and their metadata without modification capabilities
+Implement read-only REST API endpoints for document access with streaming support for large files
 
 ## Implementation Notes
-- Implement GET /documents/{documentId} endpoint that streams original document bytes with proper Content-Type headers
-- Implement GET /documents/{documentId}/metadata endpoint returning JSON metadata including upload timestamp, file size, checksum, and content type
-- Configure API gateway to explicitly block HTTP methods other than GET for document endpoints
-- Implement content streaming with chunked transfer encoding for large documents
+- Implement GET /documents/{documentId} with HTTP range request support for streaming large files
+- Implement GET /documents/{documentId}/metadata endpoint returning JSON metadata
+- Add Content-Type, Content-Length, and Content-Disposition headers for proper file handling
+- Implement proper HTTP status codes (200, 404, 403, 500) with standardized error responses
 - Primary delivery slice: The API exposes read-only access:.
 
 ## Acceptance Criteria
-- GET /documents/{documentId} returns original document bytes with correct Content-Type and Content-Length headers
-- GET /documents/{documentId}/metadata returns complete metadata in JSON format
-- All non-GET HTTP methods (POST, PUT, DELETE, PATCH) return 405 Method Not Allowed
-- API handles concurrent read requests without data corruption
-- Large documents (>100MB) stream efficiently without memory exhaustion
+- GET /documents/{documentId} returns original document bytes with correct MIME type
+- GET /documents/{documentId}/metadata returns valid JSON with document properties
+- API supports HTTP range requests for partial content retrieval
+- Returns 404 for non-existent documents and 403 for unauthorized access
+- Response times under 2 seconds for documents up to 10MB
 - Control focus for this feature: The API exposes read-only access:.

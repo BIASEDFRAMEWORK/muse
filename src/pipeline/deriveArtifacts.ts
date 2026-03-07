@@ -14,7 +14,7 @@ export interface DeriveArtifactsOptions {
     provider: string
     model: string
   }
-  mode?: 'standard' | 'fast'
+  mode?: 'standard' | 'fast' | 'demo'
 }
 
 interface GenerationProfile {
@@ -23,6 +23,7 @@ interface GenerationProfile {
   storyLimitPerFeature: number
   maxTokens: number
   storyConcurrency: number
+  aiStoryFeatureLimitPerEpic: number | null
 }
 
 const STANDARD_PROFILE: GenerationProfile = {
@@ -31,6 +32,7 @@ const STANDARD_PROFILE: GenerationProfile = {
   storyLimitPerFeature: 5,
   maxTokens: 3500,
   storyConcurrency: 1,
+  aiStoryFeatureLimitPerEpic: null,
 }
 
 const FAST_PROFILE: GenerationProfile = {
@@ -39,6 +41,16 @@ const FAST_PROFILE: GenerationProfile = {
   storyLimitPerFeature: 3,
   maxTokens: 2200,
   storyConcurrency: 4,
+  aiStoryFeatureLimitPerEpic: null,
+}
+
+const DEMO_PROFILE: GenerationProfile = {
+  epicLimit: 2,
+  featureLimitPerEpic: 2,
+  storyLimitPerFeature: 2,
+  maxTokens: 1400,
+  storyConcurrency: 6,
+  aiStoryFeatureLimitPerEpic: 1,
 }
 
 async function mapWithConcurrency<T, R>(
@@ -347,7 +359,7 @@ function resolveGovernanceLineage(sourcePath: string, markdown: string): {
 
 export async function deriveArtifacts(options: DeriveArtifactsOptions): Promise<void> {
   ensureDirs()
-  const profile = options.mode === 'fast' ? FAST_PROFILE : STANDARD_PROFILE
+  const profile = options.mode === 'demo' ? DEMO_PROFILE : options.mode === 'fast' ? FAST_PROFILE : STANDARD_PROFILE
   const source = options.sourceMarkdownPath
   const markdown = readGovernanceMarkdown(source)
   const governanceLineage = resolveGovernanceLineage(source, markdown)
@@ -384,7 +396,7 @@ export async function deriveArtifacts(options: DeriveArtifactsOptions): Promise<
 
   const seenEpicTitles = new Set(epicSeed.map((epic) => epic.title.toLowerCase()))
   for (const fallbackEpic of epicFallback) {
-    if (epicSeed.length >= 5) {
+    if (epicSeed.length >= profile.epicLimit) {
       break
     }
     if (seenEpicTitles.has(fallbackEpic.title.toLowerCase())) {
@@ -418,6 +430,22 @@ export async function deriveArtifacts(options: DeriveArtifactsOptions): Promise<
       epics[index].title = `${epics[index].title} (Area ${index + 1})`
     }
     seenFinalEpicTitles.add(normalizeForSignature(epics[index].title))
+  }
+
+  for (const epic of epics) {
+    const file = `docs/derived/epics/${epic.id}.md`
+    const epicFrontMatter = {
+      id: epic.id,
+      epic_id: epic.id,
+      source: governanceLineage.sourcePath,
+      source_path: governanceLineage.sourcePath,
+      ...(governanceLineage.documentId ? { derived_from_document_id: governanceLineage.documentId } : {}),
+      ...(governanceLineage.originMarkdownPath ? { origin_markdown_path: governanceLineage.originMarkdownPath } : {}),
+    }
+    writeArtifact(
+      file,
+      `${frontMatter(epicFrontMatter)}# ${epic.title}\n\n## Objective\n${epic.objective}\n\n## Outcomes\n${markdownList(epic.outcomes || ['Deliver measurable software controls aligned to governance requirements.'])}\n\n## Non-Goals\n${markdownList(epic.nonGoals || ['Physical/manual controls are out of implementation scope.'])}`,
+    )
   }
 
   const featureFallback = fallbackFeatures(epics, source)
@@ -459,7 +487,7 @@ export async function deriveArtifacts(options: DeriveArtifactsOptions): Promise<
     const fallbackForEpic = featureFallback.filter((feature) => feature.epic === epic.id)
     const seenFeatureTitles = new Set(featureSeed.map((feature) => feature.title.toLowerCase()))
     for (const fallbackFeature of fallbackForEpic) {
-      if (featureSeed.length >= 3) {
+      if (featureSeed.length >= profile.featureLimitPerEpic) {
         break
       }
       if (seenFeatureTitles.has(fallbackFeature.title.toLowerCase())) {
@@ -507,6 +535,24 @@ export async function deriveArtifacts(options: DeriveArtifactsOptions): Promise<
         acceptanceCriteria,
         source,
       })
+
+      const createdFeature = featureResults[featureResults.length - 1]
+      const featureFile = `docs/derived/features/${createdFeature.id}.md`
+      const featureFrontMatter = {
+        id: createdFeature.id,
+        feature_id: createdFeature.id,
+        epic: createdFeature.epic,
+        derived_from_epic: createdFeature.epic,
+        source: governanceLineage.sourcePath,
+        source_path: governanceLineage.sourcePath,
+        ...(governanceLineage.documentId ? { derived_from_document_id: governanceLineage.documentId } : {}),
+        ...(governanceLineage.originMarkdownPath ? { origin_markdown_path: governanceLineage.originMarkdownPath } : {}),
+      }
+      writeArtifact(
+        featureFile,
+        `${frontMatter(featureFrontMatter)}# ${createdFeature.title}\n\n## Capability\n${createdFeature.capability}\n\n## Implementation Notes\n${markdownList(createdFeature.implementationNotes || ['Implement secure service-level controls and observability hooks.'])}\n\n## Acceptance Criteria\n${markdownList(createdFeature.acceptanceCriteria || ['Behavior is validated with automated tests and audit evidence.'])}`,
+      )
+
       featureIndexWithinEpic += 1
       seenFeatureTitlesGlobal.add(normalizeForSignature(title))
       seenFeatureSignatures.add(itemSignature)
@@ -515,10 +561,101 @@ export async function deriveArtifacts(options: DeriveArtifactsOptions): Promise<
 
   const storiesFallback = fallbackStories(featureResults, source)
   const storyResults: UserStoryArtifact[] = []
+  const promptResults: AIPromptArtifact[] = []
   const seenStorySignatures = new Set<string>()
   const seenStoryTitlesGlobal = new Set<string>()
+  const progressiveStoryPromptWrites = options.mode === 'demo'
+  let promptCounter = 0
+
+  function buildPrompt(story: UserStoryArtifact): AIPromptArtifact {
+    const promptId = id('prompt', promptCounter)
+    promptCounter += 1
+    return {
+      id: promptId,
+      story: story.id,
+      title: `Implementation Prompt for ${story.id}`,
+      prompt: `Implement ${story.title}.\nContext: ${story.behavior}.\nReturn production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.`,
+      checklist: [
+        ...(story.acceptanceCriteria || []),
+        `Implementation outcome is unique to ${story.id} (${story.title}).`,
+      ],
+      source,
+    }
+  }
+
+  function writeStoryAndPrompt(story: UserStoryArtifact, prompt: AIPromptArtifact): void {
+    const storyFile = `docs/derived/user-stories/${story.id}.md`
+    const storyFrontMatter = {
+      id: story.id,
+      story_id: story.id,
+      epic: story.epic,
+      feature: story.feature,
+      derived_from_epic: story.epic,
+      derived_from_feature: story.feature,
+      source: governanceLineage.sourcePath,
+      source_path: governanceLineage.sourcePath,
+      ...(governanceLineage.documentId ? { derived_from_document_id: governanceLineage.documentId } : {}),
+      ...(governanceLineage.originMarkdownPath ? { origin_markdown_path: governanceLineage.originMarkdownPath } : {}),
+    }
+
+    writeArtifact(
+      storyFile,
+      `${frontMatter(storyFrontMatter)}# ${story.title}\n\n## User Story\nAs a ${story.role}, I want to ${story.behavior}, so that I can ${story.benefit}.\n\n## Acceptance Criteria\n${markdownList(story.acceptanceCriteria || ['Implementation behavior is covered by automated tests.'])}\n\n## Technical Notes\n${markdownList(story.technicalNotes || ['Use secure defaults and emit structured operational telemetry.'])}`,
+    )
+
+    const promptFile = `docs/derived/prompts/${prompt.id}.md`
+    writeArtifact(
+      promptFile,
+      `${frontMatter({ id: prompt.id, story: prompt.story, source: prompt.source })}# ${prompt.title}\n\n${prompt.prompt}\n\n## Implementation Checklist\n${markdownList(prompt.checklist || ['Map code changes to acceptance criteria and tests.'])}`,
+    )
+  }
+
+  const aiStoryFeatures = profile.aiStoryFeatureLimitPerEpic === null
+    ? featureResults
+    : epics.flatMap((epic) => featureResults.filter((feature) => feature.epic === epic.id).slice(0, profile.aiStoryFeatureLimitPerEpic || 0))
+
+  const aiStoryFeatureIds = new Set(aiStoryFeatures.map((feature) => feature.id))
+  const deterministicStoryFeatures = featureResults.filter((feature) => !aiStoryFeatureIds.has(feature.id))
+
+  for (const feature of deterministicStoryFeatures) {
+    const fallbackStory = storiesFallback.find((story) => story.feature === feature.id)
+    const focus = focusForIndex(controlStatements, storyResults.length, `${feature.title} implementation slice ${storyResults.length + 1}`)
+    const deterministicStory: UserStoryArtifact = {
+      id: storyId(feature.id, 0),
+      epic: feature.epic,
+      feature: feature.id,
+      title: fallbackStory?.title || `${feature.title} — implementation path`,
+      role: fallbackStory?.role || 'platform engineer',
+      behavior: fallbackStory?.behavior || `implement ${feature.title.toLowerCase()} with emphasis on ${focus}`,
+      benefit: fallbackStory?.benefit || 'meet governance obligations quickly for demo',
+      acceptanceCriteria: normalizeList(fallbackStory?.acceptanceCriteria, [
+        `Implementation demonstrates ${focus}.`,
+        'Behavior is covered by at least one automated test path.',
+      ]),
+      technicalNotes: normalizeList(fallbackStory?.technicalNotes, [
+        `Prioritize ${focus}.`,
+        'Emit structured logs for demo traceability.',
+      ]),
+      source,
+    }
+
+    storyResults.push(deterministicStory)
+    seenStoryTitlesGlobal.add(normalizeForSignature(deterministicStory.title))
+    seenStorySignatures.add(signature([
+      deterministicStory.title,
+      deterministicStory.behavior,
+      (deterministicStory.acceptanceCriteria || []).join(' '),
+      (deterministicStory.technicalNotes || []).join(' '),
+    ]))
+    const deterministicPrompt = buildPrompt(deterministicStory)
+    promptResults.push(deterministicPrompt)
+    if (progressiveStoryPromptWrites) {
+      writeStoryAndPrompt(deterministicStory, deterministicPrompt)
+    }
+  }
+
   const storiesByFeature = await mapWithConcurrency(
-    featureResults,
+    aiStoryFeatures,
     profile.storyConcurrency,
     async (feature) => {
       const aiStories = await llm.generateJsonArray<{
@@ -568,7 +705,7 @@ export async function deriveArtifacts(options: DeriveArtifactsOptions): Promise<
     const fallbackForFeature = storiesFallback.filter((story) => story.feature === feature.id)
     const seenStoryTitles = new Set(storySeed.map((story) => story.title.toLowerCase()))
     for (const fallbackStory of fallbackForFeature) {
-      if (storySeed.length >= 3) {
+      if (storySeed.length >= profile.storyLimitPerFeature) {
         break
       }
       if (seenStoryTitles.has(fallbackStory.title.toLowerCase())) {
@@ -620,75 +757,28 @@ export async function deriveArtifacts(options: DeriveArtifactsOptions): Promise<
         technicalNotes,
         source,
       })
+      const createdStory = storyResults[storyResults.length - 1]
+      const createdPrompt = buildPrompt(createdStory)
+      promptResults.push(createdPrompt)
+      if (progressiveStoryPromptWrites) {
+        writeStoryAndPrompt(createdStory, createdPrompt)
+      }
       storyIndexWithinFeature += 1
       seenStoryTitlesGlobal.add(normalizeForSignature(title))
       seenStorySignatures.add(itemSignature)
     }
   }
 
-  const promptResults = fallbackPrompts(storyResults, source)
-
-  for (const epic of epics) {
-    const file = `docs/derived/epics/${epic.id}.md`
-    const epicFrontMatter = {
-      id: epic.id,
-      epic_id: epic.id,
-      source: governanceLineage.sourcePath,
-      source_path: governanceLineage.sourcePath,
-      ...(governanceLineage.documentId ? { derived_from_document_id: governanceLineage.documentId } : {}),
-      ...(governanceLineage.originMarkdownPath ? { origin_markdown_path: governanceLineage.originMarkdownPath } : {}),
+  if (!progressiveStoryPromptWrites) {
+    for (const story of storyResults) {
+      const prompt = promptResults.find((item) => item.story === story.id)
+      if (!prompt) {
+        continue
+      }
+      writeStoryAndPrompt(story, prompt)
     }
-    writeArtifact(
-      file,
-      `${frontMatter(epicFrontMatter)}# ${epic.title}\n\n## Objective\n${epic.objective}\n\n## Outcomes\n${markdownList(epic.outcomes || ['Deliver measurable software controls aligned to governance requirements.'])}\n\n## Non-Goals\n${markdownList(epic.nonGoals || ['Physical/manual controls are out of implementation scope.'])}`,
-    )
   }
 
-  for (const feature of featureResults) {
-    const file = `docs/derived/features/${feature.id}.md`
-    const featureFrontMatter = {
-      id: feature.id,
-      feature_id: feature.id,
-      epic: feature.epic,
-      derived_from_epic: feature.epic,
-      source: governanceLineage.sourcePath,
-      source_path: governanceLineage.sourcePath,
-      ...(governanceLineage.documentId ? { derived_from_document_id: governanceLineage.documentId } : {}),
-      ...(governanceLineage.originMarkdownPath ? { origin_markdown_path: governanceLineage.originMarkdownPath } : {}),
-    }
-    writeArtifact(
-      file,
-      `${frontMatter(featureFrontMatter)}# ${feature.title}\n\n## Capability\n${feature.capability}\n\n## Implementation Notes\n${markdownList(feature.implementationNotes || ['Implement secure service-level controls and observability hooks.'])}\n\n## Acceptance Criteria\n${markdownList(feature.acceptanceCriteria || ['Behavior is validated with automated tests and audit evidence.'])}`,
-    )
-  }
-
-  for (const story of storyResults) {
-    const file = `docs/derived/user-stories/${story.id}.md`
-    const storyFrontMatter = {
-      id: story.id,
-      story_id: story.id,
-      epic: story.epic,
-      feature: story.feature,
-      derived_from_epic: story.epic,
-      derived_from_feature: story.feature,
-      source: governanceLineage.sourcePath,
-      source_path: governanceLineage.sourcePath,
-      ...(governanceLineage.documentId ? { derived_from_document_id: governanceLineage.documentId } : {}),
-      ...(governanceLineage.originMarkdownPath ? { origin_markdown_path: governanceLineage.originMarkdownPath } : {}),
-    }
-    writeArtifact(
-      file,
-      `${frontMatter(storyFrontMatter)}# ${story.title}\n\n## User Story\nAs a ${story.role}, I want to ${story.behavior}, so that I can ${story.benefit}.\n\n## Acceptance Criteria\n${markdownList(story.acceptanceCriteria || ['Implementation behavior is covered by automated tests.'])}\n\n## Technical Notes\n${markdownList(story.technicalNotes || ['Use secure defaults and emit structured operational telemetry.'])}`,
-    )
-  }
-
-  for (const prompt of promptResults) {
-    const file = `docs/derived/prompts/${prompt.id}.md`
-    writeArtifact(
-      file,
-      `${frontMatter({ id: prompt.id, story: prompt.story, source: prompt.source })}# ${prompt.title}\n\n${prompt.prompt}\n\n## Implementation Checklist\n${markdownList(prompt.checklist || ['Map code changes to acceptance criteria and tests.'])}`,
-    )
-  }
 }
 
 export function resolveArtifactByIdOrPath(artifact: string): { path: string; data: Record<string, string>; content: string } {

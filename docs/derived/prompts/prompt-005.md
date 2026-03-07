@@ -1,19 +1,18 @@
 ---
 id: prompt-005
-story: epic-001-feature-002-story-002
+story: epic-002-feature-001-story-001
 source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Implementation Prompt for epic-001-feature-002-story-002
+# Implementation Prompt for epic-002-feature-001-story-001
 
-Implement Retrieve Document Metadata with Authorization.
-Context: I want to retrieve document metadata by document ID through the GET /documents/{documentId}/metadata endpoint.
+Implement As an authenticated user, I can retrieve document metadata based on my role permissions.
+Context: I can access the GET /documents/{documentId}/metadata endpoint and receive metadata only for documents I have permission to view.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- Given a valid document ID and proper authorization, when I call GET /documents/{documentId}/metadata, then I receive the persisted metadata in JSON format
-- Given an invalid document ID, when I call GET /documents/{documentId}/metadata, then I receive a 404 Not Found response
-- Given a valid document ID but insufficient authorization, when I call GET /documents/{documentId}/metadata, then I receive a 403 Forbidden response
-- Given an unauthenticated request, when I call GET /documents/{documentId}/metadata, then I receive a 401 Unauthorized response
-- Given a valid authorized request, when I call GET /documents/{documentId}/metadata, then the response includes metadata fields like file size, upload date, content type, and checksum
+- When I make a GET request to /documents/{documentId}/metadata with valid authentication, I receive a 200 response with metadata I'm authorized to see
+- When I request metadata for a document I don't have access to, I receive a 403 Forbidden response
+- When I request metadata for a non-existent document, I receive a 404 Not Found response
+- The response only includes metadata fields that my role is permitted to access
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-001-feature-002-story-002 (Retrieve Document Metadata with Authorization).
+- Implementation outcome is unique to epic-002-feature-001-story-001 (As an authenticated user, I can retrieve document metadata based on my role permissions).

@@ -1,19 +1,16 @@
 ---
 id: prompt-004
-story: epic-001-feature-002-story-001
+story: epic-001-feature-001-story-002
 source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Implementation Prompt for epic-001-feature-002-story-001
+# Implementation Prompt for epic-001-feature-001-story-002
 
-Implement Retrieve Document by ID with Authorization.
-Context: I want to retrieve a document by its ID through the GET /documents/{documentId} endpoint.
+Implement Document Retrieval API Endpoints — operational evidence path.
+Context: implement document retrieval api endpoints for the operational evidence path.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- Given a valid document ID and proper authorization, when I call GET /documents/{documentId}, then I receive the original document bytes as a stream
-- Given an invalid document ID, when I call GET /documents/{documentId}, then I receive a 404 Not Found response
-- Given a valid document ID but insufficient authorization, when I call GET /documents/{documentId}, then I receive a 403 Forbidden response
-- Given an unauthenticated request, when I call GET /documents/{documentId}, then I receive a 401 Unauthorized response
-- Given a valid authorized request, when I call GET /documents/{documentId}, then the response includes appropriate Content-Type headers
+- Behavior for the operational evidence path is implemented behind automated tests with deterministic outcomes.
+- Audit and security events for the operational evidence path are emitted with identifiers and timestamps.
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-001-feature-002-story-001 (Retrieve Document by ID with Authorization).
+- Implementation outcome is unique to epic-001-feature-001-story-002 (Document Retrieval API Endpoints — operational evidence path).

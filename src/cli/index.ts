@@ -23,7 +23,8 @@ program
   .command('apply')
   .description('Apply the declarative muse.yaml pipeline')
   .option('--fast', 'use demo-optimized faster generation mode')
-  .action((options: { fast?: boolean }) => applyCommand(options))
+  .option('--demo', 'use fastest demo mode with progressive artifact output')
+  .action((options: { fast?: boolean; demo?: boolean }) => applyCommand(options))
 
 program
   .command('convertMD <file>')

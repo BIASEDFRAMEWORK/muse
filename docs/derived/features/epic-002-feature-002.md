@@ -8,21 +8,23 @@ source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/
 derived_from_document_id: gov-original-document-system-of-record
 origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Role-Based Document Authorization
+# Comprehensive Access Audit Trail
 
 ## Capability
-Authorize document access based on user roles and document permissions
+Log and track all document access attempts with detailed metadata for compliance and security monitoring
 
 ## Implementation Notes
-- Implement role-based access control (RBAC) with document-level permissions
-- Check user roles against document access requirements before streaming bytes
-- Support hierarchical permissions (admin, editor, viewer roles)
-- Cache authorization decisions to improve performance
+- Capture user ID, document ID, timestamp, IP address, and user agent for each request
+- Log both successful access and failed authorization attempts
+- Store audit logs in append-only database table with tamper detection
+- Implement log rotation and archival policies for long-term retention
+- Provide structured JSON logging format for integration with SIEM systems
 - Primary delivery slice: The API exposes read-only access:.
 
 ## Acceptance Criteria
-- Users can only access documents their role permits
-- 403 Forbidden returned when user lacks document access rights
-- Admin users can access all documents regardless of restrictions
-- Authorization checks occur before document streaming begins
+- Every GET request to document endpoints generates an audit log entry
+- Audit logs include all required metadata fields without PII exposure
+- Failed access attempts are logged with failure reason codes
+- Audit data is queryable by date range, user, and document within 2 seconds
+- Log integrity verification detects any unauthorized modifications
 - Control focus for this feature: The API exposes read-only access:.
