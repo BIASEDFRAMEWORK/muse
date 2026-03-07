@@ -283,11 +283,74 @@ function extractControlStatements(markdown: string, limit = 10): string[] {
   return unique.slice(0, limit)
 }
 
+function parseDigitalSourcePath(markdown: string): string | null {
+  const sourceMatch = markdown.match(/(?:^|\n)Source:\s*\n([^\n]+)/m)
+  if (!sourceMatch) {
+    return null
+  }
+
+  const candidate = sourceMatch[1].trim()
+  return candidate.length > 0 ? candidate : null
+}
+
+function resolveGovernanceLineage(sourcePath: string, markdown: string): {
+  documentId: string | null
+  sourcePath: string
+  originMarkdownPath: string | null
+} {
+  const absoluteSourcePath = path.resolve(sourcePath)
+  const parsedCurrent = matter(markdown)
+  const directDocumentId =
+    typeof parsedCurrent.data.document_id === 'string' && parsedCurrent.data.document_id.trim().length > 0
+      ? parsedCurrent.data.document_id.trim()
+      : null
+
+  if (directDocumentId) {
+    return {
+      documentId: directDocumentId,
+      sourcePath: absoluteSourcePath,
+      originMarkdownPath: absoluteSourcePath,
+    }
+  }
+
+  const extractedSource = parseDigitalSourcePath(markdown)
+  if (!extractedSource) {
+    return {
+      documentId: null,
+      sourcePath: absoluteSourcePath,
+      originMarkdownPath: null,
+    }
+  }
+
+  const candidateSourcePath = path.resolve(extractedSource)
+  if (!fs.existsSync(candidateSourcePath)) {
+    return {
+      documentId: null,
+      sourcePath: absoluteSourcePath,
+      originMarkdownPath: candidateSourcePath,
+    }
+  }
+
+  const sourceMarkdown = fs.readFileSync(candidateSourcePath, 'utf8')
+  const parsedSource = matter(sourceMarkdown)
+  const sourceDocumentId =
+    typeof parsedSource.data.document_id === 'string' && parsedSource.data.document_id.trim().length > 0
+      ? parsedSource.data.document_id.trim()
+      : null
+
+  return {
+    documentId: sourceDocumentId,
+    sourcePath: absoluteSourcePath,
+    originMarkdownPath: candidateSourcePath,
+  }
+}
+
 export async function deriveArtifacts(options: DeriveArtifactsOptions): Promise<void> {
   ensureDirs()
   const profile = options.mode === 'fast' ? FAST_PROFILE : STANDARD_PROFILE
   const source = options.sourceMarkdownPath
   const markdown = readGovernanceMarkdown(source)
+  const governanceLineage = resolveGovernanceLineage(source, markdown)
   const controlStatements = extractControlStatements(markdown, 16)
   const llm = new LlmClient(options.ai)
 
@@ -567,25 +630,55 @@ export async function deriveArtifacts(options: DeriveArtifactsOptions): Promise<
 
   for (const epic of epics) {
     const file = `docs/derived/epics/${epic.id}.md`
+    const epicFrontMatter = {
+      id: epic.id,
+      epic_id: epic.id,
+      source: governanceLineage.sourcePath,
+      source_path: governanceLineage.sourcePath,
+      ...(governanceLineage.documentId ? { derived_from_document_id: governanceLineage.documentId } : {}),
+      ...(governanceLineage.originMarkdownPath ? { origin_markdown_path: governanceLineage.originMarkdownPath } : {}),
+    }
     writeArtifact(
       file,
-      `${frontMatter({ id: epic.id, source: epic.source })}# ${epic.title}\n\n## Objective\n${epic.objective}\n\n## Outcomes\n${markdownList(epic.outcomes || ['Deliver measurable software controls aligned to governance requirements.'])}\n\n## Non-Goals\n${markdownList(epic.nonGoals || ['Physical/manual controls are out of implementation scope.'])}`,
+      `${frontMatter(epicFrontMatter)}# ${epic.title}\n\n## Objective\n${epic.objective}\n\n## Outcomes\n${markdownList(epic.outcomes || ['Deliver measurable software controls aligned to governance requirements.'])}\n\n## Non-Goals\n${markdownList(epic.nonGoals || ['Physical/manual controls are out of implementation scope.'])}`,
     )
   }
 
   for (const feature of featureResults) {
     const file = `docs/derived/features/${feature.id}.md`
+    const featureFrontMatter = {
+      id: feature.id,
+      feature_id: feature.id,
+      epic: feature.epic,
+      derived_from_epic: feature.epic,
+      source: governanceLineage.sourcePath,
+      source_path: governanceLineage.sourcePath,
+      ...(governanceLineage.documentId ? { derived_from_document_id: governanceLineage.documentId } : {}),
+      ...(governanceLineage.originMarkdownPath ? { origin_markdown_path: governanceLineage.originMarkdownPath } : {}),
+    }
     writeArtifact(
       file,
-      `${frontMatter({ id: feature.id, epic: feature.epic, source: feature.source })}# ${feature.title}\n\n## Capability\n${feature.capability}\n\n## Implementation Notes\n${markdownList(feature.implementationNotes || ['Implement secure service-level controls and observability hooks.'])}\n\n## Acceptance Criteria\n${markdownList(feature.acceptanceCriteria || ['Behavior is validated with automated tests and audit evidence.'])}`,
+      `${frontMatter(featureFrontMatter)}# ${feature.title}\n\n## Capability\n${feature.capability}\n\n## Implementation Notes\n${markdownList(feature.implementationNotes || ['Implement secure service-level controls and observability hooks.'])}\n\n## Acceptance Criteria\n${markdownList(feature.acceptanceCriteria || ['Behavior is validated with automated tests and audit evidence.'])}`,
     )
   }
 
   for (const story of storyResults) {
     const file = `docs/derived/user-stories/${story.id}.md`
+    const storyFrontMatter = {
+      id: story.id,
+      story_id: story.id,
+      epic: story.epic,
+      feature: story.feature,
+      derived_from_epic: story.epic,
+      derived_from_feature: story.feature,
+      source: governanceLineage.sourcePath,
+      source_path: governanceLineage.sourcePath,
+      ...(governanceLineage.documentId ? { derived_from_document_id: governanceLineage.documentId } : {}),
+      ...(governanceLineage.originMarkdownPath ? { origin_markdown_path: governanceLineage.originMarkdownPath } : {}),
+    }
     writeArtifact(
       file,
-      `${frontMatter({ id: story.id, epic: story.epic, feature: story.feature, source: story.source })}# ${story.title}\n\n## User Story\nAs a ${story.role}, I want to ${story.behavior}, so that I can ${story.benefit}.\n\n## Acceptance Criteria\n${markdownList(story.acceptanceCriteria || ['Implementation behavior is covered by automated tests.'])}\n\n## Technical Notes\n${markdownList(story.technicalNotes || ['Use secure defaults and emit structured operational telemetry.'])}`,
+      `${frontMatter(storyFrontMatter)}# ${story.title}\n\n## User Story\nAs a ${story.role}, I want to ${story.behavior}, so that I can ${story.benefit}.\n\n## Acceptance Criteria\n${markdownList(story.acceptanceCriteria || ['Implementation behavior is covered by automated tests.'])}\n\n## Technical Notes\n${markdownList(story.technicalNotes || ['Use secure defaults and emit structured operational telemetry.'])}`,
     )
   }
 

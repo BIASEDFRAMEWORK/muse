@@ -1,20 +1,32 @@
 ---
 id: epic-002-feature-001-story-001
+story_id: epic-002-feature-001-story-001
 epic: epic-002
 feature: epic-002-feature-001
-source: /home/runner/work/Muse/Muse/docs/derived/governance/original-document-system-of-record.digital.md
+derived_from_epic: epic-002
+derived_from_feature: epic-002-feature-001
+source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
+source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
+derived_from_document_id: gov-original-document-system-of-record
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
 ---
-# Service and API Governance — Authorization enforcement — implementation path
+# Document Hash Generation and Storage
 
 ## User Story
-As a platform engineer, I want to implement service and api governance — authorization enforcement for the implementation path, so that I can satisfy governance requirements for the implementation path.
+As a System Administrator, I want to upload a document and have its cryptographic hash automatically generated and stored with metadata, so that I can ensuring document integrity can be verified at any point in the future.
 
 ## Acceptance Criteria
-- Behavior for the implementation path is implemented behind automated tests with deterministic outcomes.
-- Audit and security events for the implementation path are emitted with identifiers and timestamps.
+- System generates SHA-256 hash upon document upload
+- Hash is stored alongside document metadata in persistent storage
+- Hash generation occurs before document storage is confirmed
+- Upload fails if hash generation fails
+- Hash is included in document metadata response
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Apply least-privilege authorization checks for the implementation path.
-- Ensure structured logs for the implementation path are queryable for compliance evidence.
+- Use SHA-256 algorithm for hash generation
+- Hash should be computed on original document bytes before any processing
+- Store hash as hexadecimal string in metadata table
+- Implement hash generation as part of document ingestion pipeline
+- Consider streaming hash calculation for large files to optimize memory usage
 - Implementation should prioritize The API exposes read-only access:.

@@ -1,20 +1,31 @@
 ---
 id: epic-003-feature-001-story-001
+story_id: epic-003-feature-001-story-001
 epic: epic-003
 feature: epic-003-feature-001
-source: /home/runner/work/Muse/Muse/docs/derived/governance/original-document-system-of-record.digital.md
+derived_from_epic: epic-003
+derived_from_feature: epic-003-feature-001
+source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
+source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
+derived_from_document_id: gov-original-document-system-of-record
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
 ---
-# Retrieval (Read-only) — Authorization enforcement — implementation path
+# Log document retrieval attempts
 
 ## User Story
-As a platform engineer, I want to implement retrieval (read-only) — authorization enforcement for the implementation path, so that I can satisfy governance requirements for the implementation path.
+As a system administrator, I want to automatically log all document access attempts including successful and failed requests, so that I can I can monitor document usage patterns and detect unauthorized access attempts.
 
 ## Acceptance Criteria
-- Behavior for the implementation path is implemented behind automated tests with deterministic outcomes.
-- Audit and security events for the implementation path are emitted with identifiers and timestamps.
+- All GET requests to /documents/{documentId} are logged with timestamp, user ID, document ID, and response status
+- All GET requests to /documents/{documentId}/metadata are logged with timestamp, user ID, document ID, and response status
+- Failed access attempts (4xx, 5xx responses) are logged with error details
+- Log entries are persisted to a queryable data store
+- Logs include request IP address and user agent
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Apply least-privilege authorization checks for the implementation path.
-- Ensure structured logs for the implementation path are queryable for compliance evidence.
+- Implement logging middleware that intercepts all document API requests
+- Use structured logging format (JSON) for easy parsing and analysis
+- Ensure logging does not impact API response times significantly
+- Consider async logging to avoid blocking API responses
 - Implementation should prioritize The API exposes read-only access:.

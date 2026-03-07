@@ -27,6 +27,19 @@ const report = {
   }
 }
 
+function normalizePathRef(pathRef) {
+  if (!pathRef || typeof pathRef !== 'string') return null
+  const resolved = path.isAbsolute(pathRef) ? pathRef : path.resolve(repoRoot, pathRef)
+  return path.relative(repoRoot, resolved)
+}
+
+function parseDigitalSourcePath(raw) {
+  const sourceMatch = raw.match(/(?:^|\n)Source:\s*\n([^\n]+)/m)
+  if (!sourceMatch) return null
+  const candidate = sourceMatch[1].trim()
+  return candidate.length ? candidate : null
+}
+
 // Determines if a file should be excluded from validation (documentation, tests, examples)
 function shouldExcludeFile(filePath) {
   const basename = path.basename(filePath)
@@ -128,15 +141,31 @@ function collectGovernance() {
   const files = walkFiles(dirs.governance, ['.md', '.markdown', '.yaml', '.yml'])
   for (const filePath of files) {
     if (shouldExcludeFile(filePath)) continue
-    
+
     const rel = path.relative(repoRoot, filePath)
+    const raw = fs.readFileSync(filePath, 'utf-8')
     const blocks = readFrontMatterBlocks(filePath)
     const data = blocks[0]?.data || {}
-    const documentId = typeof data.document_id === 'string' ? data.document_id : null
+    let documentId = typeof data.document_id === 'string' ? data.document_id : null
+
+    if (!documentId) {
+      const sourcePath = parseDigitalSourcePath(raw)
+      if (sourcePath) {
+        const sourceAbsPath = path.isAbsolute(sourcePath) ? sourcePath : path.resolve(repoRoot, sourcePath)
+        if (fs.existsSync(sourceAbsPath)) {
+          const sourceBlocks = readFrontMatterBlocks(sourceAbsPath)
+          const sourceData = sourceBlocks[0]?.data || {}
+          if (typeof sourceData.document_id === 'string' && sourceData.document_id.trim()) {
+            documentId = sourceData.document_id.trim()
+          }
+        }
+      }
+    }
+
     if (!documentId) {
       warnings.push(`Governance file missing document_id in front matter: ${rel}`)
     }
-    report.artifacts.governance.push({ document_id: documentId, path: rel })
+    report.artifacts.governance.push({ document_id: documentId, path: rel, source_path: rel })
   }
 }
 
@@ -149,12 +178,18 @@ function collectEpics(muse) {
     const rel = path.relative(repoRoot, filePath)
     const data = readFrontMatterBlocks(filePath)[0]?.data || {}
     const epicId = data.epic_id || data.id
-    const derivedFrom = data.derived_from || data.document_id || data.source || null
+    const derivedFromDocumentId = data.derived_from_document_id || data.document_id || null
+    const sourcePath = data.source_path || data.source || null
     if (!epicId) {
       errors.push(`Epic file missing epic_id in front matter: ${rel}`)
       continue
     }
-    report.artifacts.epics.push({ epic_id: epicId, derived_from: derivedFrom, path: rel })
+    report.artifacts.epics.push({
+      epic_id: epicId,
+      derived_from_document_id: derivedFromDocumentId,
+      source_path: sourcePath,
+      path: rel,
+    })
   }
 
   const museEpics = muse?.artifacts?.epics || []
@@ -166,7 +201,8 @@ function collectEpics(muse) {
     if (report.artifacts.epics.some((e) => e.epic_id === epic.epic_id)) continue
     report.artifacts.epics.push({
       epic_id: epic.epic_id,
-      derived_from: epic.derived_from,
+      derived_from_document_id: epic.derived_from_document_id || epic.derived_from || null,
+      source_path: epic.source_path || epic.source || null,
       path: rel || epic.epic_path || 'unknown'
     })
   }
@@ -275,13 +311,38 @@ function recordDuplicateIds(items, key, label) {
 
 // Validates that all governance, epic, feature, and story references resolve correctly and are bidirectionally linked.
 function validateReferences(governanceMap, epicMap, featureMap, storyMap) {
-  for (const epic of epicMap.values()) {
-    if (!epic.derived_from) continue
-    const derivedPath = path.join(repoRoot, epic.derived_from)
-    const resolvesByPath = epic.derived_from.endsWith('.md') && fs.existsSync(derivedPath)
-    if (!governanceMap.has(epic.derived_from) && !resolvesByPath) {
-      errors.push(`Epic ${epic.epic_id} references missing governance document_id: ${epic.derived_from}`)
+  const governancePathMap = new Map()
+  for (const governance of report.artifacts.governance) {
+    const normalized = normalizePathRef(governance.path)
+    if (normalized) {
+      governancePathMap.set(normalized, governance.document_id || null)
     }
+  }
+
+  for (const epic of epicMap.values()) {
+    const referencedDocumentId = epic.derived_from_document_id || null
+    const normalizedSourcePath = normalizePathRef(epic.source_path)
+    const sourcePathExists = normalizedSourcePath ? fs.existsSync(path.resolve(repoRoot, normalizedSourcePath)) : false
+    const sourceDocumentId = normalizedSourcePath ? governancePathMap.get(normalizedSourcePath) : null
+
+    if (referencedDocumentId) {
+      if (!governanceMap.has(referencedDocumentId)) {
+        errors.push(`Epic ${epic.epic_id} references missing governance document_id: ${referencedDocumentId}`)
+      }
+      continue
+    }
+
+    if (sourceDocumentId) {
+      warnings.push(`Epic ${epic.epic_id} missing derived_from_document_id; inferred from source_path`)
+      continue
+    }
+
+    if (sourcePathExists) {
+      warnings.push(`Epic ${epic.epic_id} has source_path but cannot resolve governance document_id`) 
+      continue
+    }
+
+    errors.push(`Epic ${epic.epic_id} missing canonical governance lineage (derived_from_document_id/source_path)`)
   }
 
   for (const feature of featureMap.values()) {

@@ -1,20 +1,32 @@
 ---
 id: epic-003-feature-002-story-001
+story_id: epic-003-feature-002-story-001
 epic: epic-003
 feature: epic-003-feature-002
-source: /home/runner/work/Muse/Muse/docs/derived/governance/original-document-system-of-record.digital.md
+derived_from_epic: epic-003
+derived_from_feature: epic-003-feature-002
+source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
+source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
+derived_from_document_id: gov-original-document-system-of-record
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
 ---
-# Retrieval (Read-only) — Audit telemetry and evidence capture — implementation path
+# View real-time access monitoring dashboard
 
 ## User Story
-As a platform engineer, I want to implement retrieval (read-only) — audit telemetry and evidence capture for the implementation path, so that I can satisfy governance requirements for the implementation path.
+As a Security Administrator, I want to I want to view a real-time dashboard showing current document access activity, so that I can so that I can monitor system usage and detect potential security issues immediately.
 
 ## Acceptance Criteria
-- Behavior for the implementation path is implemented behind automated tests with deterministic outcomes.
-- Audit and security events for the implementation path are emitted with identifiers and timestamps.
+- Dashboard displays current active document access sessions
+- Real-time updates occur within 5 seconds of access events
+- Dashboard shows document ID, access timestamp, and user identifier for each session
+- Dashboard auto-refreshes without user intervention
+- Loading states are displayed during data fetching
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Apply least-privilege authorization checks for the implementation path.
-- Ensure structured logs for the implementation path are queryable for compliance evidence.
+- Implement WebSocket connection for real-time updates
+- Dashboard should poll /documents/{documentId}/metadata endpoint for access logs
+- Use Server-Sent Events (SSE) as fallback if WebSocket unavailable
+- Cache recent access data in browser for performance
+- Implement connection retry logic for network interruptions
 - Implementation should prioritize The API exposes read-only access:.

@@ -1,6 +1,19 @@
 import fs from 'fs'
 import path from 'path'
 import { spawnSync } from 'child_process'
+import matter from 'gray-matter'
+
+function slugify(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
+function computeDocumentId(inputPath: string): string {
+  const stem = path.parse(inputPath).name
+  return `gov-${slugify(stem)}`
+}
 
 function ensureGovernanceDir(): string {
   const dir = path.resolve('docs/derived/governance')
@@ -50,7 +63,18 @@ export function convertDocumentToMarkdown(inputFile: string): string {
   }
 
   const content = attempt.stdout.endsWith('\n') ? attempt.stdout : `${attempt.stdout}\n`
-  fs.writeFileSync(outputPath, content, 'utf8')
+  const parsed = matter(content)
+  const documentId =
+    typeof parsed.data.document_id === 'string' && parsed.data.document_id.trim().length > 0
+      ? parsed.data.document_id.trim()
+      : computeDocumentId(absoluteInput)
+  const outputContent = matter.stringify(parsed.content, {
+    ...parsed.data,
+    document_id: documentId,
+    source_path: absoluteInput,
+  })
+
+  fs.writeFileSync(outputPath, outputContent.endsWith('\n') ? outputContent : `${outputContent}\n`, 'utf8')
 
   return outputPath
 }

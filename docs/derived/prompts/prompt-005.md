@@ -1,16 +1,19 @@
 ---
 id: prompt-005
-story: epic-002-feature-001-story-001
-source: /home/runner/work/Muse/Muse/docs/derived/governance/original-document-system-of-record.digital.md
+story: epic-001-feature-002-story-002
+source: docs/derived/governance/original-document-system-of-record.digital.md
 ---
-# Implementation Prompt for epic-002-feature-001-story-001
+# Implementation Prompt for epic-001-feature-002-story-002
 
-Implement Service and API Governance — Authorization enforcement — implementation path.
-Context: implement service and api governance — authorization enforcement for the implementation path.
+Implement Query Document Access Audit Logs.
+Context: search and filter document access logs by user, document, time range, and access outcome.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- Behavior for the implementation path is implemented behind automated tests with deterministic outcomes.
-- Audit and security events for the implementation path are emitted with identifiers and timestamps.
+- API endpoint /audit/document-access returns filtered audit logs
+- Support filtering by user ID, document ID, date range, and success/failure status
+- Results paginated with configurable page size
+- Response includes total count of matching records
+- Only authorized users can access audit logs
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-002-feature-001-story-001 (Service and API Governance — Authorization enforcement — implementation path).
+- Implementation outcome is unique to epic-001-feature-002-story-002 (Query Document Access Audit Logs).

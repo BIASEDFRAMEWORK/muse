@@ -1,3 +1,8 @@
+---
+document_id: gov-digital-system-audit-logging-and-governance-policy
+source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/Digital System Audit Logging and Governance Policy.md
+---
+
 Digital System Audit Logging and
 Governance Policy
 

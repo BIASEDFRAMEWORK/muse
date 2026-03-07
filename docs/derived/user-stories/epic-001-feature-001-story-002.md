@@ -1,20 +1,30 @@
 ---
 id: epic-001-feature-001-story-002
+story_id: epic-001-feature-001-story-002
 epic: epic-001
 feature: epic-001-feature-001
-source: /home/runner/work/Muse/Muse/docs/derived/governance/original-document-system-of-record.digital.md
+derived_from_epic: epic-001
+derived_from_feature: epic-001-feature-001
+source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
+source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
+derived_from_document_id: gov-original-document-system-of-record
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
 ---
-# Access Control and Authorization — Authorization enforcement — operational evidence path
+# User can only retrieve documents assigned to their role
 
 ## User Story
-As a platform engineer, I want to implement access control and authorization — authorization enforcement for the operational evidence path, so that I can satisfy governance requirements for the operational evidence path.
+As a End User, I want to I can access documents through the API only if my role has been granted read permission, so that I can so that I can securely access documents relevant to my responsibilities without seeing unauthorized content.
 
 ## Acceptance Criteria
-- Behavior for the operational evidence path is implemented behind automated tests with deterministic outcomes.
-- Audit and security events for the operational evidence path are emitted with identifiers and timestamps.
+- Given I have a role with read permission to a document, when I call GET /documents/{documentId}, then I receive the document bytes with 200 status
+- Given I have a role without permission to a document, when I call GET /documents/{documentId}, then I receive 403 Forbidden status
+- Given I have permission to access a document, when I call GET /documents/{documentId}/metadata, then I receive the metadata with 200 status
+- Given my role permissions are revoked while I'm accessing documents, when I make subsequent requests, then the new permissions are enforced immediately
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Apply least-privilege authorization checks for the operational evidence path.
-- Ensure structured logs for the operational evidence path are queryable for compliance evidence.
+- Implement authorization middleware that checks user's roles against document permissions before serving content
+- Add role validation to both document content and metadata endpoints
+- Implement JWT or session-based role verification
+- Ensure permission checks occur before any document data is retrieved or streamed
 - Implementation should prioritize The API exposes read-only access:.

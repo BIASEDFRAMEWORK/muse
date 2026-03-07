@@ -1,20 +1,31 @@
 ---
 id: epic-002-feature-002-story-001
+story_id: epic-002-feature-002-story-001
 epic: epic-002
 feature: epic-002-feature-002
-source: /home/runner/work/Muse/Muse/docs/derived/governance/original-document-system-of-record.digital.md
+derived_from_epic: epic-002
+derived_from_feature: epic-002-feature-002
+source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
+source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
+derived_from_document_id: gov-original-document-system-of-record
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
 ---
-# Service and API Governance — Audit telemetry and evidence capture — implementation path
+# Document access based on user role permissions
 
 ## User Story
-As a platform engineer, I want to implement service and api governance — audit telemetry and evidence capture for the implementation path, so that I can satisfy governance requirements for the implementation path.
+As a authenticated user, I want to access documents only within my role's permission scope, so that I can I can view authorized documents while being prevented from accessing restricted content.
 
 ## Acceptance Criteria
-- Behavior for the implementation path is implemented behind automated tests with deterministic outcomes.
-- Audit and security events for the implementation path are emitted with identifiers and timestamps.
+- User with 'viewer' role can access GET /documents/{documentId} for documents they have permission to view
+- User with 'admin' role can access all documents via GET endpoints
+- User receives 403 Forbidden when attempting to access documents outside their role permissions
+- User receives 401 Unauthorized when not authenticated
+- Document metadata endpoint respects the same role-based access rules as document content
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Apply least-privilege authorization checks for the implementation path.
-- Ensure structured logs for the implementation path are queryable for compliance evidence.
+- Implement middleware to check user roles before allowing access to document endpoints
+- Create role-permission mapping table linking roles to document access rights
+- Add role validation to both GET /documents/{documentId} and GET /documents/{documentId}/metadata endpoints
+- Return appropriate HTTP status codes (401, 403) for unauthorized access attempts
 - Implementation should prioritize The API exposes read-only access:.

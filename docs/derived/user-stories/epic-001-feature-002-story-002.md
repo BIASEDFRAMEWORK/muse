@@ -1,20 +1,32 @@
 ---
 id: epic-001-feature-002-story-002
+story_id: epic-001-feature-002-story-002
 epic: epic-001
 feature: epic-001-feature-002
-source: /home/runner/work/Muse/Muse/docs/derived/governance/original-document-system-of-record.digital.md
+derived_from_epic: epic-001
+derived_from_feature: epic-001-feature-002
+source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
+source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
+derived_from_document_id: gov-original-document-system-of-record
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
 ---
-# Access Control and Authorization — Audit telemetry and evidence capture — operational evidence path
+# Query Document Access Audit Logs
 
 ## User Story
-As a platform engineer, I want to implement access control and authorization — audit telemetry and evidence capture for the operational evidence path, so that I can satisfy governance requirements for the operational evidence path.
+As a Compliance Officer, I want to search and filter document access logs by user, document, time range, and access outcome, so that I can quickly investigate security incidents and generate compliance reports.
 
 ## Acceptance Criteria
-- Behavior for the operational evidence path is implemented behind automated tests with deterministic outcomes.
-- Audit and security events for the operational evidence path are emitted with identifiers and timestamps.
+- API endpoint /audit/document-access returns filtered audit logs
+- Support filtering by user ID, document ID, date range, and success/failure status
+- Results paginated with configurable page size
+- Response includes total count of matching records
+- Only authorized users can access audit logs
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Technical Notes
-- Apply least-privilege authorization checks for the operational evidence path.
-- Ensure structured logs for the operational evidence path are queryable for compliance evidence.
+- Create dedicated audit API with appropriate authorization
+- Implement efficient database indexing on commonly filtered fields
+- Use query builders to handle dynamic filter combinations
+- Return logs in standardized format with consistent field names
+- Consider rate limiting for audit API endpoints
 - Implementation should prioritize The API exposes read-only access:.

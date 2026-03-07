@@ -1,16 +1,26 @@
 ---
 id: epic-002
-source: /home/runner/work/Muse/Muse/docs/derived/governance/original-document-system-of-record.digital.md
+epic_id: epic-002
+source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
+source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
+derived_from_document_id: gov-original-document-system-of-record
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/governance/original-document-system-of-record.md
 ---
-# Service and API Governance
+# Immutable Document Storage Security Framework
 
 ## Objective
-Deliver service and api governance capabilities from governance requirements.
+Establish security controls ensuring document immutability by preventing delete and update operations at the system level
 
 ## Outcomes
-- Engineering teams can implement service and api governance with clear scope and ownership.
-- Controls are observable through logs, audits, and repeatable checks.
+- API gateway configuration blocking DELETE and PUT/PATCH HTTP methods
+- Database-level constraints preventing document record modifications
+- Storage layer write-protection mechanisms for document files
+- Security monitoring alerts for any attempted unauthorized modifications
+- Regular integrity checks validating document immutability
 - Primary outcome focus: The API exposes read-only access:.
 
 ## Non-Goals
-- Physical-only controls and manual paper handling processes are out of scope.
+- Document backup and disaster recovery procedures
+- Document encryption at rest implementation
+- User interface for document management
+- Document lifecycle management beyond immutability

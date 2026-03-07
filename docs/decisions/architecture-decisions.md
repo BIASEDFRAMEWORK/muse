@@ -17,5 +17,5 @@
 - Use a declarative muse.yaml pipeline for repeatable execution.
 
 ## Source Context
-- /home/runner/work/Muse/Muse/docs/derived/governance/original-document-system-of-record.digital.md
+- /Users/dustingaspard/Documents/Excella/Workspace/Muse/docs/derived/governance/original-document-system-of-record.digital.md
 - Input size: 501 characters
