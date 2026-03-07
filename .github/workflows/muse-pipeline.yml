@@ -50,7 +50,7 @@ jobs:
         run: node dist/cli/index.js apply
 
       - name: Commit generated artifacts
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: 'muse: generated backlog artifacts'
           file_pattern: docs/**
