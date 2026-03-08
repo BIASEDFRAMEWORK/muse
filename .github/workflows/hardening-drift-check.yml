@@ -51,16 +51,16 @@ jobs:
                 failures.push('required_pull_request_reviews is not configured');
               }
 
-              if (protection.required_pull_request_reviews?.required_approving_review_count < 1) {
-                failures.push('required_approving_review_count must be >= 1');
+              if (protection.required_pull_request_reviews?.required_approving_review_count !== 0) {
+                failures.push('required_approving_review_count must be 0 for solo-maintainer policy');
               }
 
               if (!protection.required_pull_request_reviews?.dismiss_stale_reviews) {
                 failures.push('dismiss_stale_reviews is not enabled');
               }
 
-              if (!protection.required_pull_request_reviews?.require_code_owner_reviews) {
-                failures.push('require_code_owner_reviews is not enabled');
+              if (protection.required_pull_request_reviews?.require_code_owner_reviews) {
+                failures.push('require_code_owner_reviews must be disabled for solo-maintainer policy');
               }
 
               if (!protection.required_status_checks?.strict) {
