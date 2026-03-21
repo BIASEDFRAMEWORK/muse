@@ -122,15 +122,6 @@ jobs:
           node scripts/generate-capability-report.mjs \
             --output ".muse/capability-report.html"
 
-      - name: Commit changes
-        if: github.event_name != 'schedule'
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "chore(capability-tracker): sync PR status to stories [PR #${{ steps.pr-meta.outputs.pr_number }}]"
-          file_pattern: "specs/stories/*.md .muse/story-progress/*.json .muse/capability-report.html"
-          skip_fetch: false
-          skip_checkout: false
-
       - name: Commit nightly sync
         if: github.event_name == 'schedule'
         uses: stefanzweifel/git-auto-commit-action@v5
