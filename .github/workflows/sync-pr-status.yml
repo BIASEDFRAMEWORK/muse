@@ -101,8 +101,7 @@ jobs:
         if: github.event_name != 'schedule' && steps.story-link.outputs.story_id != ''
         run: |
           node scripts/analyze-implementation.mjs \
-            --story-id "${{ steps.story-link.outputs.story_id }}" \
-            --pr "${{ steps.pr-meta.outputs.pr_number }}"
+            --story-id "${{ steps.story-link.outputs.story_id }}"
 
       - name: Run nightly sync for all stories
         if: github.event_name == 'schedule'
