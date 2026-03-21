@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import YAML from 'yaml'
+import { safeReadFile, safeWriteFile, safeParseYAML, safeFileExists, ConfigurationError, ValidationError } from '../utils/errorHandling'
 
 export interface MuseConfig {
   project: string
@@ -37,20 +38,82 @@ const defaultConfig: MuseConfig = {
 }
 
 export function createInitialConfigFile(configPath = 'muse.yaml'): void {
-  if (fs.existsSync(configPath)) {
+  if (safeFileExists(configPath)) {
     return
   }
-  fs.writeFileSync(configPath, YAML.stringify(defaultConfig), 'utf8')
+
+  try {
+    safeWriteFile(configPath, YAML.stringify(defaultConfig), 'utf8')
+  } catch (error) {
+    throw new ConfigurationError(
+      `Failed to create initial config file at ${configPath}`,
+      [
+        'Check write permissions for the directory',
+        'Ensure sufficient disk space',
+        'Verify the path is valid'
+      ]
+    )
+  }
 }
 
 export function loadConfig(configPath = 'muse.yaml'): MuseConfig {
   const absolutePath = path.resolve(configPath)
-  if (!fs.existsSync(absolutePath)) {
-    throw new Error(`Config file not found: ${absolutePath}. Run muse init first.`)
+
+  if (!safeFileExists(absolutePath)) {
+    throw new ConfigurationError(
+      `Config file not found: ${absolutePath}`,
+      [
+        'Run "muse init" to create the initial configuration file',
+        'Check if the file path is correct',
+        'Ensure you are in the correct project directory'
+      ]
+    )
   }
 
-  const raw = fs.readFileSync(absolutePath, 'utf8')
-  const parsed = YAML.parse(raw) as Partial<MuseConfig>
+  let raw: string
+  try {
+    raw = safeReadFile(absolutePath, 'utf8')
+  } catch (error) {
+    if (error instanceof ConfigurationError) {
+      throw error
+    }
+    throw new ConfigurationError(
+      `Failed to read config file: ${absolutePath}`,
+      [
+        'Check file permissions',
+        'Ensure the file is not corrupted',
+        'Verify the file is accessible'
+      ]
+    )
+  }
+
+  let parsed: Partial<MuseConfig>
+  try {
+    parsed = safeParseYAML<Partial<MuseConfig>>(raw, absolutePath)
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      throw error
+    }
+    throw new ValidationError(
+      `Invalid configuration format in ${absolutePath}`,
+      [
+        'Ensure the file contains valid YAML syntax',
+        'Check indentation and structure',
+        'Refer to the documentation for correct config format'
+      ]
+    )
+  }
+
+  // Validate required fields
+  if (!parsed.project || typeof parsed.project !== 'string') {
+    throw new ValidationError(
+      'Configuration missing required "project" field or field is not a string',
+      [
+        'Add a "project" field with a string value to your muse.yaml',
+        'Example: project: "your-project-name"'
+      ]
+    )
+  }
 
   return {
     ...defaultConfig,

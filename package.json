@@ -10,6 +10,9 @@
     "build": "tsc -p ./tsconfig.json && chmod +x dist/cli/index.js",
     "dev": "ts-node-dev --respawn --transpile-only src/cli/index.ts",
     "test": "npm run build && node --test test/**/*.test.cjs",
+    "test:vitest": "vitest",
+    "test:vitest:run": "vitest run",
+    "test:vitest:coverage": "vitest run --coverage",
     "lint:md": "markdownlint --config .markdownlint.json '**/*.md'",
     "muse": "node dist/cli/index.js",
     "muse:init": "ts-node-dev --transpile-only src/cli/index.ts init",
@@ -19,15 +22,17 @@
     "node": ">=20"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.80.0",
+    "@anthropic-ai/sdk": "^0.78.0",
     "commander": "^14.0.1",
     "gray-matter": "^4.0.3",
     "yaml": "^2.8.1"
   },
   "devDependencies": {
-    "@types/node": "^25.5.0",
+    "@types/node": "^25.3.5",
+    "@vitest/ui": "^4.1.0",
     "markdownlint-cli": "^0.48.0",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "vitest": "^4.1.0"
   }
 }

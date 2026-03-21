@@ -23,6 +23,26 @@ Microsoft MarkItDown is required for document conversion:
 python3 -m pip install markitdown
 ```
 
+## Dev Container
+
+This repo includes a VS Code/Codespaces dev container in [`.devcontainer/devcontainer.json`](/Users/dustingaspard/Documents/Excella/Workspace/Muse/.devcontainer/devcontainer.json).
+
+It provisions:
+
+- Node.js 20
+- Python 3.12
+- GitHub CLI
+- `markitdown`
+
+On first create, the container runs:
+
+```bash
+npm install
+python3 -m pip install --user markitdown
+```
+
+`node_modules` is mounted as a container volume so developers do not share host-specific installs across machines.
+
 ## CLI commands
 
 ```bash

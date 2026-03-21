@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import YAML from 'yaml'
 import matter from 'gray-matter'
+import { safeReadFile, safeWriteFile, safeParseYAML, safeFileExists, safeWalkFiles, handleError, withSyncErrorHandling } from '../dist/utils/errorHandling.js'
 
 const repoRoot = process.cwd()
 
@@ -69,30 +70,42 @@ function parseDigitalSourcePath(raw) {
 function shouldExcludeFile(filePath) {
   const basename = path.basename(filePath)
   const relativePath = path.relative(repoRoot, filePath)
-  
+
   // Exclude files with "agent-based" in the name (documentation files)
   if (basename.includes('agent-based')) return true
-  
+
   // Exclude epic-003 documentation files (completion status, quick reference)
   if (basename.includes('epic-003-completion') || basename.includes('epic-003-quickref')) return true
-  
-  // Exclude files with temp directory references
-  const content = fs.readFileSync(filePath, 'utf-8')
-  if (content.includes('/var/folders/') || content.includes('/tmp/')) return true
-  
+
+  // Try to read file content, but don't fail if we can't
+  try {
+    const content = safeReadFile(filePath, 'utf-8')
+    // Exclude files with temp directory references
+    if (content.includes('/var/folders/') || content.includes('/tmp/')) return true
+  } catch (error) {
+    // If we can't read the file, log a warning but don't exclude it
+    console.warn(`Warning: Could not read file for exclusion check: ${relativePath}`)
+  }
+
   return false
 }
 
 // Extracts YAML front matter blocks from markdown or YAML files, handling both single and multi-block formats.
 function readFrontMatterBlocks(filePath) {
-  const raw = fs.readFileSync(filePath, 'utf-8')
+  let raw
+  try {
+    raw = safeReadFile(filePath, 'utf-8')
+  } catch (error) {
+    errors.push(`Failed to read file ${path.relative(repoRoot, filePath)}: ${error.message || error}`)
+    return []
+  }
 
   if (filePath.endsWith('.yaml') || filePath.endsWith('.yml')) {
     try {
-      const data = YAML.parse(raw) || {}
+      const data = safeParseYAML(raw, filePath) || {}
       return [{ data }]
-    } catch (err) {
-      errors.push(`Failed to parse YAML in ${path.relative(repoRoot, filePath)}: ${err.message || err}`)
+    } catch (error) {
+      errors.push(`Failed to parse YAML in ${path.relative(repoRoot, filePath)}: ${error.message || error}`)
       return []
     }
   }
@@ -110,10 +123,10 @@ function readFrontMatterBlocks(filePath) {
     // Only accept matches that are at the start or immediately follow another block
     if (match.index === 0 || raw.substring(0, match.index).trim().endsWith('---')) {
       try {
-        const data = YAML.parse(match[1]) || {}
+        const data = safeParseYAML(match[1], filePath) || {}
         blocks.push({ data })
-      } catch (err) {
-        errors.push(`Failed to parse front matter in ${path.relative(repoRoot, filePath)}: ${err.message || err}`)
+      } catch (error) {
+        errors.push(`Failed to parse front matter in ${path.relative(repoRoot, filePath)}: ${error.message || error}`)
       }
     }
   }
@@ -123,40 +136,27 @@ function readFrontMatterBlocks(filePath) {
 
 // Recursively walks directory trees and collects files matching given extensions.
 function walkFiles(targetDirs, exts) {
-  const files = []
-  const validExts = new Set(exts)
-
-  for (const dir of targetDirs) {
-    const absDir = path.join(repoRoot, dir)
-    if (!fs.existsSync(absDir)) continue
-
-    const stack = [absDir]
-    while (stack.length) {
-      const current = stack.pop()
-      const entries = fs.readdirSync(current, { withFileTypes: true })
-      for (const entry of entries) {
-        const absPath = path.join(current, entry.name)
-        if (entry.isDirectory()) {
-          stack.push(absPath)
-        } else if (validExts.has(path.extname(entry.name))) {
-          files.push(absPath)
-        }
-      }
-    }
-  }
-
-  return files
+  return safeWalkFiles(targetDirs, exts, {
+    excludePatterns: [
+      /\/agent-based.*\.md$/i,
+      /\/epic-003-completion.*\.md$/i,
+      /\/epic-003-quickref.*\.md$/i,
+      /\/var\/folders\//,
+      /\/tmp\//
+    ]
+  })
 }
 
 // Loads and parses muse.yaml artifact registry, or returns null if missing.
 function loadMuseYaml() {
   const musePath = path.join(repoRoot, 'muse.yaml')
-  if (!fs.existsSync(musePath)) return null
+  if (!safeFileExists(musePath)) return null
 
   try {
-    return YAML.parse(fs.readFileSync(musePath, 'utf-8')) || null
-  } catch (err) {
-    errors.push(`Failed to parse muse.yaml: ${err.message || err}`)
+    const raw = safeReadFile(musePath, 'utf-8')
+    return safeParseYAML(raw, musePath) || null
+  } catch (error) {
+    errors.push(`Failed to parse muse.yaml: ${error.message || error}`)
     return null
   }
 }
@@ -168,7 +168,14 @@ function collectGovernance() {
     if (shouldExcludeFile(filePath)) continue
 
     const rel = path.relative(repoRoot, filePath)
-    const raw = fs.readFileSync(filePath, 'utf-8')
+    let raw
+    try {
+      raw = safeReadFile(filePath, 'utf-8')
+    } catch (error) {
+      errors.push(`Failed to read governance file ${rel}: ${error.message || error}`)
+      continue
+    }
+
     const blocks = readFrontMatterBlocks(filePath)
     const data = blocks[0]?.data || {}
     let documentId = typeof data.document_id === 'string' ? data.document_id : null
@@ -177,7 +184,7 @@ function collectGovernance() {
       const sourcePath = parseDigitalSourcePath(raw)
       if (sourcePath) {
         const sourceAbsPath = path.isAbsolute(sourcePath) ? sourcePath : path.resolve(repoRoot, sourcePath)
-        if (fs.existsSync(sourceAbsPath)) {
+        if (safeFileExists(sourceAbsPath)) {
           const sourceBlocks = readFrontMatterBlocks(sourceAbsPath)
           const sourceData = sourceBlocks[0]?.data || {}
           if (typeof sourceData.document_id === 'string' && sourceData.document_id.trim()) {
@@ -477,56 +484,66 @@ function writeReports(status) {
     }
   }
 
-  const jsonPath = path.join(repoRoot, 'traceability-report.json')
-  fs.writeFileSync(jsonPath, JSON.stringify(report, null, 2))
+  try {
+    const jsonPath = path.join(repoRoot, 'traceability-report.json')
+    safeWriteFile(jsonPath, JSON.stringify(report, null, 2))
 
-  const lines = [
-    `Traceability status: ${status.toUpperCase()}`,
-    `Governance: ${report.summary.counts.governance} | Capabilities: ${report.summary.counts.capabilities} | Epics: ${report.summary.counts.epics} | Features: ${report.summary.counts.features} | Stories: ${report.summary.counts.stories}`,
-    errors.length ? 'Errors:' : 'Errors: none'
-  ]
+    const lines = [
+      `Traceability status: ${status.toUpperCase()}`,
+      `Governance: ${report.summary.counts.governance} | Capabilities: ${report.summary.counts.capabilities} | Epics: ${report.summary.counts.epics} | Features: ${report.summary.counts.features} | Stories: ${report.summary.counts.stories}`,
+      errors.length ? 'Errors:' : 'Errors: none'
+    ]
 
-  for (const err of errors) lines.push(`- ${err}`)
+    for (const err of errors) lines.push(`- ${err}`)
 
-  if (warnings.length) {
-    lines.push('Warnings:')
-    for (const warn of warnings) lines.push(`- ${warn}`)
+    if (warnings.length) {
+      lines.push('Warnings:')
+      for (const warn of warnings) lines.push(`- ${warn}`)
+    }
+
+    const textPath = path.join(repoRoot, 'traceability-report.txt')
+    safeWriteFile(textPath, lines.join('\n'))
+
+    console.log(lines.join('\n'))
+  } catch (error) {
+    console.error(`❌ Failed to write reports: ${error.message || error}`)
+    console.error('🔴 Validation completed but reports could not be saved.')
+    process.exitCode = 1
   }
-
-  const textPath = path.join(repoRoot, 'traceability-report.txt')
-  fs.writeFileSync(textPath, lines.join('\n'))
-
-  console.log(lines.join('\n'))
 }
 
 // Main orchestrator: collects artifacts, validates references, detects duplicates, and writes reports.
 function main() {
-  const muse = loadMuseYaml()
+  try {
+    const muse = loadMuseYaml()
 
-  collectGovernance()
-  collectCapabilities()
-  collectEpics(muse)
-  collectFeatures(muse)
-  collectStories(muse)
+    collectGovernance()
+    collectCapabilities()
+    collectEpics(muse)
+    collectFeatures(muse)
+    collectStories(muse)
 
-  const { governanceMap, capabilityMap, epicMap, featureMap, storyMap } = buildMaps()
+    const { governanceMap, capabilityMap, epicMap, featureMap, storyMap } = buildMaps()
 
-  recordDuplicateIds(report.artifacts.epics, 'epic_id', 'epic')
-  recordDuplicateIds(report.artifacts.capabilities, 'capability_id', 'capability')
-  recordDuplicateIds(report.artifacts.features, 'feature_id', 'feature')
-  recordDuplicateIds(report.artifacts.stories, 'story_id', 'story')
+    recordDuplicateIds(report.artifacts.epics, 'epic_id', 'epic')
+    recordDuplicateIds(report.artifacts.capabilities, 'capability_id', 'capability')
+    recordDuplicateIds(report.artifacts.features, 'feature_id', 'feature')
+    recordDuplicateIds(report.artifacts.stories, 'story_id', 'story')
 
-  if (report.artifacts.epics.length || report.artifacts.features.length || report.artifacts.stories.length) {
-    validateReferences(governanceMap, capabilityMap, epicMap, featureMap, storyMap)
-  } else {
-    warnings.push('No epics/features/stories discovered; validation skipped')
-  }
+    if (report.artifacts.epics.length || report.artifacts.features.length || report.artifacts.stories.length) {
+      validateReferences(governanceMap, capabilityMap, epicMap, featureMap, storyMap)
+    } else {
+      warnings.push('No epics/features/stories discovered; validation skipped')
+    }
 
-  const status = errors.length === 0 ? 'passed' : 'failed'
-  writeReports(status)
+    const status = errors.length === 0 ? 'passed' : 'failed'
+    writeReports(status)
 
-  if (errors.length > 0) {
-    process.exitCode = 1
+    if (errors.length > 0) {
+      process.exitCode = 1
+    }
+  } catch (error) {
+    handleError(error, 'traceability validation')
   }
 }
 

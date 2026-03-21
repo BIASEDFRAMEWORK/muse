@@ -8,6 +8,7 @@ import { FeatureArtifact } from '../artifacts/feature'
 import { UserStoryArtifact } from '../artifacts/userStory'
 import { AIPromptArtifact } from '../artifacts/aiPrompt'
 import { extractCapabilities, loadCapabilities } from './extractCapabilities'
+import { safeReadFile, safeWriteFile, safeEnsureDirectory, withErrorHandling, FileSystemError } from '../utils/errorHandling'
 
 export interface DeriveArtifactsOptions {
   sourceMarkdownPath: string
@@ -107,28 +108,43 @@ function ensureDirs(): void {
     'work-items/prompts/stories',
   ]
   for (const directory of dirs) {
-    const absoluteDir = path.resolve(directory)
-    fs.mkdirSync(absoluteDir, { recursive: true })
+    try {
+      safeEnsureDirectory(directory)
+    } catch (error) {
+      throw new FileSystemError(
+        `Failed to create or access directory: ${directory}`,
+        path.resolve(directory),
+        [
+          'Check write permissions for the project directory',
+          'Ensure sufficient disk space',
+          'Verify the path is not blocked by existing files'
+        ]
+      )
+    }
 
-    for (const name of fs.readdirSync(absoluteDir)) {
-      if (!name.endsWith('.md')) {
-        continue
+    // Clean existing files
+    try {
+      const absoluteDir = path.resolve(directory)
+      for (const name of fs.readdirSync(absoluteDir)) {
+        if (!name.endsWith('.md')) {
+          continue
+        }
+        const filePath = path.join(absoluteDir, name)
+        fs.rmSync(filePath, { force: true })
       }
-      fs.rmSync(path.join(absoluteDir, name), { force: true })
+    } catch (error) {
+      console.warn(`Warning: Failed to clean directory ${directory}: ${error instanceof Error ? error.message : String(error)}`)
     }
   }
 }
 
 function writeArtifact(filePath: string, body: string): void {
-  fs.writeFileSync(path.resolve(filePath), body.trimEnd() + '\n', 'utf8')
+  safeWriteFile(filePath, body.trimEnd() + '\n', 'utf8')
 }
 
 function readGovernanceMarkdown(markdownPath: string): string {
   const absolute = path.resolve(markdownPath)
-  if (!fs.existsSync(absolute)) {
-    throw new Error(`Governance markdown not found: ${absolute}`)
-  }
-  return fs.readFileSync(absolute, 'utf8')
+  return safeReadFile(absolute, 'utf8')
 }
 
 function headingCandidates(markdown: string): string[] {
