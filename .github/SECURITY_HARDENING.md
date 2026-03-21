@@ -38,3 +38,5 @@ The script enables:
 
 - If `gh` prompts for auth, run `gh auth login` first.
 - Admin permissions are required to update repository settings.
+- The automated hardening drift check is temporarily manual-only (`workflow_dispatch`) while the team refines how branch protection should interact with non-Muse product work.
+- MUSE-ID conventions are intended for Muse-generated, spec-linked changes. Direct enhancement work may use `MUSE-ID: N/A` in the PR body.

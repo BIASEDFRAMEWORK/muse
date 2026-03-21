@@ -10,13 +10,13 @@ For manual PRs, replace placeholders directly.
 
 {{SUMMARY}}
 
-## MUSE-ID (required)
+## MUSE-ID
 
 MUSE-ID: {{MUSE_ID}}
 
-Please include a MUSE-ID referencing the related Muse story (e.g., `MUSE-001`) or `N/A` if not applicable. This helps reviewers correlate PRs with acceptance criteria.
+Please include a MUSE-ID referencing the related Muse story (e.g., `MUSE-001`) when this PR was produced from a Muse-generated story or workflow. For direct product work, infrastructure work, or exploratory changes that are not tied to a Muse story, use `N/A`.
 
-**Important:** Your commit message MUST start with the MUSE-ID (e.g., `MUSE-001: describe change...`). This is enforced by CI/CD guardrails.
+If this PR is part of a Muse-driven, spec-first workflow, commit messages should start with the MUSE-ID (for example, `MUSE-001: describe change...`). For non-Muse work, use the repository's normal commit style.
 
 ## Objective
 
