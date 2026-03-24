@@ -3,23 +3,31 @@ id: epic-001
 epic_id: epic-001
 capability: CAP-001
 derived_from_capability: CAP-001
-source: /home/runner/work/Muse/Muse/specs/governance/original-document-system-of-record.digital.md
-source_path: /home/runner/work/Muse/Muse/specs/governance/original-document-system-of-record.digital.md
+source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
+source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 derived_from_document_id: gov-original-document-system-of-record
-origin_markdown_path: /home/runner/work/Muse/Muse/specs/governance/original-document-system-of-record.digital.md
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# Access Control and Authorization
+# Document Retrieval API with Streaming and Metadata Access
 
 ## Capability
 Access Control Enforcement (CAP-001)
 
 ## Objective
-Deliver access control and authorization capabilities from governance requirements.
+Build a read-only API system that streams original document bytes and provides metadata access with proper authentication and rate limiting
 
 ## Outcomes
-- Engineering teams can implement access control and authorization with clear scope and ownership.
-- Controls are observable through logs, audits, and repeatable checks.
+- GET /documents/{documentId} endpoint streams original document bytes
+- GET /documents/{documentId}/metadata endpoint returns structured metadata
+- API includes authentication middleware for all endpoints
+- Rate limiting prevents API abuse and ensures system stability
+- Error handling provides consistent JSON responses for invalid document IDs
+- API logging captures all access attempts with user identity and timestamps
 - Primary outcome focus: The API exposes read-only access:.
 
 ## Non-Goals
-- Physical-only controls and manual paper handling processes are out of scope.
+- Document modification or update capabilities
+- Document deletion functionality
+- Bulk document operations
+- Document format conversion or transformation
+- Synchronous metadata indexing during retrieval
