@@ -4,12 +4,12 @@ prompt_id: epic-001-feature-001-prompt-001
 story: epic-001-feature-001-story-001
 feature: epic-001-feature-001
 epic: epic-001
-source: /home/runner/work/Muse/Muse/specs/governance/original-document-system-of-record.digital.md
+source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
 # AI Implementation Prompt: epic-001-feature-001-prompt-001
 
 ## Objective
-Implement Access Control and Authorization — Authorization enforcement — implementation path.
+Implement Stream Document Content by ID.
 
 ## Repo Context
 - Primary code paths: src/cli/, src/pipeline/, src/config/
@@ -17,21 +17,26 @@ Implement Access Control and Authorization — Authorization enforcement — imp
 - Story linkage: epic-001-feature-001-story-001 -> epic-001-feature-001 -> epic-001
 
 ## Required Changes
-1. Implement Access Control and Authorization — Authorization enforcement — implementation path.
-2. Apply least-privilege authorization checks for the implementation path.
-3. Ensure structured logs for the implementation path are queryable for compliance evidence.
-4. Implementation should prioritize The API exposes read-only access:.
+1. Implement Stream Document Content by ID.
+2. Implement streaming response using HTTP chunked transfer encoding
+3. Store Content-Type in document metadata for proper header setting
+4. Configure appropriate buffer sizes for memory-efficient streaming
+5. Log retrieval events to audit trail with timestamp, documentId, and actor identity
 
 ## Constraints
 - Preserve traceability metadata and naming conventions for generated artifacts.
 - Do not modify files under /docs/organizational-contracts without explicit instruction.
 - Keep changes scoped to the requested objective and avoid unrelated refactors.
-- Use governance source: /home/runner/work/Muse/Muse/specs/governance/original-document-system-of-record.digital.md
+- Use governance source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 
 ## Acceptance Criteria
-- Behavior for the implementation path records timestamped evidence with actor identity attribution.
-- Audit and security events for the implementation path are written to secure, access-controlled logging or storage.
-- Automated tests validate success, failure, and evidence-capture behavior for the implementation path.
+- System must return HTTP 200 with original document bytes when valid documentId is provided
+- System must set appropriate Content-Type header based on document format
+- System must use chunked transfer encoding for streaming large documents
+- System must log timestamped retrieval events with requesting actor identity
+- System must return HTTP 404 when documentId does not exist
+- System must return HTTP 403 when actor lacks read permissions
+- Automated tests must verify streaming functionality with documents of varying sizes
 - Outcome focus for this story: The API exposes read-only access:.
 
 ## Validation
@@ -42,13 +47,17 @@ Implement Access Control and Authorization — Authorization enforcement — imp
 Return a patch plus a short summary of modified files and validation results.
 
 ## Implementation Brief
-Implement Access Control and Authorization — Authorization enforcement — implementation path.
-Context: enforce access control and authorization — authorization enforcement for the implementation path.
+Implement Stream Document Content by ID.
+Context: stream original document bytes via GET /documents/{documentId} endpoint with proper content-type headers and chunked transfer encoding.
 Return production-ready code changes, unit tests, and integration tests with explicit acceptance-criteria mapping.
 
 ## Implementation Checklist
-- Behavior for the implementation path records timestamped evidence with actor identity attribution.
-- Audit and security events for the implementation path are written to secure, access-controlled logging or storage.
-- Automated tests validate success, failure, and evidence-capture behavior for the implementation path.
+- System must return HTTP 200 with original document bytes when valid documentId is provided
+- System must set appropriate Content-Type header based on document format
+- System must use chunked transfer encoding for streaming large documents
+- System must log timestamped retrieval events with requesting actor identity
+- System must return HTTP 404 when documentId does not exist
+- System must return HTTP 403 when actor lacks read permissions
+- Automated tests must verify streaming functionality with documents of varying sizes
 - Outcome focus for this story: The API exposes read-only access:.
-- Implementation outcome is unique to epic-001-feature-001-story-001 (Access Control and Authorization — Authorization enforcement — implementation path).
+- Implementation outcome is unique to epic-001-feature-001-story-001 (Stream Document Content by ID).
