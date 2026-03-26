@@ -11,6 +11,7 @@ import { explainCommand } from './commands/explain'
 import { traceCommand } from './commands/trace'
 import { commitCommand } from './commands/commit'
 import { prCommand } from './commands/pr'
+import { handoffCommand } from './commands/handoff'
 import { filterDigitalContentCommand } from './commands/filterDigitalContent'
 
 const program = new Command()
@@ -72,6 +73,13 @@ program
   .command('pr [prompt]')
   .description('Create a branch, commit generated artifacts, and open a template-driven GitHub pull request')
   .action((prompt?: string) => prCommand(prompt))
+
+program
+  .command('handoff <prompt>')
+  .description('Send an implementation prompt to Codex and optionally create a pull request for the resulting changes')
+  .option('--pr', 'create a pull request after Codex completes')
+  .option('--dry-run', 'show the commands that would run without executing them')
+  .action((prompt: string, options: { pr?: boolean; dryRun?: boolean }) => handoffCommand(prompt, options))
 
 program
   .command('filter-digital-content <markdown>')

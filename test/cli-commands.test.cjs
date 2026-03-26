@@ -31,6 +31,7 @@ const commandHelpCases = [
   ['trace'],
   ['commit'],
   ['pr'],
+  ['handoff'],
   ['filter-digital-content'],
 ]
 
@@ -72,6 +73,29 @@ test('trace resolves prompt lineage to story feature epic', () => {
     }
     if (fs.existsSync(storyFile)) {
       fs.unlinkSync(storyFile)
+    }
+  }
+})
+
+test('handoff dry-run resolves prompt and prints planned commands', () => {
+  const promptsDir = path.join(repoRoot, 'work-items/prompts/stories')
+  fs.mkdirSync(promptsDir, { recursive: true })
+
+  const promptFile = path.join(promptsDir, `prompt-handoff-test-${Date.now()}.md`)
+  const promptContent = `---\nid: prompt-handoff-test\nstory: epic-999-feature-001-story-001\nsource: test-source.md\n---\n# Test Prompt\n`
+
+  try {
+    fs.writeFileSync(promptFile, promptContent, 'utf8')
+
+    const result = runCli(['handoff', promptFile, '--pr', '--dry-run'])
+    assert.equal(result.status, 0, result.stderr || result.stdout)
+    assert.match(result.stdout, /Resolved prompt:/)
+    assert.match(result.stdout, /AI provider: anthropic/)
+    assert.match(result.stdout, /Would run: claude < /)
+    assert.match(result.stdout, /Would then run: muse pr /)
+  } finally {
+    if (fs.existsSync(promptFile)) {
+      fs.unlinkSync(promptFile)
     }
   }
 })

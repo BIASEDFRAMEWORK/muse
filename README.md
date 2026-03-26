@@ -40,6 +40,7 @@ muse explain <artifact>
 muse trace <artifact>
 muse commit [--pr]
 muse pr [prompt]
+muse handoff <prompt> [--pr]
 muse filter-digital-content <markdown>
 ```
 
@@ -58,6 +59,7 @@ muse filter-digital-content <markdown>
 | `muse trace <artifact>` | Show lineage from artifact back to source governance | `<artifact>` |
 | `muse commit` | Stage docs and generated artifacts and create commit | `--pr` |
 | `muse pr [prompt]` | Create branch, commit artifacts, and open template-driven PR | optional `[prompt]` |
+| `muse handoff <prompt>` | Send a generated prompt to Codex; optionally create a PR after implementation | `<prompt>`, `--pr` |
 | `muse filter-digital-content <markdown>` | Keep only digital-system requirements from governance markdown | `<markdown>` |
 
 ## Declarative config
@@ -96,3 +98,4 @@ ai:
 
 - Keep business logic in `src/pipeline/` and keep CLI parsing in `src/cli/`.
 - Do not modify files in `docs/organizational-contracts/` unless explicitly requested.
+- `muse handoff` uses an external AI CLI. By default it chooses `claude` for `ai.provider: anthropic` and `codex` for `ai.provider: openai`. Override with `MUSE_HANDOFF_COMMAND=<command>`.

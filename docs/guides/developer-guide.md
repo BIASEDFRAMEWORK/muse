@@ -51,6 +51,19 @@ node dist/cli/index.js trace epic-001-feature-001-story-001
 
 # Stage and commit generated artifacts
 node dist/cli/index.js commit
+
+# Send a generated prompt to Codex and optionally open a PR
+node dist/cli/index.js handoff work-items/prompts/stories/<prompt>.md --pr
+```
+
+`handoff` uses an external AI CLI based on `muse.yaml`:
+- `anthropic` -> `claude`
+- `openai` -> `codex`
+
+Override the executable when needed:
+
+```bash
+MUSE_HANDOFF_COMMAND=<your-ai-cli> node dist/cli/index.js handoff work-items/prompts/stories/<prompt>.md --pr
 ```
 
 ## Declarative Pipeline (`muse.yaml`)

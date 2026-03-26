@@ -127,7 +127,7 @@ function buildPrBody(promptArtifact: string | null, changedFiles: string[]): str
   })
 }
 
-function commandExists(command: string): boolean {
+export function commandExists(command: string): boolean {
   try {
     execSync(`command -v ${command}`, { stdio: 'inherit' })
     return true
@@ -169,7 +169,7 @@ function buildBranchName(date: Date): string {
   return `muse/backlog-${year}-${month}-${day}-${hours}${minutes}`
 }
 
-export function prCommand(prompt?: string): void {
+export function createPullRequest(prompt?: string): void {
   if (!commandExists('git')) {
     throw new Error('Git is required to create a pull request.')
   }
@@ -221,4 +221,8 @@ export function prCommand(prompt?: string): void {
   }
 
   process.stdout.write('Pull request created successfully.\n')
+}
+
+export function prCommand(prompt?: string): void {
+  createPullRequest(prompt)
 }
