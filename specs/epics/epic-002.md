@@ -3,23 +3,30 @@ id: epic-002
 epic_id: epic-002
 capability: CAP-002
 derived_from_capability: CAP-002
-source: /home/runner/work/Muse/Muse/specs/governance/original-document-system-of-record.digital.md
-source_path: /home/runner/work/Muse/Muse/specs/governance/original-document-system-of-record.digital.md
+source: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
+source_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 derived_from_document_id: gov-original-document-system-of-record
-origin_markdown_path: /home/runner/work/Muse/Muse/specs/governance/original-document-system-of-record.digital.md
+origin_markdown_path: /Users/dustingaspard/Documents/Excella/Workspace/Muse/specs/governance/original-document-system-of-record.digital.md
 ---
-# Service and API Governance
+# Document Access Control and Authorization Framework
 
 ## Capability
 Retention and Lifecycle Governance (CAP-002)
 
 ## Objective
-Deliver service and api governance capabilities from governance requirements.
+Implement role-based access controls that verify user permissions before allowing document retrieval or metadata access
 
 ## Outcomes
-- Engineering teams can implement service and api governance with clear scope and ownership.
-- Controls are observable through logs, audits, and repeatable checks.
+- Role-based permission system controls document access by user identity
+- Integration with existing identity provider for authentication
+- Audit trail logs all authorization decisions and access attempts
+- API returns 403 Forbidden for unauthorized access attempts
+- Permission caching reduces latency for repeated authorization checks
+- Administrative interface for managing document-level permissions
 - Primary outcome focus: The API exposes read-only access:.
 
 ## Non-Goals
-- Physical-only controls and manual paper handling processes are out of scope.
+- Custom user management system creation
+- Document-level encryption key management
+- Integration with external document management systems
+- Automated permission inheritance from folder structures
